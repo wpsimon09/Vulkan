@@ -1,14 +1,35 @@
+# Compiler flags for release and debug builds
 CFLAGS_RELEASE = -std=c++17 -O2
+CFLAGS_DEBUG = -std=c++17 -g
 
+# Linker flags
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi 
 
-VulkanTest: src/main.cpp
-	g++ $(CFLAGS_RELEASE) -o build/VulkanTest src/main.cpp $(LDFLAGS)
+# Target executable
+TARGET = build/VulkanTest
 
-.PHONY: test clean
+# Default build (release)
+all: $(TARGET)
 
-run: VulkanTest
-	./build/VulkanTest
+# Release build
+release: CFLAGS = $(CFLAGS_RELEASE)
+release: $(TARGET)
 
+# Debug build
+debug: CFLAGS = $(CFLAGS_DEBUG)
+debug: $(TARGET)
+
+# Link and compile
+$(TARGET): src/main.cpp
+	g++ $(CFLAGS) -o $(TARGET) src/main.cpp $(LDFLAGS)
+
+# Phony targets
+.PHONY: run clean release debug
+
+# Run the compiled program
+run: $(TARGET)
+	./$(TARGET)
+
+# Clean the build
 clean:
-	rm -f ./build/VulkanTest
+	rm -f $(TARGET)
