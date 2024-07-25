@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
-
+#include <iostream>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;

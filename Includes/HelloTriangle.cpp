@@ -55,9 +55,17 @@ void HelloTriangle::CreateInstance() {
     }
 
     uint32_t extenstionsCount;
-
+    //get cound ot extentions
+    vkEnumerateInstanceExtensionProperties(nullptr, &extenstionsCount, nullptr);
     std::vector<VkExtensionProperties> extentions(extenstionsCount);
+    //get the acctual extentions                    //layer   //num of extentios          //where to store them
+    vkEnumerateInstanceExtensionProperties(nullptr, &extenstionsCount, extentions.data());
 
+    std::cout << "available extensions:\n";
+
+    for (const auto& extension : extentions) {
+        std::cout << '\t' << extension.extensionName << '\t' << "V: " <<(float)extension.specVersion<< '\n';
+    }
 }
 
 void HelloTriangle::MainLoop() {
