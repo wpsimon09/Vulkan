@@ -10,6 +10,8 @@
 
 #include <stdexcept>
 #include <cstdlib>
+#include <vector>
+
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -19,11 +21,16 @@ public:
     void run();
 private:
     void InitWindow();
+
     void InitVulkan();
+    void CreateInstance();
+
     void MainLoop();
+
     void CleanUp();
 
     GLFWwindow* m_window;
+    VkInstance m_instance;
 };
 
 #endif //HELLOTRIANGLE_HPP
