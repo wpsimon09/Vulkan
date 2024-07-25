@@ -24,6 +24,7 @@ target_link_libraries(${TARGET} PRIVATE ${LDFLAGS})
 
 find_package(Vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
+find_package(glm REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
