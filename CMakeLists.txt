@@ -4,7 +4,7 @@ project(LearnVulkan)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
-set(TARGET VulkanTest)
+set(TARGET LearnVulkan)
 set(SOURCES "src/main.cpp")
 
 set(CFLAGS_RELEASE "-O2")
