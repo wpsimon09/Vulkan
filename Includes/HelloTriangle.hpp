@@ -24,7 +24,6 @@ private:
 
     void InitVulkan();
     void CreateInstance();
-
     void MainLoop();
 
     void CleanUp();

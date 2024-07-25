@@ -63,6 +63,8 @@ void HelloTriangle::CreateInstance() {
 
     std::cout << "available extensions:\n";
 
+    int i = 0;
+
     for (const auto& extension : extentions) {
         std::cout << '\t' << extension.extensionName << '\t' << "V: " <<(float)extension.specVersion<< '\n';
     }
@@ -75,6 +77,7 @@ void HelloTriangle::MainLoop() {
 }
 
 void HelloTriangle::CleanUp() {
+    vkDestroyInstance(m_instance, nullptr);
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
