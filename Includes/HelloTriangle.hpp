@@ -12,9 +12,26 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <cstring>
+
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
+
+const std::vector<const char*> validationLayers = {
+"VK_LAYER_KHRONOS_validation"
+};
+
+/*
+#ifndef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers =true ;
+#endif
+*/
+
+const bool enableValidationLayers =true ;
+
 
 class HelloTriangle {
 public:
@@ -24,6 +41,7 @@ private:
 
     void InitVulkan();
     void CreateInstance();
+    bool CheckValidationLayerSupport();
     void MainLoop();
 
     void CleanUp();
