@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(TARGET LearnVulkan)
 set(SOURCES src/main.cpp
         Includes/HelloTriangle.cpp
-        Includes/HelloTriangle.hpp)
+        Includes/HelloTriangle.hpp
+        Includes/DebugInfoLog.hpp
+        Includes/Utils.hpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")

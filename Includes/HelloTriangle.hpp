@@ -13,7 +13,8 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
-
+#include "DebugInfoLog.hpp"
+#include "Utils.hpp"
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -36,18 +37,28 @@ const bool enableValidationLayers =true ;
 class HelloTriangle {
 public:
     void run();
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+        VkDebugUtilsMessageTypeFlagsEXT messageType,
+        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+        void* pUserData
+        );
+
 private:
     void InitWindow();
 
     void InitVulkan();
     void CreateInstance();
     bool CheckValidationLayerSupport();
+    std::vector<const char *> GetRequiredExtentions();
+    void SetUpDebugMessenger();
     void MainLoop();
 
     void CleanUp();
 
     GLFWwindow* m_window;
     VkInstance m_instance;
+    VkDebugUtilsMessengerEXT m_debugMessanger;
 };
 
 #endif //HELLOTRIANGLE_HPP
