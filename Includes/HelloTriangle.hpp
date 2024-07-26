@@ -53,6 +53,7 @@ private:
     std::vector<const char *> GetRequiredExtentions();
     void SetUpDebugMessenger();
     void MainLoop();
+    void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
     void CleanUp();
 
