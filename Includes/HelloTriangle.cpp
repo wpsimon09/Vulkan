@@ -38,6 +38,7 @@ void HelloTriangle::InitWindow() {
 void HelloTriangle::InitVulkan() {
     CreateInstance();
     SetUpDebugMessenger();
+    PickPhysicalDevice();
 }
 
 void HelloTriangle::CreateInstance() {
@@ -127,6 +128,27 @@ void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreate
     createInfo.pfnUserCallback = debugCallback;
     createInfo.pUserData = nullptr;
 
+}
+
+void HelloTriangle::PickPhysicalDevice() {
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
+    std::cout<<"Found "<<deviceCount<<" physical devices";
+    if(deviceCount == 0) {
+        throw std::runtime_error("There are no physical devices on the machine ");
+    }
+    std::vector<VkPhysicalDevice> devices(deviceCount);
+    vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
+
+    for (auto &device: devices) {
+        if(isDeviceSuitable(device)) {
+            m_physicalDevice = device;
+            break;
+        }
+    }
+    if(m_physicalDevice = VK_NULL_HANDLE) {
+        throw std::runtime_error("Failed to found any suitable GPU");
+    }
 }
 
 std::vector<const char *> HelloTriangle::GetRequiredExtentions() {

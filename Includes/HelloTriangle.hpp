@@ -54,12 +54,13 @@ private:
     void SetUpDebugMessenger();
     void MainLoop();
     void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-
+    void PickPhysicalDevice();
     void CleanUp();
 
     GLFWwindow* m_window;
     VkInstance m_instance;
     VkDebugUtilsMessengerEXT m_debugMessanger;
+    VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 };
 
 #endif //HELLOTRIANGLE_HPP
