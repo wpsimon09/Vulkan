@@ -8,7 +8,7 @@
 #include <vulkan/vulkan_core.h>
 
 inline static void GetSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT severity) {
-    std::cerr<<"Vulkan::Error::Severity - ";
+    std::cerr<<"Vulkan::Error::Severity - \n";
     switch (severity) {
         case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT: {
             std::cout<<"Diganostic message"<<std::endl;
@@ -30,7 +30,7 @@ inline static void GetSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT severity) 
 }
 
 inline static void GetMessageType(VkDebugUtilsMessageTypeFlagsEXT messageType) {
-    std::cerr<<"Vulkan::Error::MessageType - ";
+    std::cerr<<"Vulkan::Error::MessageType - \n";
 
     switch (messageType) {
         case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT: {

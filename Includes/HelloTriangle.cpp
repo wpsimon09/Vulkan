@@ -19,10 +19,10 @@ VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT mes
     VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
     void *pUserData) {
 
-    GetSeverity(messageSeverity);
+    //GetSeverity(messageSeverity);
 
-    GetMessageType(messageType);
-
+    //GetMessageType(messageType);
+    if(messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
     std::cerr<<"Message:"<<pCallbackData->pMessage<<std::endl;
 
     return VK_FALSE;
