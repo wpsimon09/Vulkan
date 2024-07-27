@@ -133,7 +133,7 @@ void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreate
 void HelloTriangle::PickPhysicalDevice() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
-    std::cout<<"Found "<<deviceCount<<" physical devices";
+    std::cout<<"Found "<<deviceCount<<" physical devices: \n";
     if(deviceCount == 0) {
         throw std::runtime_error("There are no physical devices on the machine ");
     }
@@ -143,6 +143,9 @@ void HelloTriangle::PickPhysicalDevice() {
     for (auto &device: devices) {
         if(isDeviceSuitable(device)) {
             m_physicalDevice = device;
+            VkPhysicalDeviceProperties props;
+            vkGetPhysicalDeviceProperties(device, &props);
+            std::cout<<"Using:"<< props.deviceName<<std::endl;
             break;
         }
     }
