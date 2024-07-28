@@ -15,6 +15,7 @@
 #include <cstring>
 #include "DebugInfoLog.hpp"
 #include "Utils.hpp"
+#include <set>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -56,13 +57,21 @@ private:
     void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     void PickPhysicalDevice();
     void CreateLogicalDevice();
+    void CreateSurface();
+
     void CleanUp();
+
 
     GLFWwindow* m_window;
     VkInstance m_instance;
     VkDebugUtilsMessengerEXT m_debugMessanger;
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
     VkDevice m_device;
+
+    VkQueue m_graphicsQueue;
+    VkQueue m_presentationQueue;
+
+    VkSurfaceKHR m_sruface;
 };
 
 #endif //HELLOTRIANGLE_HPP

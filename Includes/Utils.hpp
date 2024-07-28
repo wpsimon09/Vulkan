@@ -9,8 +9,9 @@
 
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
 
-    bool isComplete(){return graphicsFamily.has_value();}
+    bool isComplete(){return graphicsFamily.has_value() && presentFamily.has_value();}
 };
 
 inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfor, const VkAllocationCallbacks* pAllocator,VkDebugUtilsMessengerEXT* pDebugMessenger) {
@@ -30,7 +31,7 @@ inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 }
 
 
-inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) {
+inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface) {
     QueueFamilyIndices indices;
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -42,6 +43,11 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) {
         if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
         }
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+        if(presentSupport) {
+            indices.presentFamily = i;
+        }
         if(indices.isComplete()) break;
 
         i++;
@@ -51,14 +57,14 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) {
 }
 
 
-inline bool isDeviceSuitable(VkPhysicalDevice device) {
+inline bool isDeviceSuitable(VkPhysicalDevice device,VkSurfaceKHR surface) {
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
     std::cout<<'\t'<<deviceProperties.deviceName<<std::endl;
 
-    QueueFamilyIndices indices = FindQueueFamilies(device);
+    QueueFamilyIndices indices = FindQueueFamilies(device, surface);
 
     return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
 }
