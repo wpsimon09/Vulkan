@@ -12,18 +12,17 @@ void HelloTriangle::run() {
     MainLoop();
 
     CleanUp();
-
 }
 
 VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-    VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-    void *pUserData) {
+                                      VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                      const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                                      void *pUserData) {
+    GetSeverity(messageSeverity);
 
-    //GetSeverity(messageSeverity);
-
-    //GetMessageType(messageType);
-    if(messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-    std::cerr<<"Message:"<<pCallbackData->pMessage<<std::endl;
+    GetMessageType(messageType);
+    if (messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+        std::cerr << "Message:" << pCallbackData->pMessage << std::endl;
 
     return VK_FALSE;
 }
@@ -44,20 +43,20 @@ void HelloTriangle::InitVulkan() {
 }
 
 void HelloTriangle::CreateInstance() {
-    if(enableValidationLayers && !this->CheckValidationLayerSupport()) {
+    if (enableValidationLayers && !this->CheckValidationLayerSupport()) {
         throw std::runtime_error("Requested validation layers were not found");
-    }else {
-        std::cout<<"Valiation layers found\n";
+    } else {
+        std::cout << "Valiation layers found\n";
     }
     //--------
     //APP INFO
     //--------
-    VkApplicationInfo appInfo {};
+    VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Hello triangle";
-    appInfo.applicationVersion = VK_MAKE_VERSION(1,0,0);
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1,0,0);
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_3;
     appInfo.pNext = nullptr;
 
@@ -68,12 +67,12 @@ void HelloTriangle::CreateInstance() {
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-    if(enableValidationLayers) {
+    if (enableValidationLayers) {
         createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
         createInfo.ppEnabledLayerNames = validationLayers.data();
         PopulateDebugMessengerCreateInfo(debugCreateInfo);
-        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-    }else {
+        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *) &debugCreateInfo;
+    } else {
         createInfo.enabledLayerCount = 0;
         createInfo.pNext = nullptr;
     }
@@ -88,10 +87,10 @@ void HelloTriangle::CreateInstance() {
     //----------------
     // CREATE INSTANCE
     //----------------
-    if(vkCreateInstance(&createInfo, nullptr, &m_instance)!=VK_SUCCESS) {
+    if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create intance \n");
-    }else {
-        std::cout<<"Vulkan instance created successfuly \n";
+    } else {
+        std::cout << "Vulkan instance created successfuly \n";
     }
 }
 
@@ -103,21 +102,21 @@ bool HelloTriangle::CheckValidationLayerSupport() {
 
     for (const char *layerName: validationLayers) {
         bool layerFound = false;
-        for (const auto& layerProperties: availableLayers) {
-            std::cout<<'\t'<<layerProperties.layerName<< '\n';
-            if(strcmp(layerName,layerProperties.layerName) == 0) {
+        for (const auto &layerProperties: availableLayers) {
+            std::cout << '\t' << layerProperties.layerName << '\n';
+            if (strcmp(layerName, layerProperties.layerName) == 0) {
                 layerFound = true;
                 break;
             }
         }
-        if(!layerFound)
+        if (!layerFound)
             return false;
     }
     return true;
 }
 
 void HelloTriangle::MainLoop() {
-    while(!glfwWindowShouldClose(m_window)) {
+    while (!glfwWindowShouldClose(m_window)) {
         glfwPollEvents();
     }
 }
@@ -125,33 +124,36 @@ void HelloTriangle::MainLoop() {
 void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
     createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+                                 VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                                 VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                             VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                             VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
     createInfo.pfnUserCallback = debugCallback;
     createInfo.pUserData = nullptr;
-
 }
 
 void HelloTriangle::PickPhysicalDevice() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
-    std::cout<<"Found "<<deviceCount<<" physical devices: \n";
-    if(deviceCount == 0) {
+    std::cout << "Found " << deviceCount << " physical devices: \n";
+    if (deviceCount == 0) {
         throw std::runtime_error("There are no physical devices on the machine ");
     }
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
 
     for (auto &device: devices) {
-        if(isDeviceSuitable(device, m_sruface)) {
+        if (isDeviceSuitable(device, m_sruface)) {
             m_physicalDevice = device;
             VkPhysicalDeviceProperties props;
             vkGetPhysicalDeviceProperties(device, &props);
-            std::cout<<"Using:"<< props.deviceName<<std::endl;
+            std::cout << "Using:" << props.deviceName << std::endl;
             break;
         }
     }
-    if(m_physicalDevice == VK_NULL_HANDLE ) {
+    if (m_physicalDevice == VK_NULL_HANDLE) {
         throw std::runtime_error("Failed to found any suitable GPU");
     }
 }
@@ -180,23 +182,23 @@ void HelloTriangle::CreateLogicalDevice() {
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.enabledExtensionCount = 0;
-    if(enableValidationLayers) {
+    if (enableValidationLayers) {
         createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
         createInfo.ppEnabledLayerNames = validationLayers.data();
-    }else {
-        createInfo.enabledLayerCount=  0;
+    } else {
+        createInfo.enabledLayerCount = 0;
     }
 
-    if(vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device)!=VK_SUCCESS) {
+    if (vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create logical device !");
     }
 
     vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
-    vkGetDeviceQueue(m_device, indices.presentFamily.value(),0, &m_presentationQueue);
+    vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentationQueue);
 }
 
 void HelloTriangle::CreateSurface() {
-    if(glfwCreateWindowSurface(m_instance, m_window, nullptr,&m_sruface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(m_instance, m_window, nullptr, &m_sruface) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create window surface");
     }
 }
@@ -207,9 +209,9 @@ std::vector<const char *> HelloTriangle::GetRequiredExtentions() {
     const char **glfwExtentions;
     glfwExtentions = glfwGetRequiredInstanceExtensions(&glfwExtentionsCount);
 
-    std::vector<const char *>extensions (glfwExtentions, glfwExtentions + glfwExtentionsCount);
+    std::vector<const char *> extensions(glfwExtentions, glfwExtentions + glfwExtentionsCount);
 
-    if(enableValidationLayers) {
+    if (enableValidationLayers) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
 
@@ -217,20 +219,20 @@ std::vector<const char *> HelloTriangle::GetRequiredExtentions() {
 }
 
 void HelloTriangle::SetUpDebugMessenger() {
-    if(!enableValidationLayers) return;
+    if (!enableValidationLayers) return;
 
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     PopulateDebugMessengerCreateInfo(createInfo);
 
-    if(CreateDebugUtilsMessengerEXT(m_instance,&createInfo,nullptr, &m_debugMessanger) != VK_SUCCESS) {
+    if (CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessanger) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create a debug messenger");
-    }else
-        std::cout<<"Debug messenger created"<<std::endl;
+    } else
+        std::cout << "Debug messenger created" << std::endl;
 }
 
 void HelloTriangle::CleanUp() {
-    if(enableValidationLayers) {
-        DestroyDebugUtilsMessengerEXT(m_instance,m_debugMessanger,nullptr);
+    if (enableValidationLayers) {
+        DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessanger, nullptr);
     }
     vkDestroyDevice(m_device, nullptr);
     vkDestroySurfaceKHR(m_instance, m_sruface, nullptr);
@@ -238,5 +240,3 @@ void HelloTriangle::CleanUp() {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
-
-
