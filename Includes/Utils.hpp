@@ -5,7 +5,7 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 #include <optional>
-#include <vulkan/vulkan_core.h>
+#include <vulkan/vulkan.hpp>
 
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
@@ -38,7 +38,6 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) {
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilyProperties.data());
 
     int i = 0;
-    std::cout<<"Available queue families:"<<std::endl;
     for (auto& queueFamily: queueFamilyProperties) {
         if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;

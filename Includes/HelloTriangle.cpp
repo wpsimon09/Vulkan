@@ -39,6 +39,7 @@ void HelloTriangle::InitVulkan() {
     CreateInstance();
     SetUpDebugMessenger();
     PickPhysicalDevice();
+    CreateLogicalDevice();
 }
 
 void HelloTriangle::CreateInstance() {
@@ -149,10 +150,42 @@ void HelloTriangle::PickPhysicalDevice() {
             break;
         }
     }
-    if(m_physicalDevice = VK_NULL_HANDLE) {
+    if(m_physicalDevice == VK_NULL_HANDLE ) {
         throw std::runtime_error("Failed to found any suitable GPU");
     }
 }
+
+void HelloTriangle::CreateLogicalDevice() {
+    //finds queue family with graphics capabilities VK_QUEUE_GRAPHICS_BIT
+    QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice);
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.enabledExtensionCount = 0;
+    if(enableValidationLayers) {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    }else {
+        createInfo.enabledLayerCount=  0;
+    }
+
+    if(vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device)!=VK_SUCCESS) {
+        throw std::runtime_error("Failed to create logical device !");
+    }
+
+}
+
 
 std::vector<const char *> HelloTriangle::GetRequiredExtentions() {
     uint32_t glfwExtentionsCount = 0;
@@ -184,6 +217,7 @@ void HelloTriangle::CleanUp() {
     if(enableValidationLayers) {
         DestroyDebugUtilsMessengerEXT(m_instance,m_debugMessanger,nullptr);
     }
+    vkDestroyDevice(m_device, nullptr);
     vkDestroyInstance(m_instance, nullptr);
     glfwDestroyWindow(m_window);
     glfwTerminate();
