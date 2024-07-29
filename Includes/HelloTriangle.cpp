@@ -18,12 +18,12 @@ VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT mes
                                       VkDebugUtilsMessageTypeFlagsEXT messageType,
                                       const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                       void *pUserData) {
-    GetSeverity(messageSeverity);
 
-    GetMessageType(messageType);
-    if (messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+    if (messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+        GetSeverity(messageSeverity);
+        GetMessageType(messageType);
         std::cerr << "Message:" << pCallbackData->pMessage << std::endl;
-
+    }
     return VK_FALSE;
 }
 
@@ -135,6 +135,10 @@ void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreate
 }
 
 void HelloTriangle::PickPhysicalDevice() {
+
+    //-----------------------------------
+    // GET ALL AVAILABLE PHYSICAL DEVICES
+    //-----------------------------------
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
     std::cout << "Found " << deviceCount << " physical devices: \n";
@@ -144,6 +148,9 @@ void HelloTriangle::PickPhysicalDevice() {
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
 
+    //----------------------------------
+    // PICK THE PHYSICAL DEVICE SUITABLE
+    //----------------------------------
     for (auto &device: devices) {
         if (isDeviceSuitable(device, m_sruface)) {
             m_physicalDevice = device;

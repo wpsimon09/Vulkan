@@ -5,7 +5,12 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 #include <optional>
+#include <set>
 #include <vulkan/vulkan.hpp>
+
+const std::vector<const char *> deviceExtentions = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
 
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
@@ -56,6 +61,21 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
     return indices;
 }
 
+inline bool CheckDeviceExtentionSupport(VkPhysicalDevice device) {
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> availablExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availablExtensions.data());
+
+    std::set<std::string> requiredExtensions(deviceExtentions.begin(), deviceExtentions.end());
+
+    for (auto &availabl_extension: availablExtensions) {
+        requiredExtensions.erase(availabl_extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
+
 
 inline bool isDeviceSuitable(VkPhysicalDevice device,VkSurfaceKHR surface) {
     VkPhysicalDeviceProperties deviceProperties;
@@ -66,7 +86,11 @@ inline bool isDeviceSuitable(VkPhysicalDevice device,VkSurfaceKHR surface) {
 
     QueueFamilyIndices indices = FindQueueFamilies(device, surface);
 
-    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
+    bool extensionsSupported = CheckDeviceExtentionSupport(device);
+
+    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete() && extensionsSupported ;
 }
+
+
 
 #endif //UTILS_HPP
