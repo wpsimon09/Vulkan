@@ -170,6 +170,9 @@ void HelloTriangle::CreateSwapChain() {
     VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
     VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, m_window);
 
+    m_swapChainImageFormat = surfaceFormat.format;
+    m_swapChainExtent = extent;
+
     //images in swap chain (array of images)
     uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 
@@ -220,6 +223,13 @@ void HelloTriangle::CreateSwapChain() {
     }
     std::cout<<"Swapchain created !\n";
 
+    vkGetSwapchainImagesKHR(m_device, m_swapChain, &imageCount, nullptr);
+    m_swapChainImages.resize(imageCount);
+    vkGetSwapchainImagesKHR(m_device, m_swapChain, &imageCount, m_swapChainImages.data());
+
+    if(m_swapChainImages.empty())
+        throw std::runtime_error("No swap chain images retrieved");
+    std::cout<<"Retrieved "<<m_swapChainImages.size()<<" swap chain images\n";
 }
 
 void HelloTriangle::CreateLogicalDevice() {

@@ -76,6 +76,10 @@ private:
     VkSurfaceKHR m_sruface;
 
     VkSwapchainKHR m_swapChain;
+
+    std::vector<VkImage> m_swapChainImages;
+    VkFormat m_swapChainImageFormat;
+    VkExtent2D m_swapChainExtent;
 };
 
 #endif //HELLOTRIANGLE_HPP
