@@ -203,8 +203,23 @@ void HelloTriangle::CreateSwapChain() {
     } else {
         createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     }
+
     //horizontal flip, 90 deg rotation
     createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    //blend with other windows ? no
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    //mailbox, fifo etc...
+    createInfo.presentMode = presentMode;
+    //if other window is infrotn of current window dont calculate pixels
+    createInfo.clipped = VK_TRUE;
+    //it can happend that swap chain will have to be recreted again, we wont do it here hence NULL
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+    if(vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create swap chain");
+    }
+    std::cout<<"Swapchain created !\n";
+
 }
 
 void HelloTriangle::CreateLogicalDevice() {
@@ -284,6 +299,7 @@ void HelloTriangle::CleanUp() {
     if (enableValidationLayers) {
         DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessanger, nullptr);
     }
+    vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
     vkDestroyDevice(m_device, nullptr);
     vkDestroySurfaceKHR(m_instance, m_sruface, nullptr);
     vkDestroyInstance(m_instance, nullptr);

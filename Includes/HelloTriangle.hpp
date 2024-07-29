@@ -74,6 +74,8 @@ private:
     VkQueue m_presentationQueue;
 
     VkSurfaceKHR m_sruface;
+
+    VkSwapchainKHR m_swapChain;
 };
 
 #endif //HELLOTRIANGLE_HPP
