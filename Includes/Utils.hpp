@@ -156,8 +156,10 @@ inline VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR
 
 inline VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities, GLFWwindow *window) {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+        //we are going with the window size to be set as current extend
         return capabilities.currentExtent;
     }
+    //teh current extend is max of uint32_t and we adjust max width and height for the swap chain images instead
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
 

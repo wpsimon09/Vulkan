@@ -57,6 +57,7 @@ private:
     void MainLoop();
     void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     void PickPhysicalDevice();
+    void CreateSwapChain();
     void CreateLogicalDevice();
     void CreateSurface();
 

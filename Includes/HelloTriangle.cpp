@@ -18,7 +18,6 @@ VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT mes
                                       VkDebugUtilsMessageTypeFlagsEXT messageType,
                                       const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                       void *pUserData) {
-
     if (messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
         GetSeverity(messageSeverity);
         GetMessageType(messageType);
@@ -40,6 +39,7 @@ void HelloTriangle::InitVulkan() {
     CreateSurface();
     PickPhysicalDevice();
     CreateLogicalDevice();
+    CreateSwapChain();
 }
 
 void HelloTriangle::CreateInstance() {
@@ -135,7 +135,6 @@ void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreate
 }
 
 void HelloTriangle::PickPhysicalDevice() {
-
     //-----------------------------------
     // GET ALL AVAILABLE PHYSICAL DEVICES
     //-----------------------------------
@@ -163,6 +162,49 @@ void HelloTriangle::PickPhysicalDevice() {
     if (m_physicalDevice == VK_NULL_HANDLE) {
         throw std::runtime_error("Failed to found any suitable GPU");
     }
+}
+
+void HelloTriangle::CreateSwapChain() {
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(m_physicalDevice, m_sruface);
+    VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, m_window);
+
+    //images in swap chain (array of images)
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+    //make sure to not go over the limit of images in swap chain
+    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = m_sruface;
+
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    //layer for setreoscopic 3D application
+    createInfo.imageArrayLayers = 1;
+    //how images will be used
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice, m_sruface);
+    uint32_t queueFamilyIndecies[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+    //if presentation and graphics queue family are the same use the exlusive mode
+    //otherwise use concurent mode
+    if (indices.graphicsFamily != indices.presentFamily) {
+        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        createInfo.queueFamilyIndexCount = 2;
+        createInfo.pQueueFamilyIndices = queueFamilyIndecies;
+    } else {
+        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    }
+    //horizontal flip, 90 deg rotation
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 }
 
 void HelloTriangle::CreateLogicalDevice() {
