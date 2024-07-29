@@ -7,6 +7,8 @@
 #include <optional>
 #include <set>
 #include <vulkan/vulkan.hpp>
+#include <limits>
+#include <algorithm>
 
 const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -16,7 +18,7 @@ struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
 
-    bool isComplete(){return graphicsFamily.has_value() && presentFamily.has_value();}
+    bool isComplete() { return graphicsFamily.has_value() && presentFamily.has_value(); }
 };
 
 struct SwapChainSupportDetails {
@@ -25,19 +27,24 @@ struct SwapChainSupportDetails {
     std::vector<VkPresentModeKHR> presentModes;
 };
 
-inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfor, const VkAllocationCallbacks* pAllocator,VkDebugUtilsMessengerEXT* pDebugMessenger) {
-    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT" );
-    if(func !=nullptr)
-        return func(instance,pCreateInfor,pAllocator,pDebugMessenger);
+inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
+                                             const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfor,
+                                             const VkAllocationCallbacks *pAllocator,
+                                             VkDebugUtilsMessengerEXT *pDebugMessenger) {
+    auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (func != nullptr)
+        return func(instance, pCreateInfor, pAllocator, pDebugMessenger);
     else
         return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
-inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+                                          const VkAllocationCallbacks *pAllocator) {
+    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)
+            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
 
-    if(func != nullptr) {
-        func(instance, debugMessenger,pAllocator);
+    if (func != nullptr) {
+        func(instance, debugMessenger, pAllocator);
     }
 }
 
@@ -50,16 +57,16 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilyProperties.data());
 
     int i = 0;
-    for (auto& queueFamily: queueFamilyProperties) {
-        if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+    for (auto &queueFamily: queueFamilyProperties) {
+        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
         }
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
-        if(presentSupport) {
+        if (presentSupport) {
             indices.presentFamily = i;
         }
-        if(indices.isComplete()) break;
+        if (indices.isComplete()) break;
 
         i++;
     }
@@ -90,45 +97,48 @@ inline SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDe
 
     uint32_t formatCount;
     vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
-    if(formatCount != 0) {
+    if (formatCount != 0) {
         details.formats.resize(formatCount);
         vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, details.formats.data());
     }
 
     uint32_t presentModeCount;
     vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
-    if(presentModeCount != 0) {
+    if (presentModeCount != 0) {
         details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, details.presentModes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount,
+                                                  details.presentModes.data());
     }
 
     return details;
 }
 
-inline bool isDeviceSuitable(VkPhysicalDevice device,VkSurfaceKHR surface) {
+inline bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface) {
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-    std::cout<<'\t'<<deviceProperties.deviceName<<std::endl;
+    std::cout << '\t' << deviceProperties.deviceName << std::endl;
 
     QueueFamilyIndices indices = FindQueueFamilies(device, surface);
 
     bool extensionsSupported = CheckDeviceExtentionSupport(device);
 
     bool swapChainAdequtate = false;
-    if(extensionsSupported) {
-        SwapChainSupportDetails swapChainSupport  = querySwapChainSupport(device, surface);
+    if (extensionsSupported) {
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device, surface);
 
         swapChainAdequtate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete() && swapChainAdequtate;
+    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete() &&
+           swapChainAdequtate;
 }
 
-inline VkSurfaceFormatKHR chooseSwapSurfaceFormat (const std::vector<VkSurfaceFormatKHR>& availableFormats) {
-    for(const auto& availableFormat: availableFormats) {
-        if(availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+inline VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
+    for (const auto &availableFormat: availableFormats) {
+        if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace ==
+            VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
         }
     }
@@ -136,14 +146,33 @@ inline VkSurfaceFormatKHR chooseSwapSurfaceFormat (const std::vector<VkSurfaceFo
 }
 
 inline VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
-    for (const auto& availblePresentMode: availablePresentModes) {
-        if(availblePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+    for (const auto &availblePresentMode: availablePresentModes) {
+        if (availblePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
             return availblePresentMode;
         }
     }
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
+inline VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities, GLFWwindow *window) {
+    if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+        return capabilities.currentExtent;
+    }
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    VkExtent2D acctualExtend = {
+        static_cast<uint32_t>(width),
+        static_cast<uint32_t>(height)
+    };
+
+    acctualExtend.width = std::clamp(acctualExtend.width, capabilities.minImageExtent.width,
+                                     capabilities.maxImageExtent.width);
+    acctualExtend.height = std::clamp(acctualExtend.height, capabilities.minImageExtent.height,
+                                      capabilities.maxImageExtent.height);
+
+    return acctualExtend;
+}
 
 
 #endif //UTILS_HPP
