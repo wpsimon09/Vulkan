@@ -126,6 +126,23 @@ inline bool isDeviceSuitable(VkPhysicalDevice device,VkSurfaceKHR surface) {
     return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete() && swapChainAdequtate;
 }
 
+inline VkSurfaceFormatKHR chooseSwapSurfaceFormat (const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+    for(const auto& availableFormat: availableFormats) {
+        if(availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+            return availableFormat;
+        }
+    }
+    return availableFormats[0];
+}
+
+inline VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
+    for (const auto& availblePresentMode: availablePresentModes) {
+        if(availblePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            return availblePresentMode;
+        }
+    }
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
 
 
 
