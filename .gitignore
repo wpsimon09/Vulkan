@@ -10,3 +10,4 @@ CTestTestfile.cmake
 _deps
 /build  
 .idea/
+/Shaders/Compiled

@@ -52,3 +52,4 @@ add_custom_target(reset
         COMMAND ${CMAKE_COMMAND} -E remove ${TARGET}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
