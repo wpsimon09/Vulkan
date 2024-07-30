@@ -5,10 +5,9 @@ if [[ ! -x "$VULKAN_SDK_PATH" ]]; then
     echo "Error: Vulkan SDK compiler not found at $VULKAN_SDK_PATH"
     exit 1
 fi
-# Create the Compiled directory if it doesn't exist
+
 mkdir -p Compiled
 
-# Compile all vertex shaders in the Vertex directory
 for vert_shader in Vertex/*.vert; do
     if [[ -f "$vert_shader" ]]; then
         shader_name=$(basename "$vert_shader")

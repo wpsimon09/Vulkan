@@ -261,9 +261,10 @@ void HelloTriangle::CreateImageViews() {
 }
 
 void HelloTriangle::CreateGraphicsPipeline() {
-
+    auto vertShaderCode = readFile("Shaders/Compiled/TriangleVertex.spv");
+    auto fragmentShaderCode = readFile("Shaders/Compiled/TriangleFragment.spv");
+    std::cout<<"Shader red sucessfuly\n";
 }
-
 
 void HelloTriangle::CreateLogicalDevice() {
     //finds queue family with graphics capabilities VK_QUEUE_GRAPHICS_BIT

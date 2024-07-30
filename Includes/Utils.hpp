@@ -9,6 +9,7 @@
 #include <vulkan/vulkan.hpp>
 #include <limits>
 #include <algorithm>
+#include <fstream>
 
 const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -174,6 +175,27 @@ inline VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities,
                                       capabilities.maxImageExtent.height);
 
     return acctualExtend;
+}
+
+static inline std::vector<char> readFile(const std::string& fileName) {
+    std::ifstream file(fileName, std::ios::ate | std::ios::binary);
+
+    if(!file.is_open()) {
+        const auto err = "Failed to open file at path: " + fileName;
+        throw std::runtime_error(err);
+    }
+
+    //create buffer to hold the binary
+    size_t fileSize = (size_t)file.tellg();
+    std::vector<char>buffer(fileSize);
+
+    //go back to the begining and read the file again to get the content
+    file.seekg(0);
+    file.read(buffer.data(),fileSize);
+
+    file.close();
+
+    return buffer;
 }
 
 
