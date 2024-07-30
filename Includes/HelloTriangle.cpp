@@ -263,7 +263,33 @@ void HelloTriangle::CreateImageViews() {
 void HelloTriangle::CreateGraphicsPipeline() {
     auto vertShaderCode = readFile("Shaders/Compiled/TriangleVertex.spv");
     auto fragmentShaderCode = readFile("Shaders/Compiled/TriangleFragment.spv");
-    std::cout<<"Shader red sucessfuly\n";
+    std::cout<<"Shader read sucessfuly\n";
+
+    VkShaderModule vertexShaderModule = createShaderModuel(m_device, vertShaderCode);
+    VkShaderModule fragmentShaderModule = createShaderModuel(m_device, fragmentShaderCode);
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertexShaderModule;
+    vertShaderStageInfo.pName = "main";
+    vertShaderStageInfo.pNext = nullptr;
+    //allows to fill in constant variables in shaders using memory offset
+    vertShaderStageInfo.pSpecializationInfo = nullptr;
+
+    VkPipelineShaderStageCreateInfo fragmentShaderStageInfo{};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    vertShaderStageInfo.module = fragmentShaderModule;
+    vertShaderStageInfo.pName = "main";
+    vertShaderStageInfo.pNext = nullptr;
+    //allows to fill in constant variables in shaders using memory offset
+    vertShaderStageInfo.pSpecializationInfo = nullptr;
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragmentShaderStageInfo};
+
+    vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
+    vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
 }
 
 void HelloTriangle::CreateLogicalDevice() {

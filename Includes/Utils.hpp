@@ -10,6 +10,7 @@
 #include <limits>
 #include <algorithm>
 #include <fstream>
+#include <vector>
 
 const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -198,5 +199,23 @@ static inline std::vector<char> readFile(const std::string& fileName) {
     return buffer;
 }
 
+
+static inline VkShaderModule createShaderModuel(VkDevice device,std::vector<char>& shaderSPIRV) {
+    VkShaderModuleCreateInfo createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    createInfo.codeSize = shaderSPIRV.size();
+    createInfo.pNext = nullptr;
+    //cast from char to uint32_t
+    createInfo.pCode = reinterpret_cast<const uint32_t*>(shaderSPIRV.data());
+
+    VkShaderModule shaderModule;
+    if(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+        throw std::runtime_error("Could not create shader module");
+    }
+
+    shaderSPIRV.clear();
+
+    return shaderModule;
+}
 
 #endif //UTILS_HPP
