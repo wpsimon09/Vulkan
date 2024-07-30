@@ -261,6 +261,10 @@ void HelloTriangle::CreateImageViews() {
 }
 
 void HelloTriangle::CreateGraphicsPipeline() {
+
+    //----------------
+    // SHADER CREATION
+    //----------------
     auto vertShaderCode = readFile("Shaders/Compiled/TriangleVertex.spv");
     auto fragmentShaderCode = readFile("Shaders/Compiled/TriangleFragment.spv");
     std::cout<<"Shader read sucessfuly\n";
@@ -285,8 +289,22 @@ void HelloTriangle::CreateGraphicsPipeline() {
     vertShaderStageInfo.pNext = nullptr;
     //allows to fill in constant variables in shaders using memory offset
     vertShaderStageInfo.pSpecializationInfo = nullptr;
-
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragmentShaderStageInfo};
+
+    //----------------
+    // DINAMIC PIPLINE
+    //----------------
+    std::vector<VkDynamicState> dynamicStates = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    };
+
+    VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo{};
+    dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+    dynamicStateCreateInfo.pDynamicStates = dynamicStates.data();
+
+
 
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
