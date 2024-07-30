@@ -1,0 +1,258 @@
+{
+  "main": {
+    "id": "89e70b912526d594",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b9bd16803738d99",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6abba76753e879f7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2. HelloTriangle/2.1 Instance.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "f5167fd8aa917b5e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2. HelloTriangle/2.2 Validation Layers.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "f617a69528a759d2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2. HelloTriangle/2.3 Physical device and queue families.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "204f43d580741570",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2. HelloTriangle/2.5 Window surface.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "20c0a9d9abe8f2e1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2. HelloTriangle/2.6 Swap chain.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "7321361d0e2cc392",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "3. Pipeline/3.1 Graphics pipeline in Vulkan.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "719825881709e403",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "3. Pipeline/3.2 Shader modules.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c7f05b5d010a578a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "3. Pipeline/3.3 Fixed function pipeline.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 7
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c41f7204c828257f",
+    "type": "split",
+    "children": [
+      {
+        "id": "8f0df71d2c41d457",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "49110eea76b8449d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "byModifiedTime"
+              }
+            }
+          },
+          {
+            "id": "2e824c7dec8c3fcb",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "0cc7560a771fdf51",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "cb387ddb245961aa",
+    "type": "split",
+    "children": [
+      {
+        "id": "8fd2f1985c9319c6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "030de742c3eb0196",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "3. Pipeline/3.3 Fixed function pipeline.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "482c9b29cf258dc1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "3. Pipeline/3.3 Fixed function pipeline.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4773a4089ceace83",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "a05b11a0d2d10a33",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "3. Pipeline/3.3 Fixed function pipeline.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "c7f05b5d010a578a",
+  "lastOpenFiles": [
+    "Overview.md",
+    "3. Pipeline/3.2 Shader modules.md",
+    "3. Pipeline/3.1 Graphics pipeline in Vulkan.md",
+    "2. HelloTriangle/2.7 Image views.md",
+    "2. HelloTriangle/2.6 Swap chain.md",
+    "2. HelloTriangle/2.5 Window surface.md",
+    "2. HelloTriangle/2.4 Logical device and queues.md",
+    "2. HelloTriangle/2.3 Physical device and queue families.md",
+    "2. HelloTriangle/2.2 Validation Layers.md",
+    "2. HelloTriangle/2.1 Instance.md",
+    "1. Introduction/1.3 API Concepts.md",
+    "1. Introduction/1.2 What it takes to render triangle.md",
+    "1. Introduction/1.1 General overview.md",
+    "images/swapchain-info.png",
+    "images/NDC-inVulkan.png",
+    "images",
+    "Welcome.md",
+    "3. Pipeline/3.3 Fixed function pipeline.md",
+    "3. Pipeline",
+    "2. HelloTriangle",
+    "1. Introduction"
+  ]
+}
