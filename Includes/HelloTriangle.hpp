@@ -60,6 +60,7 @@ private:
     void CreateSwapChain();
     void CreateLogicalDevice();
     void CreateSurface();
+    void CreateImageViews();
 
     void CleanUp();
 
@@ -80,6 +81,8 @@ private:
     std::vector<VkImage> m_swapChainImages;
     VkFormat m_swapChainImageFormat;
     VkExtent2D m_swapChainExtent;
+
+    std::vector<VkImageView> m_swapChainImageViews;
 };
 
 #endif //HELLOTRIANGLE_HPP
