@@ -1,8 +1,10 @@
 #!/bin/bash
 
 VULKAN_SDK_PATH="/home/wpsimon09/vulkan-sdk/1.3.290.0/x86_64/bin/glslc"
+
 if [[ ! -x "$VULKAN_SDK_PATH" ]]; then
     echo "Error: Vulkan SDK compiler not found at $VULKAN_SDK_PATH"
+    echo "Change VULKAN_SDK_PATH at this file"$PWD/compile.sh
     exit 1
 fi
 
