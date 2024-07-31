@@ -13,9 +13,3 @@ sudo dnf install glfw-devel
 sudo dnf install glm-devel
 sudo dnf install glslc
 ```
-
-### Runnign the program
-
-```shell
-make run
-```
