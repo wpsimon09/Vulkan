@@ -322,7 +322,37 @@ void HelloTriangle::CreateGraphicsPipeline() {
     inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
+    //----------
+    // VIEW PORT
+    //----------
+    VkViewport viewPort{};
+    viewPort.x = 0.0f;
+    viewPort.y = 0.0f;
+    viewPort.width = (float)m_swapChainExtent.width;
+    viewPort.height = (float)m_swapChainExtent.height;
+    viewPort.minDepth = 0.0f;
+    viewPort.maxDepth = 1.0f;
 
+    //---------
+    // SCISSORS
+    //---------
+    VkRect2D scissor{};
+    scissor.offset = {0,0};
+    scissor.extent = m_swapChainExtent;
+
+    //---------------------------------------------------
+    // SCISSORS AND VIEW PORT DYNAMIC ADD TO THE PIPELINE
+    //---------------------------------------------------
+    std::vector<VkDynamicState> dynamicStates = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    };
+
+    VkPipelineDynamicStateCreateInfo dynmicStaetVPaScissors{};
+    dynmicStaetVPaScissors.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynmicStaetVPaScissors.dynamicStateCount = static_cast <uint32_t>(dynamicStates.size());
+    dynmicStaetVPaScissors.pDynamicStates= dynamicStates.data();
+    
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
 }
