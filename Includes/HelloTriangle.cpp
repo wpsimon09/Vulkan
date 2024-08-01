@@ -343,16 +343,16 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //---------------------------------------------------
     // SCISSORS AND VIEW PORT DYNAMIC ADD TO THE PIPELINE
     //---------------------------------------------------
-    std::vector<VkDynamicState> dynamicStates = {
+    std::vector<VkDynamicState> dynamicStates2 = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR
     };
 
     VkPipelineDynamicStateCreateInfo dynmicStaetVPaScissors{};
     dynmicStaetVPaScissors.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    dynmicStaetVPaScissors.dynamicStateCount = static_cast <uint32_t>(dynamicStates.size());
-    dynmicStaetVPaScissors.pDynamicStates= dynamicStates.data();
-    
+    dynmicStaetVPaScissors.dynamicStateCount = static_cast <uint32_t>(dynamicStates2.size());
+    dynmicStaetVPaScissors.pDynamicStates= dynamicStates2.data();
+
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
 }
