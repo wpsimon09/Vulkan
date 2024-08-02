@@ -348,10 +348,27 @@ void HelloTriangle::CreateGraphicsPipeline() {
         VK_DYNAMIC_STATE_SCISSOR
     };
 
-    VkPipelineDynamicStateCreateInfo dynmicStaetVPaScissors{};
-    dynmicStaetVPaScissors.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    dynmicStaetVPaScissors.dynamicStateCount = static_cast <uint32_t>(dynamicStates2.size());
-    dynmicStaetVPaScissors.pDynamicStates= dynamicStates2.data();
+    VkPipelineDynamicStateCreateInfo dynmicStateVPandScissors{};
+    dynmicStateVPandScissors.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynmicStateVPandScissors.dynamicStateCount = static_cast <uint32_t>(dynamicStates2.size());
+    dynmicStateVPandScissors.pDynamicStates= dynamicStates2.data();
+
+    //-----------
+    // RASTERIZER
+    //-----------
+    VkPipelineRasterizationStateCreateInfo rasterizerCreateInfo{};
+    rasterizerCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizerCreateInfo.depthClampEnable = VK_FALSE;
+    rasterizerCreateInfo.rasterizerDiscardEnable = VK_FALSE;
+    rasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizerCreateInfo.lineWidth = 1.0f;
+    rasterizerCreateInfo.cullMode =  VK_CULL_MODE_BACK_BIT;
+    rasterizerCreateInfo.frontFace =VK_FRONT_FACE_CLOCKWISE;
+    rasterizerCreateInfo.depthBiasEnable = VK_FALSE;
+    rasterizerCreateInfo.depthBiasConstantFactor = 0.0F;
+    rasterizerCreateInfo.depthBiasClamp = 0.0f;
+    rasterizerCreateInfo.depthBiasSlopeFactor = 0.0f;
+
 
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
