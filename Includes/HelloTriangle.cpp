@@ -369,6 +369,23 @@ void HelloTriangle::CreateGraphicsPipeline() {
     rasterizerCreateInfo.depthBiasClamp = 0.0f;
     rasterizerCreateInfo.depthBiasSlopeFactor = 0.0f;
 
+    //--------------
+    // MULTISAMPLING
+    //--------------
+    VkPipelineMultisampleStateCreateInfo multisampleCreateInfo{};
+    multisampleCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampleCreateInfo.sampleShadingEnable = VK_FALSE;
+    multisampleCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    multisampleCreateInfo.minSampleShading = 1.0f;
+    multisampleCreateInfo.pSampleMask = nullptr;
+    multisampleCreateInfo.alphaToCoverageEnable= VK_FALSE;
+    multisampleCreateInfo.alphaToOneEnable =VK_FALSE;
+
+    //-----------------------
+    // DEPTH AND STENCIL TEST
+    //-----------------------
+    //later
+
 
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
