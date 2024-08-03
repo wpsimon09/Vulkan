@@ -384,7 +384,21 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //-----------------------
     // DEPTH AND STENCIL TEST
     //-----------------------
-    //later
+    //later|
+
+    //----------------
+    // COLOUR BLENDING
+    //----------------
+    VkPipelineColorBlendAttachmentState colorBlendAttachmentCreateInfo{};
+    colorBlendAttachmentCreateInfo.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachmentCreateInfo.blendEnable = VK_FALSE;
+    colorBlendAttachmentCreateInfo.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachmentCreateInfo.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+    colorBlendAttachmentCreateInfo.colorBlendOp = VK_BLEND_OP_ADD;
+    colorBlendAttachmentCreateInfo.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    colorBlendAttachmentCreateInfo.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    colorBlendAttachmentCreateInfo.alphaBlendOp = VK_BLEND_OP_ADD;
+
 
 
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
