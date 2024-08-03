@@ -389,17 +389,38 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //----------------
     // COLOUR BLENDING
     //----------------
-    VkPipelineColorBlendAttachmentState colorBlendAttachmentCreateInfo{};
-    colorBlendAttachmentCreateInfo.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-    colorBlendAttachmentCreateInfo.blendEnable = VK_FALSE;
-    colorBlendAttachmentCreateInfo.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-    colorBlendAttachmentCreateInfo.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-    colorBlendAttachmentCreateInfo.colorBlendOp = VK_BLEND_OP_ADD;
-    colorBlendAttachmentCreateInfo.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-    colorBlendAttachmentCreateInfo.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-    colorBlendAttachmentCreateInfo.alphaBlendOp = VK_BLEND_OP_ADD;
+    VkPipelineColorBlendAttachmentState colourBlendAttachmentCreateInfo{};
+    colourBlendAttachmentCreateInfo.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colourBlendAttachmentCreateInfo.blendEnable = VK_FALSE;
+    colourBlendAttachmentCreateInfo.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    colourBlendAttachmentCreateInfo.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+    colourBlendAttachmentCreateInfo.colorBlendOp = VK_BLEND_OP_ADD;
+    colourBlendAttachmentCreateInfo.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    colourBlendAttachmentCreateInfo.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    colourBlendAttachmentCreateInfo.alphaBlendOp = VK_BLEND_OP_ADD;
+
+    VkPipelineColorBlendStateCreateInfo colourBlendCreateInfo{};
+    colourBlendCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colourBlendCreateInfo.logicOpEnable = VK_FALSE;
+    colourBlendCreateInfo.logicOp = VK_LOGIC_OP_COPY;
+    colourBlendCreateInfo.attachmentCount = 1;
+    colourBlendCreateInfo.pAttachments = &colourBlendAttachmentCreateInfo;
+    colourBlendCreateInfo.blendConstants[0] = 0.0f;
+    colourBlendCreateInfo.blendConstants[1] = 0.0f;
+    colourBlendCreateInfo.blendConstants[2] = 0.0f;
+    colourBlendCreateInfo.blendConstants[3] = 0.0f;
 
 
+    VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
+    pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutCreateInfo.setLayoutCount = 0;
+    pipelineLayoutCreateInfo.pSetLayouts = nullptr;
+    pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
+    pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
+
+    if(vkCreatePipelineLayout(m_device, &pipelineLayoutCreateInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create pipeline layout !");
+    }
 
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
@@ -478,6 +499,7 @@ void HelloTriangle::SetUpDebugMessenger() {
 }
 
 void HelloTriangle::CleanUp() {
+    vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     if (enableValidationLayers) {
         DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessanger, nullptr);
     }

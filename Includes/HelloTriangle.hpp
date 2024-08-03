@@ -84,6 +84,9 @@ private:
     VkExtent2D m_swapChainExtent;
 
     std::vector<VkImageView> m_swapChainImageViews;
+
+    VkPipelineLayout m_pipelineLayout;
+
 };
 
 #endif //HELLOTRIANGLE_HPP
