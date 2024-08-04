@@ -61,6 +61,7 @@ private:
     void CreateLogicalDevice();
     void CreateSurface();
     void CreateImageViews();
+    void CreateRenderPass();
     void CreateGraphicsPipeline();
 
     void CleanUp();
