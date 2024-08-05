@@ -4,6 +4,8 @@
 
 #include "HelloTriangle.hpp"
 
+#include <unistd.h>
+
 
 void HelloTriangle::run() {
     InitWindow();
@@ -21,7 +23,12 @@ VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT mes
     if (messageSeverity > VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
         GetSeverity(messageSeverity);
         GetMessageType(messageType);
-        std::cerr << "Message:" << pCallbackData->pMessage << std::endl;
+        std::cerr <<
+                "\n File:\t" <<__FILE__<<
+                "\n Message:\t"     <<pCallbackData->pMessage <<
+                "\n Message ID:\t"  <<pCallbackData->messageIdNumber<<
+                "\n Object name:\t" <<pCallbackData->pObjects->pObjectName<<
+            std::endl;
     }
     return VK_FALSE;
 }
@@ -120,6 +127,7 @@ bool HelloTriangle::CheckValidationLayerSupport() {
 
 void HelloTriangle::MainLoop() {
     while (!glfwWindowShouldClose(m_window)) {
+
         glfwPollEvents();
     }
 }
@@ -322,17 +330,18 @@ void HelloTriangle::CreateGraphicsPipeline() {
     vertShaderStageInfo.module = vertexShaderModule;
     vertShaderStageInfo.pName = "main";
     vertShaderStageInfo.pNext = nullptr;
+
     //allows to fill in constant variables in shaders using memory offset
     vertShaderStageInfo.pSpecializationInfo = nullptr;
 
     VkPipelineShaderStageCreateInfo fragmentShaderStageInfo{};
-    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    vertShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-    vertShaderStageInfo.module = fragmentShaderModule;
-    vertShaderStageInfo.pName = "main";
-    vertShaderStageInfo.pNext = nullptr;
+    fragmentShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragmentShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragmentShaderStageInfo.module = fragmentShaderModule;
+    fragmentShaderStageInfo.pName = "main";
+    fragmentShaderStageInfo.pNext = nullptr;
     //allows to fill in constant variables in shaders using memory offset
-    vertShaderStageInfo.pSpecializationInfo = nullptr;
+    fragmentShaderStageInfo.pSpecializationInfo = nullptr;
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragmentShaderStageInfo};
 
     //----------------
@@ -397,6 +406,11 @@ void HelloTriangle::CreateGraphicsPipeline() {
     dynmicStateVPandScissors.dynamicStateCount = static_cast <uint32_t>(dynamicStates2.size());
     dynmicStateVPandScissors.pDynamicStates= dynamicStates2.data();
 
+    VkPipelineViewportStateCreateInfo viewPortState{};
+    viewPortState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewPortState.viewportCount = 1;
+    viewPortState.scissorCount=1;
+
     //-----------
     // RASTERIZER
     //-----------
@@ -455,6 +469,9 @@ void HelloTriangle::CreateGraphicsPipeline() {
     colourBlendCreateInfo.blendConstants[3] = 0.0f;
 
 
+    //----------------
+    // PIPELINE LAYOUT
+    //----------------
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = 0;
@@ -466,8 +483,43 @@ void HelloTriangle::CreateGraphicsPipeline() {
         throw std::runtime_error("Failed to create pipeline layout !");
     }
 
+    //------------------
+    // PIPELINE CREATION
+    //------------------
+    VkGraphicsPipelineCreateInfo pipelineInfo{};
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    //shaders
+    pipelineInfo.pStages = shaderStages;
+    //fixed functionality
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssemblyCreateInfo;
+    pipelineInfo.pViewportState = &viewPortState;
+    pipelineInfo.pRasterizationState= &rasterizerCreateInfo;
+    pipelineInfo.pMultisampleState = &multisampleCreateInfo;
+    pipelineInfo.pDepthStencilState = nullptr;
+    pipelineInfo.pColorBlendState = &colourBlendCreateInfo;
+    pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
+    //pipeline layout for uniforms
+    pipelineInfo.layout = m_pipelineLayout;
+    //render pass
+    pipelineInfo.renderPass = m_renderPass;
+    pipelineInfo.subpass = 0;
+    //pipeline handle
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+    pipelineInfo.basePipelineIndex  = -1;
+
+    if(vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE,1,&pipelineInfo, nullptr, &m_graphicsPipeline)) {
+        throw std::runtime_error("Failed to create graphics pipeline");
+    }else {
+        std::cout<<"Graphics pipeline created sucessfully !\n";
+    }
+
+
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
+
 }
 
 void HelloTriangle::CreateLogicalDevice() {
@@ -543,6 +595,7 @@ void HelloTriangle::SetUpDebugMessenger() {
 }
 
 void HelloTriangle::CleanUp() {
+    vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);
     if (enableValidationLayers) {
