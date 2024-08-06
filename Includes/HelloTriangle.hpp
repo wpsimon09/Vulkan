@@ -63,6 +63,7 @@ private:
     void CreateImageViews();
     void CreateRenderPass();
     void CreateGraphicsPipeline();
+    void CreateFrameBuffers();
 
     void CleanUp();
 
@@ -85,6 +86,7 @@ private:
     VkExtent2D m_swapChainExtent;
 
     std::vector<VkImageView> m_swapChainImageViews;
+    std::vector<VkFramebuffer> m_swapChainFrameBuffers;
 
     VkRenderPass m_renderPass;
     VkPipelineLayout m_pipelineLayout;

@@ -50,6 +50,7 @@ void HelloTriangle::InitVulkan() {
     CreateImageViews();
     CreateRenderPass();
     CreateGraphicsPipeline();
+    CreateFrameBuffers();
 }
 
 void HelloTriangle::CreateInstance() {
@@ -522,6 +523,28 @@ void HelloTriangle::CreateGraphicsPipeline() {
 
 }
 
+void HelloTriangle::CreateFrameBuffers() {
+    m_swapChainFrameBuffers.resize(m_swapChainImageViews.size());
+
+    for(size_t i=0; i<m_swapChainImageViews.size(); i++) {
+        VkImageView attachments[] = {
+            m_swapChainImageViews[i]
+        };
+        VkFramebufferCreateInfo frameBufferInfo{};
+        frameBufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        frameBufferInfo.renderPass = m_renderPass;
+        frameBufferInfo.attachmentCount = 1;
+        frameBufferInfo.pAttachments = attachments;
+        frameBufferInfo.width = m_swapChainExtent.width;
+        frameBufferInfo.height = m_swapChainExtent.height;
+        frameBufferInfo.layers = 1;
+
+        if(vkCreateFramebuffer(m_device, &frameBufferInfo, nullptr, &m_swapChainFrameBuffers[i]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create frame buffers from swap chain images");
+        }
+    }
+}
+
 void HelloTriangle::CreateLogicalDevice() {
     //finds queue family with graphics capabilities VK_QUEUE_GRAPHICS_BIT
     QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice, m_sruface);
@@ -595,6 +618,9 @@ void HelloTriangle::SetUpDebugMessenger() {
 }
 
 void HelloTriangle::CleanUp() {
+    for (auto frameBuffer: m_swapChainFrameBuffers) {
+        vkDestroyFramebuffer(m_device, frameBuffer, nullptr);
+    }
     vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);
