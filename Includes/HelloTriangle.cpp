@@ -572,6 +572,17 @@ void HelloTriangle::CreateCommandBuffer() {
     }
 }
 
+void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0;
+    beginInfo.pInheritanceInfo = nullptr;
+
+    if(vkBeginCommandBuffer(commandBuffer, &beginInfo)!=VK_SUCCESS) {
+        throw std::runtime_error("Failed to beign reording the command buffer");
+    }
+}
+
 void HelloTriangle::CreateLogicalDevice() {
     //finds queue family with graphics capabilities VK_QUEUE_GRAPHICS_BIT
     QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice, m_sruface);
