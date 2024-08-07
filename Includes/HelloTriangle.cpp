@@ -581,6 +581,22 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     if(vkBeginCommandBuffer(commandBuffer, &beginInfo)!=VK_SUCCESS) {
         throw std::runtime_error("Failed to beign reording the command buffer");
     }
+
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = m_renderPass;
+    renderPassInfo.framebuffer = m_swapChainFrameBuffers[imageIndex];
+
+    renderPassInfo.renderArea.offset = {0,0};
+    renderPassInfo.renderArea.extent = m_swapChainExtent;
+
+    VkClearValue clearValue = {{{0.0f, 0.0f, 0.0f,1.0f}}};
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearValue;
+
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+
 }
 
 void HelloTriangle::CreateLogicalDevice() {
