@@ -52,6 +52,7 @@ void HelloTriangle::InitVulkan() {
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
+    CreateCommandBuffer();
 }
 
 void HelloTriangle::CreateInstance() {
@@ -556,6 +557,18 @@ void HelloTriangle::CreateCommandPool() {
 
     if(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_comandPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool !");
+    }
+}
+
+void HelloTriangle::CreateCommandBuffer() {
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = m_comandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+
+    if(vkAllocateCommandBuffers(m_device,&allocInfo,&m_commandBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate command buffer");
     }
 }
 
