@@ -51,6 +51,7 @@ void HelloTriangle::InitVulkan() {
     CreateRenderPass();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
+    CreateCommandPool();
 }
 
 void HelloTriangle::CreateInstance() {
@@ -545,6 +546,19 @@ void HelloTriangle::CreateFrameBuffers() {
     }
 }
 
+void HelloTriangle::CreateCommandPool() {
+    QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_physicalDevice, m_sruface);
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+    if(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_comandPool) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create command pool !");
+    }
+}
+
 void HelloTriangle::CreateLogicalDevice() {
     //finds queue family with graphics capabilities VK_QUEUE_GRAPHICS_BIT
     QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice, m_sruface);
@@ -618,6 +632,7 @@ void HelloTriangle::SetUpDebugMessenger() {
 }
 
 void HelloTriangle::CleanUp() {
+    vkDestroyCommandPool(m_device, m_comandPool, nullptr);
     for (auto frameBuffer: m_swapChainFrameBuffers) {
         vkDestroyFramebuffer(m_device, frameBuffer, nullptr);
     }

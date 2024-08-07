@@ -64,6 +64,7 @@ private:
     void CreateRenderPass();
     void CreateGraphicsPipeline();
     void CreateFrameBuffers();
+    void CreateCommandPool();
 
     void CleanUp();
 
@@ -91,6 +92,8 @@ private:
     VkRenderPass m_renderPass;
     VkPipelineLayout m_pipelineLayout;
     VkPipeline m_graphicsPipeline;
+
+    VkCommandPool m_comandPool;
 
 };
 

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4. Drawing/4.1 Frame buffer.md",
+                "file": "4. Drawing/4.2 Command buffer.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 210.5
   },
   "right": {
     "id": "cb387ddb245961aa",
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4. Drawing/4.1 Frame buffer.md",
+                "file": "4. Drawing/4.2 Command buffer.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "4. Drawing/4.1 Frame buffer.md",
+                "file": "4. Drawing/4.2 Command buffer.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4. Drawing/4.1 Frame buffer.md"
+                "file": "4. Drawing/4.2 Command buffer.md"
               }
             }
           }
@@ -148,20 +148,21 @@
   },
   "active": "2542b699181eb915",
   "lastOpenFiles": [
-    "3. Pipeline/3.5 Combination.md",
     "4. Drawing/4.1 Frame buffer.md",
+    "4. Drawing/4.2 Command buffer.md",
+    "2. HelloTriangle/2.7 Image views.md",
+    "2. HelloTriangle/2.6 Swap chain.md",
+    "3. Pipeline/3.5 Combination.md",
     "4. Drawing",
     "3. Pipeline/3.4  Render pass.md",
     "3. Pipeline/3.3 Fixed function pipeline.md",
     "3. Pipeline/3.1 Graphics pipeline in Vulkan.md",
-    "2. HelloTriangle/2.6 Swap chain.md",
     "2. HelloTriangle/2.1 Instance.md",
     "2. HelloTriangle/2.2 Validation Layers.md",
     "2. HelloTriangle/2.3 Physical device and queue families.md",
     "2. HelloTriangle/2.5 Window surface.md",
     "3. Pipeline/3.2 Shader modules.md",
     "Overview.md",
-    "2. HelloTriangle/2.7 Image views.md",
     "2. HelloTriangle/2.4 Logical device and queues.md",
     "1. Introduction/1.3 API Concepts.md",
     "1. Introduction/1.2 What it takes to render triangle.md",
