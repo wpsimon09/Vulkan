@@ -130,7 +130,7 @@ bool HelloTriangle::CheckValidationLayerSupport() {
 
 void HelloTriangle::MainLoop() {
     while (!glfwWindowShouldClose(m_window)) {
-
+        DrawFrame();
         glfwPollEvents();
     }
 }

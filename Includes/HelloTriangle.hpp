@@ -54,7 +54,6 @@ private:
     bool CheckValidationLayerSupport();
     std::vector<const char *> GetRequiredExtentions();
     void SetUpDebugMessenger();
-    void MainLoop();
     void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     void PickPhysicalDevice();
     void CreateSwapChain();
@@ -67,6 +66,9 @@ private:
     void CreateCommandPool();
     void CreateCommandBuffer();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+    void MainLoop();
+    void DrawFrame();
 
     void CleanUp();
 

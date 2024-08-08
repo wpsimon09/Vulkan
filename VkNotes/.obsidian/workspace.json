@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "4. Drawing/4.3 Rendering and presentation.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "4. Drawing/4.3 Rendering and presentation.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "4. Drawing/4.3 Rendering and presentation.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md"
+                "file": "4. Drawing/4.3 Rendering and presentation.md"
               }
             }
           }
@@ -161,9 +161,10 @@
   },
   "active": "92b7d3aa974ef8ae",
   "lastOpenFiles": [
+    "4. Drawing/4.2 Command buffer.md",
+    "4. Drawing/4.3 Rendering and presentation.md",
     "3. Pipeline/3.4 Render pass.md",
     "4. Drawing/4.1 Frame buffer.md",
-    "4. Drawing/4.2 Command buffer.md",
     "2. HelloTriangle/2.7 Image views.md",
     "2. HelloTriangle/2.6 Swap chain.md",
     "3. Pipeline/3.5 Combination.md",
