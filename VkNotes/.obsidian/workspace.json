@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "4. Drawing/4.3 Rendering and presentation.md",
                 "mode": "source",
                 "source": false
               }
@@ -31,8 +31,7 @@
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -159,7 +158,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "92b7d3aa974ef8ae",
+  "active": "2542b699181eb915",
   "lastOpenFiles": [
     "4. Drawing/4.2 Command buffer.md",
     "4. Drawing/4.3 Rendering and presentation.md",
