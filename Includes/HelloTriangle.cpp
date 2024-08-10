@@ -137,6 +137,9 @@ void HelloTriangle::MainLoop() {
 }
 
 void HelloTriangle::DrawFrame() {
+    vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX);
+    std::cout<<"Drawing...\n";
+    vkResetFences(m_device, 1, &m_inFlightFence);
 }
 
 void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
@@ -635,6 +638,7 @@ void HelloTriangle::CreateSyncObjects() {
 
     VkFenceCreateInfo fenceInfo{};
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
     if(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphore) != VK_SUCCESS ||
        vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphore) != VK_SUCCESS ||
