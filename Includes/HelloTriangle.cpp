@@ -139,6 +139,10 @@ void HelloTriangle::MainLoop() {
 void HelloTriangle::DrawFrame() {
     vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX);
     std::cout<<"Drawing...\n";
+
+    uint32_t imageINdex;
+    vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphore, VK_NULL_HANDLE, &imageINdex);
+
     vkResetFences(m_device, 1, &m_inFlightFence);
 }
 
