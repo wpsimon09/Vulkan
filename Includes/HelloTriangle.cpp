@@ -630,7 +630,7 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     vkCmdEndRenderPass(commandBuffer);
 
     if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to record command buffer");
+        throw std::runtime_error("Failed to record command buffer !");
     }
 
 
