@@ -143,6 +143,10 @@ void HelloTriangle::DrawFrame() {
     uint32_t imageINdex;
     vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphore, VK_NULL_HANDLE, &imageINdex);
 
+    vkResetCommandBuffer(m_commandBuffer, 0);
+
+    RecordCommandBuffer(m_commandBuffer, imageINdex);
+
     vkResetFences(m_device, 1, &m_inFlightFence);
 }
 
