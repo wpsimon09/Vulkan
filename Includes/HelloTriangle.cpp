@@ -138,6 +138,8 @@ void HelloTriangle::MainLoop() {
 
 void HelloTriangle::DrawFrame() {
     vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX);
+    vkResetFences(m_device, 1, &m_inFlightFence);
+
     std::cout<<"Drawing...\n";
 
     uint32_t imageINdex;
@@ -147,7 +149,27 @@ void HelloTriangle::DrawFrame() {
 
     RecordCommandBuffer(m_commandBuffer, imageINdex);
 
-    vkResetFences(m_device, 1, &m_inFlightFence);
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore syncSemaphors[] = {m_imageAvailableSemaphore};
+    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = syncSemaphors;
+    submitInfo.pWaitDstStageMask = waitStages;
+
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &m_commandBuffer;
+
+    VkSemaphore signalSemaphores [] = {m_renderFinishedSemaphore};
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    if(vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFence) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to submit drawing command buffer");
+    }
+
 }
 
 void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
@@ -301,6 +323,15 @@ void HelloTriangle::CreateRenderPass() {
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     //after render call
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    //--------------------
+    // SUB PASS DEPENDENCY
+    //--------------------
+    VkSubpassDependency dependency{};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+
+
 
     //---------
     // SUB PASS
