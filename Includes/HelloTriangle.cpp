@@ -170,6 +170,19 @@ void HelloTriangle::DrawFrame() {
         throw std::runtime_error("Failed to submit drawing command buffer");
     }
 
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = {m_swapChain};
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+    presentInfo.pImageIndices = &imageINdex;
+    presentInfo.pResults = nullptr;
+
+    vkQueuePresentKHR(m_presentationQueue,&presentInfo);
+
 }
 
 void HelloTriangle::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
