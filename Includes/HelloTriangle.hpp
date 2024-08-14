@@ -16,6 +16,7 @@
 #include "DebugInfoLog.hpp"
 #include "Utils.hpp"
 #include <set>
+#include <glm/glm.hpp>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;

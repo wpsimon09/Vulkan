@@ -62,6 +62,7 @@ void HelloTriangle::CreateInstance() {
     } else {
         std::cout << "Valiation layers found\n";
     }
+
     //--------
     //APP INFO
     //--------
@@ -327,7 +328,7 @@ void HelloTriangle::CreateRenderPass() {
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     //before render call colou and depth
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    //after render call colou and depth
+    //after render call colour and depth
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -335,7 +336,6 @@ void HelloTriangle::CreateRenderPass() {
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     //after render call
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
 
     //---------
     // SUB PASS
@@ -662,7 +662,9 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     renderPassInfo.renderArea.offset = {0,0};
     renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-    VkClearValue clearValue = {{{0.08f, 0.08f, 0.08f,1.0f}}};
+    const float red =   glm::sin(glfwGetTime());
+
+    VkClearValue clearValue = {{{0.02, 0.08f, red,1.0f}}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearValue;
 
