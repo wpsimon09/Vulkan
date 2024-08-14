@@ -139,19 +139,21 @@ void HelloTriangle::MainLoop() {
 }
 
 void HelloTriangle::DrawFrame() {
+    // wait for previous frame to finish drawind
     vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(m_device, 1, &m_inFlightFence);
 
-    uint32_t imageINdex;
-    vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphore, VK_NULL_HANDLE, &imageINdex);
+    //get image from swap chain to draw into
+    uint32_t imageIndex;
+    vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
+    //clear the command buffer so that it can record new information
+    //here is acctual draw command and pipeline binding, scissors and viewport configuration
     vkResetCommandBuffer(m_commandBuffer, 0);
-
-    RecordCommandBuffer(m_commandBuffer, imageINdex);
+    RecordCommandBuffer(m_commandBuffer, imageIndex);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
     VkSemaphore syncSemaphors[] = {m_imageAvailableSemaphore};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
@@ -178,7 +180,7 @@ void HelloTriangle::DrawFrame() {
     VkSwapchainKHR swapChains[] = {m_swapChain};
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
-    presentInfo.pImageIndices = &imageINdex;
+    presentInfo.pImageIndices = &imageIndex;
     presentInfo.pResults = nullptr;
 
     vkQueuePresentKHR(m_presentationQueue,&presentInfo);
@@ -383,7 +385,6 @@ void HelloTriangle::CreateRenderPass() {
     if(vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass");
     }
-
 
 }
 
@@ -651,7 +652,7 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     beginInfo.pInheritanceInfo = nullptr;
 
     if(vkBeginCommandBuffer(commandBuffer, &beginInfo)!=VK_SUCCESS) {
-        throw std::runtime_error("Failed to beign reording the command buffer");
+        throw std::runtime_error("Failed to start recording the command buffer");
     }
 
     VkRenderPassBeginInfo renderPassInfo{};
@@ -662,7 +663,7 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     renderPassInfo.renderArea.offset = {0,0};
     renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-    const float red =   glm::sin(glfwGetTime());
+    const float red = glm::sin(glfwGetTime());
 
     VkClearValue clearValue = {{{0.02, 0.08f, red,1.0f}}};
     renderPassInfo.clearValueCount = 1;
