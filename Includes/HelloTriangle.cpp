@@ -662,7 +662,7 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     renderPassInfo.renderArea.offset = {0,0};
     renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-    VkClearValue clearValue = {{{0.0f, 0.0f, 0.0f,1.0f}}};
+    VkClearValue clearValue = {{{0.08f, 0.08f, 0.08f,1.0f}}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearValue;
 
