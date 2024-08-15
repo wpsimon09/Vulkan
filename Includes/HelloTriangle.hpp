@@ -35,7 +35,7 @@ const std::vector<const char*> validationLayers = {
 #endif
 */
 
-const bool enableValidationLayers =true ;
+constexpr bool enableValidationLayers =true ;
 
 
 class HelloTriangle {
