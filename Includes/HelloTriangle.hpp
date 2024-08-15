@@ -70,6 +70,10 @@ private:
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateSyncObjects();
 
+
+    void CleanupSwapChain();
+    void RecreateSwapChain();
+
     void MainLoop();
     void DrawFrame();
 

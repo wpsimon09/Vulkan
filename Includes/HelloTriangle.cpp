@@ -728,6 +728,28 @@ void HelloTriangle::CreateSyncObjects() {
     }
 }
 
+void HelloTriangle::CleanupSwapChain() {
+    for (auto frameBuffer: m_swapChainFrameBuffers) {
+        vkDestroyFramebuffer(m_device, frameBuffer, nullptr);
+    }
+
+    for (auto imageView: m_swapChainImageViews) {
+        vkDestroyImageView(m_device, imageView, nullptr);
+    }
+
+    vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+}
+
+void HelloTriangle::RecreateSwapChain() {
+    vkDeviceWaitIdle(m_device);
+
+    CleanupSwapChain();
+
+    CreateSwapChain();
+    CreateImageViews();
+    CreateFrameBuffers();
+}
+
 void HelloTriangle::CreateLogicalDevice() {
     //finds queue family with graphics capabilities VK_QUEUE_GRAPHICS_BIT
     QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice, m_sruface);
@@ -807,19 +829,13 @@ void HelloTriangle::CleanUp() {
         vkDestroyFence(m_device, m_inFlightFences[i], nullptr);
     }
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
-    for (auto frameBuffer: m_swapChainFrameBuffers) {
-        vkDestroyFramebuffer(m_device, frameBuffer, nullptr);
-    }
+    CleanupSwapChain();
     vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);
     if (enableValidationLayers) {
         DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessanger, nullptr);
     }
-    for (auto imageView: m_swapChainImageViews) {
-        vkDestroyImageView(m_device, imageView, nullptr);
-    }
-    vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
     vkDestroyDevice(m_device, nullptr);
     vkDestroySurfaceKHR(m_instance, m_sruface, nullptr);
     vkDestroyInstance(m_instance, nullptr);
