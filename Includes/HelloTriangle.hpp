@@ -79,6 +79,10 @@ private:
 
     void CleanUp();
 
+    //----------
+    // CALLBACKS
+    //----------
+    static void FrameBufferResizeCallback(GLFWwindow* window, int width, int height);
 
     GLFWwindow* m_window;
     VkInstance m_instance;
@@ -112,7 +116,7 @@ private:
     std::vector<VkFence> m_inFlightFences;
 
     uint32_t currentFrame = 0;
-
+    bool m_frameBufferResized = false;
 };
 
 #endif //HELLOTRIANGLE_HPP

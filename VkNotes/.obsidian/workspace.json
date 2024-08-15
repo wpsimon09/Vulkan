@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "5. Swap chain recreation/5.1  Recreating the swap chain.md",
+                "file": "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "5. Swap chain recreation/5.1  Recreating the swap chain.md",
+                "file": "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "5. Swap chain recreation/5.1  Recreating the swap chain.md",
+                "file": "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "5. Swap chain recreation/5.1  Recreating the swap chain.md"
+                "file": "5. Swap chain recreation/5.2 Handling resize and minimalization.md"
               }
             }
           }
@@ -149,6 +149,7 @@
   "active": "5232b018aa640eb1",
   "lastOpenFiles": [
     "5. Swap chain recreation/5.1  Recreating the swap chain.md",
+    "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
     "4. Drawing/4.4 Presentation.md",
     "4. Drawing/4.3 Rendering and presentation.md",
     "4. Drawing/4.2 Command buffer.md",

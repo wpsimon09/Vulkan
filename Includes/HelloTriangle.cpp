@@ -38,6 +38,8 @@ void HelloTriangle::InitWindow() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE,GLFW_TRUE);
     m_window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+    glfwSetWindowUserPointer(m_window, this);
+    glfwSetFramebufferSizeCallback(m_window,FrameBufferResizeCallback);
 }
 
 void HelloTriangle::InitVulkan() {
@@ -146,16 +148,18 @@ void HelloTriangle::DrawFrame() {
     uint32_t imageIndex;
     VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
-    if(result == VK_ERROR_OUT_OF_DATE_KHR) {
+    if(result == VK_ERROR_OUT_OF_DATE_KHR ) {
         RecreateSwapChain();
         return;
     }else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed to acquire swap chain iamge");
     }
 
+    //reset fences after we are sure that we can continue rendering
+    vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
+
     //clear the command buffer so that it can record new information
     //here is acctual draw command and pipeline binding, scissors and viewport configuration
-    vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
 
     vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
     RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
@@ -194,8 +198,9 @@ void HelloTriangle::DrawFrame() {
 
     result = vkQueuePresentKHR(m_presentationQueue,&presentInfo);
 
-    if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+    if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_frameBufferResized) {
         RecreateSwapChain();
+        m_frameBufferResized = false;
     }else if(result != VK_SUCCESS) {
         throw std::runtime_error("Failed to present swap chain image ");
     }
@@ -855,4 +860,10 @@ void HelloTriangle::CleanUp() {
     vkDestroyInstance(m_instance, nullptr);
     glfwDestroyWindow(m_window);
     glfwTerminate();
+}
+
+void HelloTriangle::FrameBufferResizeCallback(GLFWwindow *window, int width, int height) {
+    std::cout<<"Resize x: "<<width<<"y: "<<height<<std::endl;
+    auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
+    app->m_frameBufferResized = true;
 }
