@@ -37,12 +37,15 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(${TARGET} PRIVATE ${CFLAGS_DEBUG})
 endif()
 
+
+
 # Link libraries
 target_link_libraries(${TARGET} PRIVATE glfw Vulkan::Vulkan assimp)
 
 # Custom target for running the executable
 add_custom_target(run
         COMMAND ./${TARGET}
+        COMMAND ./Shaders/compile.sh
         DEPENDS ${TARGET}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
@@ -52,5 +55,6 @@ add_custom_target(reset
         COMMAND ${CMAKE_COMMAND} -E remove ${TARGET}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
 
 
