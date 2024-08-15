@@ -135,6 +135,7 @@ bool HelloTriangle::CheckValidationLayerSupport() {
 void HelloTriangle::MainLoop() {
     while (!glfwWindowShouldClose(m_window)) {
         DrawFrame();
+        m_appNotifier.NotifyChange();
         glfwPollEvents();
     }
     vkDeviceWaitIdle(m_device);
@@ -760,6 +761,16 @@ void HelloTriangle::CleanupSwapChain() {
 }
 
 void HelloTriangle::RecreateSwapChain() {
+
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(m_window, &width, &height);
+    while(width == 0 || height == 0) {
+        m_appNotifier.appStatus = IDLE;
+        m_appNotifier.isDirty = true;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        glfwWaitEvents();
+    }
+
     vkDeviceWaitIdle(m_device);
 
     CleanupSwapChain();

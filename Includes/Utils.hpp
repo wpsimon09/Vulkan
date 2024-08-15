@@ -16,6 +16,39 @@ const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
+
+enum APPLICATION_STATUS {
+    IDLE = 0,
+    RUNNING = 1,
+    OFF = -1
+};
+
+struct ApplicationStatusNotifier {
+    APPLICATION_STATUS appStatus = RUNNING;
+    bool isDirty = true;
+    void NotifyChange() {
+        if(isDirty) {
+            std::cout<<"Application is: ";
+            switch (appStatus) {
+                case IDLE: {
+                    std::cout<<"Idle";
+                    break;
+                }
+                case RUNNING: {
+                    std::cout<<"Running";
+                   break;
+                }
+                case OFF: {
+                    std::cout<<"Off";
+                    break;
+                }
+            }
+            std::cout<<std::endl;
+            isDirty = false;
+        }
+    }
+};
+
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;

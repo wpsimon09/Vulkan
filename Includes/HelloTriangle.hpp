@@ -84,6 +84,9 @@ private:
     //----------
     static void FrameBufferResizeCallback(GLFWwindow* window, int width, int height);
 
+    //-----------------
+    // VULKAN STUFF
+    //-----------------
     GLFWwindow* m_window;
     VkInstance m_instance;
     VkDebugUtilsMessengerEXT m_debugMessanger;
@@ -115,8 +118,13 @@ private:
     std::vector<VkSemaphore> m_renderFinishedSemaphores;
     std::vector<VkFence> m_inFlightFences;
 
+
+    //-----------------
+    // OTHERS
+    //-----------------
     uint32_t currentFrame = 0;
     bool m_frameBufferResized = false;
+    ApplicationStatusNotifier m_appNotifier;
 };
 
 #endif //HELLOTRIANGLE_HPP
