@@ -141,7 +141,6 @@ void HelloTriangle::MainLoop() {
 void HelloTriangle::DrawFrame() {
     // wait for previous frame to finish drawind
     vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-    vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
 
     //get image from swap chain to draw into
     uint32_t imageIndex;
@@ -156,6 +155,8 @@ void HelloTriangle::DrawFrame() {
 
     //clear the command buffer so that it can record new information
     //here is acctual draw command and pipeline binding, scissors and viewport configuration
+    vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
+
     vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
     RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
 
