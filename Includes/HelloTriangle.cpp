@@ -36,7 +36,7 @@ VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT mes
 void HelloTriangle::InitWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE,GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE,GLFW_TRUE);
     m_window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
 }
 
@@ -145,7 +145,14 @@ void HelloTriangle::DrawFrame() {
 
     //get image from swap chain to draw into
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+
+    if(result == VK_ERROR_OUT_OF_DATE_KHR) {
+        RecreateSwapChain();
+        return;
+    }else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("Failed to acquire swap chain iamge");
+    }
 
     //clear the command buffer so that it can record new information
     //here is acctual draw command and pipeline binding, scissors and viewport configuration
@@ -184,7 +191,13 @@ void HelloTriangle::DrawFrame() {
     presentInfo.pImageIndices = &imageIndex;
     presentInfo.pResults = nullptr;
 
-    vkQueuePresentKHR(m_presentationQueue,&presentInfo);
+    result = vkQueuePresentKHR(m_presentationQueue,&presentInfo);
+
+    if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        RecreateSwapChain();
+    }else if(result != VK_SUCCESS) {
+        throw std::runtime_error("Failed to present swap chain image ");
+    }
 
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
