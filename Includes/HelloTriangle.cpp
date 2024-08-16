@@ -54,6 +54,7 @@ void HelloTriangle::InitVulkan() {
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
+    CreateVertexBuffers();
     CreateCommandBuffers();
     CreateSyncObjects();
 }
@@ -678,7 +679,22 @@ void HelloTriangle::CreateVertexBuffers() {
 
     VkMemoryRequirements memRequirements;
     vkGetBufferMemoryRequirements(m_device, m_vertexBuffer, &memRequirements);
-    memRequirements.
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_physicalDevice);
+
+    if(vkAllocateMemory(m_device, &allocInfo, nullptr, &m_vertexBufferMemory) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate memory");
+    }
+
+    vkBindBufferMemory(m_device, m_vertexBuffer, m_vertexBufferMemory, 0);
+
+        void* data;
+        vkMapMemory(m_device, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
+        memcpy(data, vertices.data(), (size_t)bufferInfo.size);
+        vkUnmapMemory(m_device, m_vertexBufferMemory);
 }
 
 void HelloTriangle::CreateCommandBuffers() {
@@ -739,7 +755,12 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     scissors.extent = m_swapChainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissors);
 
-    vkCmdDraw(commandBuffer, 3,1,0,0);
+    VkBuffer vertexBuffers[] = {m_vertexBuffer};
+    VkDeviceSize offsets[] = {0};
+
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+    vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()),1,0,0);
 
     vkCmdEndRenderPass(commandBuffer);
 
@@ -886,6 +907,7 @@ void HelloTriangle::CleanUp() {
     CleanupSwapChain();
 
     vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
+    vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
     vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);

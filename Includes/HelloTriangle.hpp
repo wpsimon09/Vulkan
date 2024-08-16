@@ -120,6 +120,7 @@ private:
     std::vector<VkFence> m_inFlightFences;
 
     VkBuffer m_vertexBuffer;
+    VkDeviceMemory m_vertexBufferMemory;
 
     //-----------------
     // OTHERS
