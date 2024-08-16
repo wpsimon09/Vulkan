@@ -675,6 +675,10 @@ void HelloTriangle::CreateVertexBuffers() {
     if(vkCreateBuffer(m_device, &bufferInfo, nullptr, &m_vertexBuffer) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create Vertex Buffer");
     }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(m_device, m_vertexBuffer, &memRequirements);
+    memRequirements.
 }
 
 void HelloTriangle::CreateCommandBuffers() {
@@ -894,7 +898,6 @@ void HelloTriangle::CleanUp() {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
-
 void HelloTriangle::FrameBufferResizeCallback(GLFWwindow *window, int width, int height) {
     std::cout<<"Resize x: "<<width<<"y: "<<height<<std::endl;
     auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));

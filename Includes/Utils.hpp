@@ -88,8 +88,6 @@ struct Vertex {
         //offset to the position
         attributeDescriptions[1].offset = offsetof(Vertex, color);
 
-
-
         return attributeDescriptions;
     }
 };
@@ -300,6 +298,22 @@ static inline VkShaderModule createShaderModuel(VkDevice device, std::vector<cha
     shaderSPIRV.clear();
 
     return shaderModule;
+}
+
+static inline uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice physicalDevice) {
+    //get the available types of memories on the GPU
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+    memProperties.
+
+    for(uint32_t i = 0; i<memProperties.memoryTypeCount; i++) {
+        if(typeFilter & (1 << i) &&
+            (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+            return i;
+        }
+    }
+
+    throw std::runtime_error("Fialed to find suitable memmory type");
 }
 
 #endif //UTILS_HPP
