@@ -660,6 +660,23 @@ void HelloTriangle::CreateCommandPool() {
     }
 }
 
+void HelloTriangle::CreateVertexBuffers() {
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = sizeof(vertices[0]) *vertices.size();
+    // might be more using | operator
+    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    // specifies if it can be shared between queue families
+    // we will use it only for the graphics family
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    //sparse buffer memmory
+    bufferInfo.flags = 0;
+
+    if(vkCreateBuffer(m_device, &bufferInfo, nullptr, &m_vertexBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create Vertex Buffer");
+    }
+}
+
 void HelloTriangle::CreateCommandBuffers() {
     m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
     VkCommandBufferAllocateInfo allocInfo{};
@@ -863,6 +880,8 @@ void HelloTriangle::CleanUp() {
     }
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
     CleanupSwapChain();
+
+    vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
     vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);

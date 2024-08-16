@@ -66,6 +66,7 @@ private:
     void CreateGraphicsPipeline();
     void CreateFrameBuffers();
     void CreateCommandPool();
+    void CreateVertexBuffers();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateSyncObjects();
@@ -118,6 +119,7 @@ private:
     std::vector<VkSemaphore> m_renderFinishedSemaphores;
     std::vector<VkFence> m_inFlightFences;
 
+    VkBuffer m_vertexBuffer;
 
     //-----------------
     // OTHERS
