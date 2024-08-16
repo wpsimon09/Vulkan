@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <glm/glm.hpp>
 
 const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -26,27 +27,77 @@ enum APPLICATION_STATUS {
 struct ApplicationStatusNotifier {
     APPLICATION_STATUS appStatus = RUNNING;
     bool isDirty = true;
+
     void NotifyChange() {
-        if(isDirty) {
-            std::cout<<"Application is: ";
+        if (isDirty) {
+            std::cout << "Application is: ";
             switch (appStatus) {
                 case IDLE: {
-                    std::cout<<"Idle";
+                    std::cout << "Idle";
                     break;
                 }
                 case RUNNING: {
-                    std::cout<<"Running";
-                   break;
+                    std::cout << "Running";
+                    break;
                 }
                 case OFF: {
-                    std::cout<<"Off";
+                    std::cout << "Off";
                     break;
                 }
             }
-            std::cout<<std::endl;
+            std::cout << std::endl;
             isDirty = false;
         }
     }
+};
+
+struct Vertex {
+    glm::vec2 pos;
+    glm::vec3 color;
+
+    static VkVertexInputBindingDescription getBindingDescription() {
+        VkVertexInputBindingDescription bindingDescription{};
+        //we will only use one binding
+        //ths will be its index
+        bindingDescription.binding = 0;
+        //nubmer of bites between each data entry
+        bindingDescription.stride = sizeof(Vertex);
+        //move to the next vertex after each vertex not aftera each instance
+        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        return bindingDescription;
+    }
+
+    static std::array<VkVertexInputAttributeDescription,2> getAttributeDescriptions() {
+        std::array<VkVertexInputAttributeDescription,2> attributeDescriptions;
+        //which vertex array binding to use
+        attributeDescriptions[0].binding = 0;
+        //location in shader
+        attributeDescriptions[0].location = 0;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[0].offset = offsetof(Vertex, pos);
+
+        //which vertex array binding to use
+        attributeDescriptions[1].binding = 0;
+        //location in shader
+        attributeDescriptions[1].location = 1;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[1].offset = offsetof(Vertex, color);
+
+
+
+        return attributeDescriptions;
+    }
+};
+
+const std::vector<Vertex> vertices = {
+    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 
 struct QueueFamilyIndices {
@@ -211,21 +262,21 @@ inline VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities,
     return acctualExtend;
 }
 
-static inline std::vector<char> readFile(const std::string& fileName) {
+static inline std::vector<char> readFile(const std::string &fileName) {
     std::ifstream file(fileName, std::ios::ate | std::ios::binary);
 
-    if(!file.is_open()) {
+    if (!file.is_open()) {
         const auto err = "Failed to open file at path: " + fileName;
         throw std::runtime_error(err);
     }
 
     //create buffer to hold the binary
-    size_t fileSize = (size_t)file.tellg();
-    std::vector<char>buffer(fileSize);
+    size_t fileSize = (size_t) file.tellg();
+    std::vector<char> buffer(fileSize);
 
     //go back to the begining and read the file again to get the content
     file.seekg(0);
-    file.read(buffer.data(),fileSize);
+    file.read(buffer.data(), fileSize);
 
     file.close();
 
@@ -233,16 +284,16 @@ static inline std::vector<char> readFile(const std::string& fileName) {
 }
 
 
-static inline VkShaderModule createShaderModuel(VkDevice device,std::vector<char>& shaderSPIRV) {
+static inline VkShaderModule createShaderModuel(VkDevice device, std::vector<char> &shaderSPIRV) {
     VkShaderModuleCreateInfo createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = shaderSPIRV.size();
     createInfo.pNext = nullptr;
     //cast from char to uint32_t
-    createInfo.pCode = reinterpret_cast<const uint32_t*>(shaderSPIRV.data());
+    createInfo.pCode = reinterpret_cast<const uint32_t *>(shaderSPIRV.data());
 
     VkShaderModule shaderModule;
-    if(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+    if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
         throw std::runtime_error("Could not create shader module");
     }
 
