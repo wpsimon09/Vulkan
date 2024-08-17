@@ -669,21 +669,37 @@ void HelloTriangle::CreateCommandPool() {
 }
 
 void HelloTriangle::CreateVertexBuffers() {
+    //-------------
+    // BUFFER INFO
+    //-------------
     BufferCreateInfo bufferInfo{};
     bufferInfo.size = sizeof(vertices[0]) * vertices.size();
     bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                             VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
     bufferInfo.surface = m_sruface;
     bufferInfo.logicalDevice = m_device;
     bufferInfo.physicalDevice = m_physicalDevice;
 
-    CreateBuffer(bufferInfo, m_vertexBuffer, m_vertexBufferMemory);
+    //----------------
+    // STAGING BUFFER
+    //----------------
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    CreateBuffer(bufferInfo, stagingBuffer, stagingBufferMemory);
 
     void* data;
-    vkMapMemory(m_device, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
+    vkMapMemory(m_device, stagingBufferMemory, 0, bufferInfo.size, 0, &data);
     memcpy(data, vertices.data(), (size_t)bufferInfo.size);
-    vkUnmapMemory(m_device, m_vertexBufferMemory);
+    vkUnmapMemory(m_device, stagingBufferMemory);
+
+    //----------------
+    // VERTEX BUFFER
+    //----------------
+    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    bufferInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    CreateBuffer(bufferInfo, m_vertexBuffer, m_vertexBufferMemory);
+
 }
 
 void HelloTriangle::CreateCommandBuffers() {
