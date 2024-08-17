@@ -96,6 +96,7 @@ private:
 
     VkQueue m_graphicsQueue;
     VkQueue m_presentationQueue;
+    VkQueue m_transferQueue;
 
     VkSurfaceKHR m_sruface;
 
@@ -113,6 +114,7 @@ private:
     VkPipeline m_graphicsPipeline;
 
     VkCommandPool m_comandPool;
+    VkCommandPool m_transferCommandPool;
     std::vector<VkCommandBuffer> m_commandBuffers;
 
     std::vector<VkSemaphore> m_imageAvailableSemaphores;

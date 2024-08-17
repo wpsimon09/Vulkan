@@ -292,7 +292,8 @@ void HelloTriangle::CreateSwapChain() {
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = 2;
         createInfo.pQueueFamilyIndices = queueFamilyIndecies;
-    } else {
+    }
+    else {
         createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     }
 
@@ -659,9 +660,18 @@ void HelloTriangle::CreateCommandPool() {
     if(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_comandPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool !");
     }
+
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.transferFamily.value();
+    if(vkCreateCommandPool(m_device,&poolInfo, nullptr, &m_transferCommandPool) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create transfer command pool");
+    }
 }
 
 void HelloTriangle::CreateVertexBuffers() {
+
+    QueueFamilyIndices indices = FindQueueFamilies(m_physicalDevice,m_sruface);
+
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = sizeof(vertices[0]) *vertices.size();
@@ -669,7 +679,12 @@ void HelloTriangle::CreateVertexBuffers() {
     bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
     // specifies if it can be shared between queue families
     // we will use it only for the graphics family
+    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsFamily.value(), indices.transferFamily.value()};
+
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    bufferInfo.queueFamilyIndexCount = static_cast<uint32_t>(sharedQueueFamilies.size());
+    bufferInfo.pQueueFamilyIndices = sharedQueueFamilies.data();
+
     //sparse buffer memmory
     bufferInfo.flags = 0;
 
@@ -729,9 +744,9 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     renderPassInfo.renderArea.offset = {0,0};
     renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-    const float red = glm::sin(glfwGetTime());
+    const float red = glm::abs(glm::sin(glfwGetTime()));
 
-    VkClearValue clearValue = {{{0.02, 0.08f, red,1.0f}}};
+    VkClearValue clearValue = {{{red, 0.0f, 0.6,1.0f}}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearValue;
 
@@ -767,8 +782,6 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("Failed to record command buffer !");
     }
-
-
 }
 
 void HelloTriangle::CreateSyncObjects() {
@@ -863,6 +876,7 @@ void HelloTriangle::CreateLogicalDevice() {
 
     vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
     vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentationQueue);
+    vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_transferQueue);
 }
 
 void HelloTriangle::CreateSurface() {
@@ -904,6 +918,7 @@ void HelloTriangle::CleanUp() {
         vkDestroyFence(m_device, m_inFlightFences[i], nullptr);
     }
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
+    vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
     CleanupSwapChain();
 
     vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);

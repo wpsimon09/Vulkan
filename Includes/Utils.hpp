@@ -101,8 +101,9 @@ const std::vector<Vertex> vertices = {
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
+    std::optional<uint32_t> transferFamily;
 
-    bool isComplete() { return graphicsFamily.has_value() && presentFamily.has_value(); }
+    bool isComplete() const { return graphicsFamily.has_value() && presentFamily.has_value() && presentFamily.has_value();  }
 };
 
 struct SwapChainSupportDetails {
@@ -144,6 +145,9 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
     for (auto &queueFamily: queueFamilyProperties) {
         if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
+        }
+        if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT) {
+            indices.transferFamily = i;
         }
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
