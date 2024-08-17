@@ -700,6 +700,14 @@ void HelloTriangle::CreateVertexBuffers() {
     bufferInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
     CreateBuffer(bufferInfo, m_vertexBuffer, m_vertexBufferMemory);
 
+    //-----------------------------------
+    // MOVE THE MEMORY FROM STAGING
+    // BUFFER TO ACCTUAL VERTEX BUFFER
+    //----------------------------------
+    CopyBuffer(m_device, m_transferQueue, m_transferCommandPool,stagingBuffer, m_vertexBuffer,bufferInfo.size);
+
+    vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+    vkFreeMemory(m_device, stagingBufferMemory, nullptr);
 }
 
 void HelloTriangle::CreateCommandBuffers() {
@@ -712,14 +720,6 @@ void HelloTriangle::CreateCommandBuffers() {
 
     if(vkAllocateCommandBuffers(m_device,&allocInfo,m_commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate command buffer");
-    }
-
-    allocInfo.commandPool = m_transferCommandPool;
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
-
-    if(vkAllocateCommandBuffers(m_device, &allocInfo, &m_transferCommandBuffer) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to allocate translfer command buffer");
     }
 }
 
