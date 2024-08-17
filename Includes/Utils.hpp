@@ -327,7 +327,7 @@ static inline void CreateBuffer(BufferCreateInfo bufferCreateInfo, VkBuffer& buf
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = sizeof(vertices[0]) *vertices.size();
     // might be more using | operator
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    bufferInfo.usage = bufferCreateInfo.usage;
     // specifies if it can be shared between queue families
     // we will use it only for the graphics family
     std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsFamily.value(), indices.transferFamily.value()};
@@ -349,7 +349,7 @@ static inline void CreateBuffer(BufferCreateInfo bufferCreateInfo, VkBuffer& buf
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_physicalDevice);
+    allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, bufferCreateInfo.properties, bufferCreateInfo.physicalDevice);
 
     if(vkAllocateMemory(bufferCreateInfo.logicalDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate memory");

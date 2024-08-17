@@ -669,12 +669,21 @@ void HelloTriangle::CreateCommandPool() {
 }
 
 void HelloTriangle::CreateVertexBuffers() {
+    BufferCreateInfo bufferInfo{};
+    bufferInfo.size = sizeof(vertices[0]) * vertices.size();
+    bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    bufferInfo.surface = m_sruface;
+    bufferInfo.logicalDevice = m_device;
+    bufferInfo.physicalDevice = m_physicalDevice;
 
+    CreateBuffer(bufferInfo, m_vertexBuffer, m_vertexBufferMemory);
 
-        void* data;
-        vkMapMemory(m_device, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
-        memcpy(data, vertices.data(), (size_t)bufferInfo.size);
-        vkUnmapMemory(m_device, m_vertexBufferMemory);
+    void* data;
+    vkMapMemory(m_device, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
+    memcpy(data, vertices.data(), (size_t)bufferInfo.size);
+    vkUnmapMemory(m_device, m_vertexBufferMemory);
 }
 
 void HelloTriangle::CreateCommandBuffers() {
