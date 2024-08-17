@@ -13,6 +13,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "Structs.hpp"
+
 const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
@@ -317,6 +319,44 @@ static inline uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags
     }
 
     throw std::runtime_error("Fialed to find suitable memmory type");
+}
+
+static inline void CreateBuffer(BufferCreateInfo bufferCreateInfo, VkBuffer& buffer, VkDeviceMemory &bufferMemory ){
+    QueueFamilyIndices indices = FindQueueFamilies(bufferCreateInfo.physicalDevice, bufferCreateInfo.surface);
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = sizeof(vertices[0]) *vertices.size();
+    // might be more using | operator
+    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    // specifies if it can be shared between queue families
+    // we will use it only for the graphics family
+    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsFamily.value(), indices.transferFamily.value()};
+
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    bufferInfo.queueFamilyIndexCount = static_cast<uint32_t>(sharedQueueFamilies.size());
+    bufferInfo.pQueueFamilyIndices = sharedQueueFamilies.data();
+
+    //sparse buffer memmory
+    bufferInfo.flags = 0;
+
+    if(vkCreateBuffer(bufferCreateInfo.logicalDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create Vertex Buffer");
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(bufferCreateInfo.logicalDevice, buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_physicalDevice);
+
+    if(vkAllocateMemory(bufferCreateInfo.logicalDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate memory");
+    }
+
+    vkBindBufferMemory(bufferCreateInfo.logicalDevice, buffer,bufferMemory, 0);
+
 }
 
 #endif //UTILS_HPP
