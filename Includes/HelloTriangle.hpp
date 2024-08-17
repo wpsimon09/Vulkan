@@ -115,6 +115,7 @@ private:
 
     VkCommandPool m_comandPool;
     VkCommandPool m_transferCommandPool;
+    VkCommandBuffer m_transferCommandBuffer;
     std::vector<VkCommandBuffer> m_commandBuffers;
 
     std::vector<VkSemaphore> m_imageAvailableSemaphores;

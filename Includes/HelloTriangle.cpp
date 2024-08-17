@@ -710,9 +710,16 @@ void HelloTriangle::CreateCommandBuffers() {
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
 
-
     if(vkAllocateCommandBuffers(m_device,&allocInfo,m_commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate command buffer");
+    }
+
+    allocInfo.commandPool = m_transferCommandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+
+    if(vkAllocateCommandBuffers(m_device, &allocInfo, &m_transferCommandBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate translfer command buffer");
     }
 }
 
