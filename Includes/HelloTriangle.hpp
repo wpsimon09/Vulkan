@@ -17,6 +17,7 @@
 #include "Utils.hpp"
 #include <set>
 #include <glm/glm.hpp>
+#include "Camera/Camera.hpp"
 
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;

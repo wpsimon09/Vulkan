@@ -11,7 +11,9 @@ set(SOURCES src/main.cpp
         Includes/DebugInfoLog.hpp
         Includes/Utils.hpp
         Includes/Structs.hpp
-        Includes/Utils.hpp)
+        Includes/Utils.hpp
+        Includes/Camera/Camera.cpp
+        Includes/Camera/Camera.hpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")
