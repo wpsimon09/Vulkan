@@ -67,10 +67,10 @@ private:
     void CreateFrameBuffers();
     void CreateCommandPool();
     void CreateVertexBuffers();
+    void CreateIndexBuffers();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateSyncObjects();
-
 
     void CleanupSwapChain();
     void RecreateSwapChain();
@@ -124,6 +124,9 @@ private:
 
     VkBuffer m_vertexBuffer;
     VkDeviceMemory m_vertexBufferMemory;
+
+    VkBuffer m_indexBuffer;
+    VkDeviceMemory m_indexBufferMemory;
 
     //-----------------
     // OTHERS

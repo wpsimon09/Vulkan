@@ -10,7 +10,8 @@ set(SOURCES src/main.cpp
         Includes/HelloTriangle.hpp
         Includes/DebugInfoLog.hpp
         Includes/Utils.hpp
-        Includes/Structs.hpp)
+        Includes/Structs.hpp
+        Includes/Utils.hpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")

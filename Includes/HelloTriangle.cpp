@@ -55,6 +55,7 @@ void HelloTriangle::InitVulkan() {
     CreateFrameBuffers();
     CreateCommandPool();
     CreateVertexBuffers();
+    CreateIndexBuffers();
     CreateCommandBuffers();
     CreateSyncObjects();
 }
@@ -710,6 +711,39 @@ void HelloTriangle::CreateVertexBuffers() {
     vkFreeMemory(m_device, stagingBufferMemory, nullptr);
 }
 
+void HelloTriangle::CreateIndexBuffers() {
+    BufferCreateInfo bufferCreateInfo{};
+    bufferCreateInfo.physicalDevice = m_physicalDevice;
+    bufferCreateInfo.logicalDevice = m_device;
+    bufferCreateInfo.surface = m_sruface;
+
+    bufferCreateInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    bufferCreateInfo.size = sizeof(uint16_t) * indices.size();
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingMemory;
+    CreateBuffer(bufferCreateInfo, stagingBuffer, stagingMemory);
+
+    //put data to the staging buffer
+    void* data;
+    vkMapMemory(m_device, stagingMemory, 0, bufferCreateInfo.size,0, &data);
+    memcpy(data, indices.data(), (size_t)bufferCreateInfo.size);
+    vkUnmapMemory(m_device, stagingMemory);
+
+    //create index buffer
+    bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+    bufferCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    CreateBuffer(bufferCreateInfo, m_indexBuffer, m_indexBufferMemory);
+
+    //copy staging buffer to the index buffer
+    CopyBuffer(m_device ,m_transferQueue, m_transferCommandPool, stagingBuffer, m_indexBuffer, bufferCreateInfo.size);
+
+    //clean up
+    vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+    vkFreeMemory(m_device, stagingMemory, nullptr);
+}
+
 void HelloTriangle::CreateCommandBuffers() {
     m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
     VkCommandBufferAllocateInfo allocInfo{};
@@ -920,6 +954,11 @@ void HelloTriangle::CleanUp() {
 
     vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
     vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
+
+    vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
+    vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
+
+
     vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);
