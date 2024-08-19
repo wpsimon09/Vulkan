@@ -13,26 +13,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "1a9b5c3e04d498e7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "6 Vertex buffer/6.6 Index buffer.md",
+                "file": "6 Buffers/6.7 Uniform buffer.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -98,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "6 Vertex buffer/6.6 Index buffer.md",
+                "file": "6 Buffers/6.7 Uniform buffer.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "6 Vertex buffer/6.6 Index buffer.md",
+                "file": "6 Buffers/6.7 Uniform buffer.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "6 Vertex buffer/6.6 Index buffer.md"
+                "file": "6 Buffers/6.7 Uniform buffer.md"
               }
             }
           }
@@ -159,19 +146,20 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1a9b5c3e04d498e7",
+  "active": "5232b018aa640eb1",
   "lastOpenFiles": [
-    "6 Vertex buffer/6.1 Vertex input description.md",
-    "6 Vertex buffer/6.3 Creating vertex buffer.md",
-    "6 Vertex buffer/6.6 Index buffer.md",
-    "6 Vertex buffer/6.4 Filling in the vertex buffer.md",
+    "6 Buffers/6.7 Uniform buffer.md",
+    "6 Buffers/6.1 Vertex input description.md",
+    "6 Buffers/6.3 Creating vertex buffer.md",
+    "6 Buffers/6.2 Pipeline setup.md",
+    "6 Buffers/6.5 Staging buffer.md",
+    "6 Buffers/6.4 Filling in the vertex buffer.md",
+    "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
+    "6 Buffers/6.6 Index buffer.md",
     "images/Index vs vertex buffer.png",
-    "6 Vertex buffer/6.5 Staging buffer.md",
     "2. HelloTriangle/2.3 Physical device and queue families.md",
     "2. HelloTriangle/2.4 Logical device and queues.md",
-    "6 Vertex buffer/6.2 Pipeline setup.md",
-    "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
-    "6 Vertex buffer",
+    "6 Buffers",
     "5. Swap chain recreation/5.1  Recreating the swap chain.md",
     "4. Drawing/4.4 Presentation.md",
     "4. Drawing/4.3 Rendering and presentation.md",

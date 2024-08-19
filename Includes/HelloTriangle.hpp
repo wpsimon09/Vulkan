@@ -65,6 +65,7 @@ private:
     void CreateSurface();
     void CreateImageViews();
     void CreateRenderPass();
+    void CreateDescriptorSetLayout();
     void CreateGraphicsPipeline();
     void CreateFrameBuffers();
     void CreateCommandPool();
@@ -114,6 +115,7 @@ private:
     std::vector<VkFramebuffer> m_swapChainFrameBuffers;
 
     VkRenderPass m_renderPass;
+    VkDescriptorSetLayout descriptorSetLayout;
     VkPipelineLayout m_pipelineLayout;
     VkPipeline m_graphicsPipeline;
 
