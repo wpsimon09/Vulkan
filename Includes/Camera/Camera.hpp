@@ -38,7 +38,13 @@ public:
 
     float getNearPlane() {return this->nearPlane;}
 
+    bool getIsFirstMouse() const {return m_isFirstMouse;}
+
+    bool setIsFirstMouse(bool val = false ) {this->m_isFirstMouse = val;}
+
     void update();
+
+    ~Camera() = default;
 
 private:
     glm::vec3 getEye();
@@ -52,10 +58,12 @@ private:
     glm::vec3 center;
     glm::vec3 worldUp;
 
+
     glm::mat4 projection = glm::mat4(1.0f);
 
     float farPlane;
     float nearPlane;
+    bool m_isFirstMouse = true;
 };
 
 

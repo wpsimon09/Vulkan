@@ -18,6 +18,7 @@
 #include <set>
 #include <glm/glm.hpp>
 #include "Camera/Camera.hpp"
+#include "memory"
 
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
@@ -50,8 +51,8 @@ public:
         );
 
 private:
+    void CreateCamera();
     void InitWindow();
-
     void InitVulkan();
     void CreateInstance();
     bool CheckValidationLayerSupport();
@@ -85,7 +86,9 @@ private:
     // CALLBACKS
     //----------
     static void FrameBufferResizeCallback(GLFWwindow* window, int width, int height);
-
+    static void MousePositionCallback(GLFWwindow *window, double xpos, double ypos);
+    static void MouseClickCallback(GLFWwindow *window, int button, int action, int mods);
+    static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);
     //-----------------
     // VULKAN STUFF
     //-----------------
@@ -135,6 +138,11 @@ private:
     uint32_t currentFrame = 0;
     bool m_frameBufferResized = false;
     ApplicationStatusNotifier m_appNotifier;
+    std::unique_ptr<Camera> m_camera;
+    double m_lastX;
+    double m_lastY;
+    bool m_isMousePressed = false;
+    bool m_isFirstMouse = true;
 };
 
 #endif //HELLOTRIANGLE_HPP

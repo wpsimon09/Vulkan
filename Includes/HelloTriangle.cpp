@@ -38,8 +38,13 @@ void HelloTriangle::InitWindow() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE,GLFW_TRUE);
     m_window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+    CreateCamera();
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window,FrameBufferResizeCallback);
+    glfwSetCursorPosCallback(m_window,MousePositionCallback);
+    glfwSetMouseButtonCallback(m_window, MouseClickCallback);
+
+
 }
 
 void HelloTriangle::InitVulkan() {
@@ -58,6 +63,10 @@ void HelloTriangle::InitVulkan() {
     CreateIndexBuffers();
     CreateCommandBuffers();
     CreateSyncObjects();
+}
+
+void HelloTriangle::CreateCamera() {
+    this->m_camera = std::make_unique<Camera>(m_window);
 }
 
 void HelloTriangle::CreateInstance() {
@@ -977,4 +986,54 @@ void HelloTriangle::FrameBufferResizeCallback(GLFWwindow *window, int width, int
     std::cout<<"Resize x: "<<width<<"y: "<<height<<std::endl;
     auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
     app->m_frameBufferResized = true;
+}
+
+void HelloTriangle::MousePositionCallback(GLFWwindow *window, double xpos, double ypos) {
+    auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
+    auto pointerX = (float)xpos;
+    auto pointerY = (float)ypos;
+     if (app->m_isFirstMouse) {
+            app->m_lastX = xpos;
+            app->m_lastY = ypos;
+            app->m_isFirstMouse = false;;
+        }
+
+        float xOffset = xpos - app->m_lastX;
+        float yOffset = app->m_lastY - ypos; // Invert the sign here
+
+        app->m_lastX = xpos;
+        app->m_lastY = ypos;
+
+        xOffset *= 0.01;
+        yOffset *= 0.01;
+
+        if (xOffset != 0.0 && app->m_isMousePressed) {
+            app->m_camera->rotateAzimutn(xOffset);
+        }
+
+        if (yOffset != 0.0 && app->m_isMousePressed ) {
+            app->m_camera->rotatePolar(-yOffset);
+        }
+
+}
+
+void HelloTriangle::MouseClickCallback(GLFWwindow *window, int button, int action, int mods) {
+    auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
+    GLFWcursor *hand = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+    GLFWcursor *cursor = glfwCreateStandardCursor(GLFW_CURSOR_NORMAL);
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            app->m_isMousePressed = true;
+            glfwSetCursor(app->m_window, hand);
+
+        } else if (action == GLFW_RELEASE) {
+            app->m_isMousePressed = false;
+            glfwSetCursor(app->m_window, cursor);
+        }
+    }
+}
+
+void HelloTriangle::MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
+    auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
+    app->m_camera->zoom((float) yoffset);
 }
