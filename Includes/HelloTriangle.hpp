@@ -71,6 +71,7 @@ private:
     void CreateCommandPool();
     void CreateVertexBuffers();
     void CreateIndexBuffers();
+    void CreateUniformBuffers();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateSyncObjects();
@@ -133,6 +134,11 @@ private:
 
     VkBuffer m_indexBuffer;
     VkDeviceMemory m_indexBufferMemory;
+
+    std::vector<VkBuffer> m_uniformBuffers;
+    std::vector<VkDeviceMemory> m_uniformBuffersMemory;
+    std::vector<void*> m_uniformBuffersMapped;
+
 
     //-----------------
     // OTHERS

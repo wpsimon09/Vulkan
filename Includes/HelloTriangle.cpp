@@ -62,6 +62,7 @@ void HelloTriangle::InitVulkan() {
     CreateCommandPool();
     CreateVertexBuffers();
     CreateIndexBuffers();
+    CreateUniformBuffers();
     CreateCommandBuffers();
     CreateSyncObjects();
 }
@@ -606,8 +607,8 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //----------------
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutCreateInfo.setLayoutCount = 0;
-    pipelineLayoutCreateInfo.pSetLayouts = nullptr;
+    pipelineLayoutCreateInfo.setLayoutCount = 1;
+    pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
     pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
@@ -770,6 +771,26 @@ void HelloTriangle::CreateIndexBuffers() {
     //clean up
     vkDestroyBuffer(m_device, stagingBuffer, nullptr);
     vkFreeMemory(m_device, stagingMemory, nullptr);
+}
+
+void HelloTriangle::CreateUniformBuffers() {
+    BufferCreateInfo bufferInfo{};
+    bufferInfo.logicalDevice = m_device;
+    bufferInfo.physicalDevice = m_physicalDevice;
+    bufferInfo.surface = m_sruface;
+    bufferInfo.size = sizeof(UniformBufferObject);
+    bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+    bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+    m_uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+    m_uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+    for(size_t i=0; i< MAX_FRAMES_IN_FLIGHT; i++) {
+        CreateBuffer(bufferInfo, m_uniformBuffers[i], m_uniformBuffersMemory[i]);
+
+        vkMapMemory(m_device, m_uniformBuffersMemory[i], 0, bufferInfo.size, 0, &m_uniformBuffersMapped[i]);
+    }
 }
 
 void HelloTriangle::CreateCommandBuffers() {
@@ -981,6 +1002,13 @@ void HelloTriangle::CleanUp() {
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
     vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
     CleanupSwapChain();
+
+    for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
+        vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
+    }
+
+    vkDestroyDescriptorSetLayout(m_device, descriptorSetLayout, nullptr);
 
     vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
     vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
