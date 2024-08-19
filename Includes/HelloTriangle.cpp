@@ -172,9 +172,10 @@ void HelloTriangle::DrawFrame() {
     //reset fences after we are sure that we can continue rendering
     vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
 
-    //clear the command buffer so that it can record new information
-    //here is acctual draw command and pipeline binding, scissors and viewport configuration
+    UpdateUniformBuffer(currentFrame);
 
+    //clear the command buffer so that it can record new information
+    //here is acctual draw command and pipeline binding, scissors and viewport configuratio
     vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
     RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
 
@@ -886,6 +887,18 @@ void HelloTriangle::CreateSyncObjects() {
             throw std::runtime_error("Failed to create synchronization objects");
         }
     }
+}
+
+void HelloTriangle::UpdateUniformBuffer(uint32_t currentImage) {
+    UniformBufferObject ubo{};
+    ubo.model = glm::mat4(1.0f);
+    ubo.model = glm::scale(ubo.model, glm::vec3(0.7f));
+    ubo.projection = m_camera->getPojectionMatix();
+    ubo.projection[1][1] *= -1;
+    ubo.view = m_camera->getViewMatrix();
+
+    memcpy(m_uniformBuffersMapped[currentFrame], &ubo, sizeof(ubo));
+
 }
 
 void HelloTriangle::CleanupSwapChain() {

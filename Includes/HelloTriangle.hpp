@@ -76,6 +76,8 @@ private:
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateSyncObjects();
 
+    void UpdateUniformBuffer(uint32_t currentImage);
+
     void CleanupSwapChain();
     void RecreateSwapChain();
 
