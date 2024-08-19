@@ -66,6 +66,7 @@ private:
     void CreateImageViews();
     void CreateRenderPass();
     void CreateDescriptorSetLayout();
+    void CreateDescriptorPool();
     void CreateGraphicsPipeline();
     void CreateFrameBuffers();
     void CreateCommandPool();
@@ -136,6 +137,8 @@ private:
 
     VkBuffer m_indexBuffer;
     VkDeviceMemory m_indexBufferMemory;
+
+    VkDescriptorPool m_descriptorPool;
 
     std::vector<VkBuffer> m_uniformBuffers;
     std::vector<VkDeviceMemory> m_uniformBuffersMemory;

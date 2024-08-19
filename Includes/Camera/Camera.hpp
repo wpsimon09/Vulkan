@@ -30,7 +30,7 @@ public:
 
     glm::mat4 getPojectionMatix() const {return this->projection;}
 
-    glm::mat4 getViewMatrix() const {return this->getViewMatrix();};
+    glm::mat4 getViewMatrix() const {return glm::lookAt(this->position,center, this->worldUp);};
 
     glm::vec3 getPosition() const {return this->position;};
 
