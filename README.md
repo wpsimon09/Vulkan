@@ -2,3 +2,6 @@ In this chapter we used vertex array buffers to pass the vertex information such
 Next we have used the uniform buffers and descriptors to pass the updated Model, View, Projection metrices to the shader. 
 This was used for implementing simple orbit camera. Finally we have changed the simple plane to the cube. 
 
+
+https://github.com/user-attachments/assets/e5845a37-42b2-4799-b0ea-4f1c8ae79a4c
+
