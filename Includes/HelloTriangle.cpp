@@ -1107,6 +1107,7 @@ void HelloTriangle::FrameBufferResizeCallback(GLFWwindow *window, int width, int
     std::cout<<"Resize x: "<<width<<"y: "<<height<<std::endl;
     auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
     app->m_frameBufferResized = true;
+    app->m_camera->processResize(width, height);
 }
 
 void HelloTriangle::MousePositionCallback(GLFWwindow *window, double xpos, double ypos) {

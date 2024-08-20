@@ -71,7 +71,11 @@ void Camera::moveVertical(float distance) {
 }
 
 void Camera::processResize(int newWidht, int newHeight) {
-    throw std::runtime_error("Method not implemented yet");
+    ;
+    this->projection = glm::perspective(glm::radians(65.0f), (float)newWidht / (float)newHeight, 0.1f, 470.0f);
+    this->farPlane = getFarPlane();
+    this->nearPlane = 0.1f;
+    this->position = getEye();
 }
 
 void Camera::update() {
