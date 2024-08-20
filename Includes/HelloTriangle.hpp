@@ -7,7 +7,6 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
@@ -16,6 +15,7 @@
 #include "DebugInfoLog.hpp"
 #include "Utils.hpp"
 #include <set>
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
 #include "Camera/Camera.hpp"
 #include "memory"

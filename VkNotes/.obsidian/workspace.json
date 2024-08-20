@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "6 Buffers/6.8 Descriptor and pool set.md",
+                "file": "6 Buffers/6.9 Alignment requirements.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "6 Buffers/6.8 Descriptor and pool set.md",
+                "file": "6 Buffers/6.9 Alignment requirements.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "6 Buffers/6.8 Descriptor and pool set.md",
+                "file": "6 Buffers/6.9 Alignment requirements.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "6 Buffers/6.8 Descriptor and pool set.md"
+                "file": "6 Buffers/6.9 Alignment requirements.md"
               }
             }
           }
@@ -148,6 +148,8 @@
   },
   "active": "5232b018aa640eb1",
   "lastOpenFiles": [
+    "images/Alighemnt.png",
+    "6 Buffers/6.9 Alignment requirements.md",
     "6 Buffers/6.7 Uniform buffer.md",
     "6 Buffers/6.8 Descriptor and pool set.md",
     "6 Buffers/6.6 Index buffer.md",
@@ -175,8 +177,6 @@
     "3. Pipeline/3.1 Graphics pipeline in Vulkan.md",
     "2. HelloTriangle/2.7 Image views.md",
     "1. Introduction/1.2 What it takes to render triangle.md",
-    "1. Introduction/1.1 General overview.md",
-    "2. HelloTriangle/2.5 Window surface.md",
     "4. Drawing",
     "images/swapchain-info.png",
     "images/NDC-inVulkan.png",

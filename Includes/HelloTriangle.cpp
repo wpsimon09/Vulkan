@@ -25,7 +25,7 @@ VkBool32 HelloTriangle::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT mes
         GetMessageType(messageType);
         std::cerr <<
                 "\n File:\t" <<__FILE__<<
-                "\n Message:\t"     <<pCallbackData->pMessage <<
+                "\n Message:\t"     <<pCallbackData ->pMessage <<
                 "\n Message ID:\t"  <<pCallbackData->messageIdNumber<<
                 "\n Object name:\t" <<pCallbackData->pObjects->pObjectName<<
             std::endl;
@@ -478,7 +478,7 @@ void HelloTriangle::CreateDescriptorSet() {
         VkDescriptorBufferInfo bufferInfo{};
         bufferInfo.buffer = m_uniformBuffers[i];
         bufferInfo.offset = 0;
-        bufferInfo.range = sizeof(UniformBufferObject);
+        bufferInfo.range = VK_WHOLE_SIZE;
 
         VkWriteDescriptorSet descriptorWrite{.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
         descriptorWrite.dstSet = m_descriptorSets[i];
@@ -951,6 +951,8 @@ void HelloTriangle::UpdateUniformBuffer(uint32_t currentImage) {
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
     ubo.view = m_camera->getViewMatrix();
+    ubo.camPos = m_camera->getPosition();
+    ubo.normal = glm::transpose(glm::inverse(ubo.model));
 
     memcpy(m_uniformBuffersMapped[currentFrame], &ubo, sizeof(ubo));
 
