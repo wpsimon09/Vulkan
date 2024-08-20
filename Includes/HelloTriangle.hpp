@@ -51,6 +51,9 @@ public:
         );
 
 private:
+    //-------------------------
+    // INITIAL VULKAN SET UP
+    //-------------------------
     void CreateCamera();
     void InitWindow();
     void InitVulkan();
@@ -63,11 +66,20 @@ private:
     void CreateSwapChain();
     void CreateLogicalDevice();
     void CreateSurface();
+    //------------------------------
+
+    //-----------------------------
+    // PIPELINE AND PRESENTATION
+    //-----------------------------
     void CreateImageViews();
     void CreateRenderPass();
     void CreateDescriptorSetLayout();
-    void CreateDescriptorPool();
     void CreateGraphicsPipeline();
+    //------------------------------
+
+    //-----------------------------------------------
+    // BUFFERS, (VERTEX, COMMAND ETC.) + DESCRIPTORS
+    //-----------------------------------------------
     void CreateFrameBuffers();
     void CreateCommandPool();
     void CreateVertexBuffers();
@@ -75,25 +87,40 @@ private:
     void CreateUniformBuffers();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-    void CreateSyncObjects();
+    void CreateDescriptorPool();
+    void CreateDescriptorSet();
+    //-----------------------------------
 
+    //---------------------
+    // SYNCHRONIZATION
+    //---------------------
+    void CreateSyncObjects();
     void UpdateUniformBuffer(uint32_t currentImage);
 
-    void CleanupSwapChain();
-    void RecreateSwapChain();
-
+    //-------------------------
+    // MAIN LOOP AND DRAWING
+    //-------------------------
     void MainLoop();
     void DrawFrame();
+    //-------------------------
 
+    //-------------
+    // CLEAN UP
+    //--------------
+    void CleanupSwapChain();
+    void RecreateSwapChain();
     void CleanUp();
+    //---------------
 
-    //----------
+    //--------------------
     // CALLBACKS
-    //----------
+    //--------------------
     static void FrameBufferResizeCallback(GLFWwindow* window, int width, int height);
     static void MousePositionCallback(GLFWwindow *window, double xpos, double ypos);
     static void MouseClickCallback(GLFWwindow *window, int button, int action, int mods);
     static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);
+    //---------------------
+
     //-----------------
     // VULKAN STUFF
     //-----------------
@@ -119,7 +146,7 @@ private:
     std::vector<VkFramebuffer> m_swapChainFrameBuffers;
 
     VkRenderPass m_renderPass;
-    VkDescriptorSetLayout descriptorSetLayout;
+    VkDescriptorSetLayout m_descriptorSetLayout;
     VkPipelineLayout m_pipelineLayout;
     VkPipeline m_graphicsPipeline;
 
@@ -139,6 +166,7 @@ private:
     VkDeviceMemory m_indexBufferMemory;
 
     VkDescriptorPool m_descriptorPool;
+    std::vector<VkDescriptorSet> m_descriptorSets;
 
     std::vector<VkBuffer> m_uniformBuffers;
     std::vector<VkDeviceMemory> m_uniformBuffersMemory;

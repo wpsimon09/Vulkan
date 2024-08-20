@@ -43,6 +43,7 @@ void HelloTriangle::InitWindow() {
     glfwSetFramebufferSizeCallback(m_window,FrameBufferResizeCallback);
     glfwSetCursorPosCallback(m_window,MousePositionCallback);
     glfwSetMouseButtonCallback(m_window, MouseClickCallback);
+    glfwSetScrollCallback(m_window, MouseScrollCallback);
 
 
 }
@@ -56,14 +57,15 @@ void HelloTriangle::InitVulkan() {
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();
+    CreateUniformBuffers();
     CreateDescriptorSetLayout();
     CreateDescriptorPool();
+    CreateDescriptorSet();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
     CreateVertexBuffers();
     CreateIndexBuffers();
-    CreateUniformBuffers();
     CreateCommandBuffers();
     CreateSyncObjects();
 }
@@ -439,7 +441,7 @@ void HelloTriangle::CreateDescriptorSetLayout() {
     layoutInfo.pBindings = &uboLayoutBinding;
     layoutInfo.pNext = nullptr;
 
-    if(vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+    if(vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create descriptor set layout");
     };
 }
@@ -458,6 +460,40 @@ void HelloTriangle::CreateDescriptorPool() {
         throw std::runtime_error("Failed to create descriptor pool");
     }
 
+}
+
+void HelloTriangle::CreateDescriptorSet() {
+    std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,m_descriptorSetLayout);
+    VkDescriptorSetAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
+    allocInfo.descriptorPool = m_descriptorPool;
+    allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    allocInfo.pSetLayouts = layouts.data();
+    m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+
+    if(vkAllocateDescriptorSets(m_device, &allocInfo, m_descriptorSets.data()) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate descriptors sets");
+    }
+
+    for(size_t i = 0; i<MAX_FRAMES_IN_FLIGHT; i++) {
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = m_uniformBuffers[i];
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(UniformBufferObject);
+
+        VkWriteDescriptorSet descriptorWrite{.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
+        descriptorWrite.dstSet = m_descriptorSets[i];
+        descriptorWrite.dstBinding = 0;
+        descriptorWrite.dstArrayElement = 0;
+
+        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorWrite.descriptorCount = 1;
+
+        descriptorWrite.pBufferInfo = &bufferInfo;
+        descriptorWrite.pImageInfo = nullptr;
+        descriptorWrite.pTexelBufferView = nullptr;
+
+        vkUpdateDescriptorSets(m_device, 1, &descriptorWrite, 0, nullptr);
+    }
 }
 
 void HelloTriangle::CreateGraphicsPipeline() {
@@ -626,7 +662,7 @@ void HelloTriangle::CreateGraphicsPipeline() {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = 1;
-    pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
+    pipelineLayoutCreateInfo.pSetLayouts = &m_descriptorSetLayout;
     pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
@@ -824,7 +860,7 @@ void HelloTriangle::CreateCommandBuffers() {
     }
 }
 
-void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+void HelloTriangle:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     beginInfo.flags = 0;
@@ -875,6 +911,8 @@ void HelloTriangle::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 
     vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[currentFrame], 0, nullptr);
+
     vkCmdDrawIndexed(commandBuffer,static_cast<uint32_t>(indices.size()),1,0,0,0);
 
     vkCmdEndRenderPass(commandBuffer);
@@ -909,7 +947,7 @@ void HelloTriangle::CreateSyncObjects() {
 void HelloTriangle::UpdateUniformBuffer(uint32_t currentImage) {
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::scale(ubo.model, glm::vec3(0.7f));
+    ubo.model = glm::scale(ubo.model, glm::vec3(2.7f));
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
     ubo.view = m_camera->getViewMatrix();
@@ -1038,7 +1076,8 @@ void HelloTriangle::CleanUp() {
         vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
     }
 
-    vkDestroyDescriptorSetLayout(m_device, descriptorSetLayout, nullptr);
+    vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
+    vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
 
     vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
     vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
