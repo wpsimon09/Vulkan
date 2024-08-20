@@ -1,17 +1,4 @@
-This repository serves as storage point during my attempt of learning Vulkan API
+In this chapter we used vertex array buffers to pass the vertex information such as position and colour to the vertex shader.
+Next we have used the uniform buffers and descriptors to pass the updated Model, View, Projection metrices to the shader. 
+This was used for implementing simple orbit camera. Finally we have changed the simple plane to the cube. 
 
-# Required software
-
-You need to install the following libraries to be able to run the program assuming you have g++ compiler and make installed
-
-### Fedora linux
-
-```shell
-sudo dnf install vulkan-tools
-sudo dnf install vulkan-loader-devel
-sudo dnf install vulkan-validation-layers-devel
-
-sudo dnf install glfw-devel
-sudo dnf install glm-devel
-sudo dnf install glslc
-```
