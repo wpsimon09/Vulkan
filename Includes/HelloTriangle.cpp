@@ -608,7 +608,7 @@ void HelloTriangle::CreateGraphicsPipeline() {
     rasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizerCreateInfo.lineWidth = 1.0f;
     rasterizerCreateInfo.cullMode =  VK_CULL_MODE_BACK_BIT;
-    rasterizerCreateInfo.frontFace =VK_FRONT_FACE_CLOCKWISE;
+    rasterizerCreateInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     rasterizerCreateInfo.depthBiasEnable = VK_FALSE;
     rasterizerCreateInfo.depthBiasConstantFactor = 0.0F;
     rasterizerCreateInfo.depthBiasClamp = 0.0f;
@@ -880,7 +880,7 @@ void HelloTriangle:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
     const float red = glm::abs(glm::sin(glfwGetTime()));
 
-    VkClearValue clearValue = {{{red, 0.0f, 0.6,1.0f}}};
+    VkClearValue clearValue = {{{0.01, 0.01f, 0.06,1.0f}}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearValue;
 

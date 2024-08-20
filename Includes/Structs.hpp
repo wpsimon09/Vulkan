@@ -44,7 +44,7 @@ struct ApplicationStatusNotifier {
 };
 
 struct Vertex {
-    glm::vec2 pos;
+    glm::vec3 pos;
     glm::vec3 color;
 
     static VkVertexInputBindingDescription getBindingDescription() {
@@ -67,7 +67,7 @@ struct Vertex {
         //location in shader
         attributeDescriptions[0].location = 0;
         //vec2 has 2 32-bit float components
-        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
         //offset to the position
         attributeDescriptions[0].offset = offsetof(Vertex, pos);
 
