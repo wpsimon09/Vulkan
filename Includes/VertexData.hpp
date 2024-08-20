@@ -66,12 +66,12 @@ namespace VertexData {
     };
 
     const std::vector<Vertex> planeVertices = {
-        {{-0.5f, -0.5f,0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}, // Bottom-left
-        {{0.5f, -0.5f, 0.0f},  {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}, // Bottom-right
-        {{0.5f,  0.5f,  0.0f},   {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}}, // Top-right
-        {{-0.5f,  0.5f,0.0f},  {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}}  // Top-left
+        {{-0.5f, 0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Bottom-left
+        {{ 0.5f, 0.0f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // Bottom-right
+        {{ 0.5f, 0.0f,  0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},  // Top-right
+        {{-0.5f, 0.0f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}}   // Top-left
     };
-
+    
     const std::vector<uint32_t> planeIndices = {
         0, 1, 2, 2, 3, 0
     };

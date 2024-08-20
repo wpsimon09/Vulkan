@@ -297,8 +297,8 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
 }
 
 static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {
-    const unsigned int X_SEGMENTS = 10;
-    const unsigned int Y_SEGMENTS = 10;
+    const unsigned int X_SEGMENTS = 64;
+    const unsigned int Y_SEGMENTS = 64;
     const float PI = 3.14159265359f;
     for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
     {

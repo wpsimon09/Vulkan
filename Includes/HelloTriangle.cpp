@@ -55,11 +55,10 @@ void HelloTriangle::InitVulkan() {
     CreateSurface();
     PickPhysicalDevice();
     CreateLogicalDevice();
-    GenerateGeometryVertices(SPHERE);
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();
-    GenerateGeometryVertices(PLANE);
+    GenerateGeometryVertices(CUBE);
     CreateUniformBuffers();
     CreateDescriptorSetLayout();
     CreateDescriptorPool();
@@ -562,7 +561,7 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //-------------------
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
     inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssemblyCreateInfo.topology = m_geometryType == SPHERE ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssemblyCreateInfo.topology = m_geometryType == SPHERE ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
     //----------
@@ -610,7 +609,7 @@ void HelloTriangle::CreateGraphicsPipeline() {
     rasterizerCreateInfo.rasterizerDiscardEnable = VK_FALSE;
     rasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizerCreateInfo.lineWidth = 1.0f;
-    rasterizerCreateInfo.cullMode =  VK_CULL_MODE_BACK_BIT;
+    rasterizerCreateInfo.cullMode =  m_geometryType == PLANE ? VK_CULL_MODE_NONE :VK_CULL_MODE_BACK_BIT;
     rasterizerCreateInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     rasterizerCreateInfo.depthBiasEnable = VK_FALSE;
     rasterizerCreateInfo.depthBiasConstantFactor = 0.0F;
