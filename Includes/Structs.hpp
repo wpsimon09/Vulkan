@@ -48,6 +48,7 @@ struct ApplicationStatusNotifier {
 struct Vertex {
     glm::vec3 pos;
     glm::vec3 color;
+    glm::vec3 normal;
 
     static VkVertexInputBindingDescription getBindingDescription() {
         VkVertexInputBindingDescription bindingDescription{};
@@ -62,8 +63,8 @@ struct Vertex {
         return bindingDescription;
     }
 
-    static std::array<VkVertexInputAttributeDescription,2> getAttributeDescriptions() {
-        std::array<VkVertexInputAttributeDescription,2> attributeDescriptions;
+    static std::array<VkVertexInputAttributeDescription,3> getAttributeDescriptions() {
+        std::array<VkVertexInputAttributeDescription,3> attributeDescriptions;
         //which vertex array binding to use
         attributeDescriptions[0].binding = 0;
         //location in shader
@@ -81,6 +82,15 @@ struct Vertex {
         attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
         //offset to the position
         attributeDescriptions[1].offset = offsetof(Vertex, color);
+
+        //which vertex array binding to use
+        attributeDescriptions[2].binding = 0;
+        //location in shader
+        attributeDescriptions[2].location = 2;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[2].offset = offsetof(Vertex, normal);
 
         return attributeDescriptions;
     }
