@@ -370,7 +370,7 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
     vkFreeCommandBuffers(logicalDevice, transferCommandPool, 1, &commandBuffer);
 }
 
-static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint16_t> &indices) {
+static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {
     const unsigned int X_SEGMENTS = 64;
     const unsigned int Y_SEGMENTS = 64;
     const float PI = 3.14159265359f;

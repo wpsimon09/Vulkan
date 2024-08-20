@@ -11,9 +11,9 @@ layout (location = 3) in vec3 fragPos;
 float roughness = 0.4;
 float metlaness = 0.7;
 float ao = 0.2;
-vec3 albedo = vec3(0.7, 0.1, 0.7);
+vec3 albedo = vec3(0.7, 0.7, 0.7);
 
-vec3 lightPos = vec3(0.0f, 2.0f, -1.0f);
+vec3 lightPos = vec3(0.0f, 4.0f, -4.0f);
 vec3 lightColor = vec3(4.0);
 
 const float PI = 3.14159265359;

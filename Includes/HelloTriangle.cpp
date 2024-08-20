@@ -561,7 +561,7 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //-------------------
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
     inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
     inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
     //----------
@@ -804,7 +804,7 @@ void HelloTriangle::CreateIndexBuffers() {
 
     bufferCreateInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
     bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-    bufferCreateInfo.size = sizeof(uint16_t) * indices.size();
+    bufferCreateInfo.size = sizeof(uint32_t) * indices.size();
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingMemory;
@@ -882,7 +882,7 @@ void HelloTriangle:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
     const float red = glm::abs(glm::sin(glfwGetTime()));
 
-    VkClearValue clearValue = {{{0.01, 0.01f, 0.06,1.0f}}};
+    VkClearValue clearValue = {{{0.01, 0.01f, 0.01,1.0f}}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearValue;
 
@@ -911,7 +911,7 @@ void HelloTriangle:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[currentFrame], 0, nullptr);
 
