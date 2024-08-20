@@ -39,6 +39,7 @@ void HelloTriangle::InitWindow() {
     glfwWindowHint(GLFW_RESIZABLE,GLFW_TRUE);
     m_window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
     CreateCamera();
+
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window,FrameBufferResizeCallback);
     glfwSetCursorPosCallback(m_window,MousePositionCallback);
@@ -54,6 +55,7 @@ void HelloTriangle::InitVulkan() {
     CreateSurface();
     PickPhysicalDevice();
     CreateLogicalDevice();
+    GenerateSphere(vertices, indices);
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();

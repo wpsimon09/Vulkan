@@ -184,6 +184,13 @@ private:
     double m_lastY;
     bool m_isMousePressed = false;
     bool m_isFirstMouse = true;
+
+
+    std::vector<Vertex>   vertices;
+    std::vector<uint16_t> indices;
+
+
+
 };
 
 #endif //HELLOTRIANGLE_HPP

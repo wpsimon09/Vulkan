@@ -32,8 +32,7 @@ const std::vector<uint16_t> indices = {
     0, 1, 2, 2, 3, 0
 };
 */
-
-
+/*
 const std::vector<Vertex> vertices = {
     // Front face
     {{-0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f,  1.0f}},  // Vertex 0
@@ -90,7 +89,7 @@ const std::vector<uint16_t> indices = {
 
     // Bottom face
     21, 20, 23, 23, 22, 21
-};
+};*/
 
 
 
@@ -306,7 +305,7 @@ static inline void CreateBuffer(BufferCreateInfo bufferCreateInfo, VkBuffer& buf
     QueueFamilyIndices indices = FindQueueFamilies(bufferCreateInfo.physicalDevice, bufferCreateInfo.surface);
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = sizeof(vertices[0]) *vertices.size();
+    bufferInfo.size = bufferCreateInfo.size;
     // might be more using | operator
     bufferInfo.usage = bufferCreateInfo.usage;
     // specifies if it can be shared between queue families
@@ -369,6 +368,52 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
     vkQueueWaitIdle(transferQueue);
 
     vkFreeCommandBuffers(logicalDevice, transferCommandPool, 1, &commandBuffer);
+}
+
+static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint16_t> &indices) {
+    const unsigned int X_SEGMENTS = 64;
+    const unsigned int Y_SEGMENTS = 64;
+    const float PI = 3.14159265359f;
+    for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+    {
+        for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
+        {
+            Vertex tempVertex;
+            float xSegment = (float)x / (float)X_SEGMENTS;
+            float ySegment = (float)y / (float)Y_SEGMENTS;
+            float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+            float yPos = std::cos(ySegment * PI);
+            float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+
+            tempVertex.pos = glm::vec3(xPos, yPos, zPos);
+            tempVertex.normal = glm::vec3(xPos, yPos, zPos);
+
+            vertices.push_back(tempVertex);
+        }
+    }
+
+    bool oddRow = false;
+    for (unsigned int y = 0; y < Y_SEGMENTS; ++y)
+    {
+        if (!oddRow)
+        {
+            for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+            {
+                indices.push_back(y * (X_SEGMENTS + 1) + x);
+                indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+            }
+        }
+        else
+        {
+            for (int x = X_SEGMENTS; x >= 0; --x)
+            {
+                indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+                indices.push_back(y * (X_SEGMENTS + 1) + x);
+            }
+        }
+        oddRow = !oddRow;
+    }
+
 }
 
 #endif //UTILS_HPP
