@@ -14,6 +14,8 @@ layout (location = 2) in vec3 inNormal;
 
 layout (location = 0) out vec3 color;
 layout (location = 1) out vec3 normal;
+layout (location = 2) out vec3 cameraPosition;
+layout (location = 3) out vec3 fragPos;
 
 //out vec3 camPos;
 //out vec3 fargPos;
@@ -23,4 +25,6 @@ void main() {
     gl_Position = ubo.proj* ubo.view * ubo.model * vec4(inPosition,1.0);
     normal = vec3(ubo.normalMatix * vec4(inNormal, 1.0));
     color =  inColor;
+    cameraPosition = ubo.camPos;
+    fragPos = vec3(ubo.model * vec4(inPosition, 1.0));
 }
