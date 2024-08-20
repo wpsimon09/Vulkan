@@ -13,7 +13,8 @@ set(SOURCES src/main.cpp
         Includes/Structs.hpp
         Includes/Utils.hpp
         Includes/Camera/Camera.cpp
-        Includes/Camera/Camera.hpp)
+        Includes/Camera/Camera.hpp
+        Includes/VertexData.hpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")

@@ -8,15 +8,16 @@ layout (location = 2) in vec3 cameraPosition;
 layout (location = 3) in vec3 fragPos;
 
 
-float roughness = 0.4;
-float metlaness = 0.7;
+float roughness = 0.2;
+float metlaness = 1;
 float ao = 0.2;
-vec3 albedo = vec3(0.7, 0.7, 0.7);
+vec3 albedo = vec3(0.0, 0.0, 0.7);
 
 vec3 lightPos = vec3(0.0f, 4.0f, -4.0f);
 vec3 lightColor = vec3(4.0);
 
 const float PI = 3.14159265359;
+
 
 vec3 FresnelShlick(float cosTheta, vec3 F0)
 {
@@ -69,7 +70,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-void main() {
+vec3 CalculateIrrandiance(){
     vec3 N = normalize(normal);
     vec3 V = normalize(cameraPosition - fragPos);
 
@@ -98,9 +99,14 @@ void main() {
 
     float NdotL = max(dot(N,L), 0.0);
     Lo += (kD * albedo /PI + specular) * lightColor * NdotL;
+    return Lo;
+}
+
+void main() {
+
 
     vec3 ambient = vec3(0.3) * albedo * ao;
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + CalculateIrrandiance();
 
     outColor = vec4(color,1.0);
 }

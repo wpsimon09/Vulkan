@@ -118,3 +118,8 @@ struct UniformBufferObject {
     alignas(16)glm::mat4 normal;
 };
 
+enum GEOMETRY_TYPE {
+    PLANE = 0,
+    CUBE = 1,
+    SPHERE = 2,
+};

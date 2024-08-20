@@ -55,10 +55,11 @@ void HelloTriangle::InitVulkan() {
     CreateSurface();
     PickPhysicalDevice();
     CreateLogicalDevice();
-    GenerateSphere(vertices, indices);
+    GenerateGeometryVertices(SPHERE);
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();
+    GenerateGeometryVertices(PLANE);
     CreateUniformBuffers();
     CreateDescriptorSetLayout();
     CreateDescriptorPool();
@@ -561,7 +562,7 @@ void HelloTriangle::CreateGraphicsPipeline() {
     //-------------------
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
     inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    inputAssemblyCreateInfo.topology = m_geometryType == SPHERE ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
     inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
     //----------
@@ -1158,4 +1159,23 @@ void HelloTriangle::MouseClickCallback(GLFWwindow *window, int button, int actio
 void HelloTriangle::MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
     auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer((window)));
     app->m_camera->zoom((float) yoffset);
+}
+
+void HelloTriangle::GenerateGeometryVertices(GEOMETRY_TYPE geometryType) {
+    m_geometryType = geometryType;
+    switch(geometryType) {
+        case CUBE: {
+            vertices = VertexData::cubeVertices;
+            indices = VertexData::cubeIndices;
+            break;
+        }
+        case PLANE: {
+            vertices = VertexData::planeVertices;
+            indices = VertexData::planeIndices;
+            break;
+        }case SPHERE: {
+            GenerateSphere(vertices, indices);
+            break;
+        }
+    }
 }

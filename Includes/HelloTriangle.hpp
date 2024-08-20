@@ -19,6 +19,7 @@
 #include <glm/glm.hpp>
 #include "Camera/Camera.hpp"
 #include "memory"
+#include "VertexData.hpp"
 
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
@@ -96,6 +97,8 @@ private:
     //---------------------
     void CreateSyncObjects();
     void UpdateUniformBuffer(uint32_t currentImage);
+    //---------------------
+
 
     //-------------------------
     // MAIN LOOP AND DRAWING
@@ -120,6 +123,11 @@ private:
     static void MouseClickCallback(GLFWwindow *window, int button, int action, int mods);
     static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);
     //---------------------
+
+    //---------------------
+    // MISCELLANEOUS
+    //---------------------
+    void GenerateGeometryVertices(GEOMETRY_TYPE geometryType);
 
     //-----------------
     // VULKAN STUFF
@@ -184,7 +192,7 @@ private:
     double m_lastY;
     bool m_isMousePressed = false;
     bool m_isFirstMouse = true;
-
+    GEOMETRY_TYPE m_geometryType;
 
     std::vector<Vertex>   vertices;
     std::vector<uint32_t> indices;
