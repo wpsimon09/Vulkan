@@ -65,6 +65,7 @@ void VulkanApp::InitVulkan() {
     CreateDescriptorSet();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
+    CreateTextureImage();
     CreateCommandPool();
     CreateVertexBuffers();
     CreateIndexBuffers();
@@ -732,6 +733,33 @@ void VulkanApp::CreateFrameBuffers() {
             throw std::runtime_error("Failed to create frame buffers from swap chain images");
         }
     }
+}
+
+void VulkanApp::CreateTextureImage() {
+    int texWidth, texHeight, texChanels;
+    stbi_uc* pixels = stbi_load("Textures/wood.png", &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
+
+    if(!pixels) {
+        throw std::runtime_error("Failed to load textue");
+    }
+
+    // times 4 because we have RGBA
+    VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+    VkBuffer stagingImageBuffer;
+    VkDeviceMemory stagingImageMemory;
+
+    BufferCreateInfo bufferInfo;
+    bufferInfo.physicalDevice = m_physicalDevice;
+    bufferInfo.logicalDevice = m_device;
+    bufferInfo.surface = m_sruface;
+    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    bufferInfo.size = imageSize;
+
+    CreateBuffer(bufferInfo, stagingImageBuffer, stagingImageMemory);
+
+    stbi_image_free(pixels);
 }
 
 void VulkanApp::CreateCommandPool() {

@@ -14,7 +14,9 @@ set(SOURCES src/main.cpp
         Includes/Utils.hpp
         Includes/Camera/Camera.cpp
         Includes/Camera/Camera.hpp
-        Includes/VertexData.hpp)
+        Includes/VertexData.hpp
+        Includes/stb/stb_image.h
+        Includes/stb/stb_image.cpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")

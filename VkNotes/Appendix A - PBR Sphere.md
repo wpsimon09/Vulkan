@@ -269,7 +269,7 @@ void main() {
 }
 ```
 
-Lastly during while sending uniforms to the shader I have calculated the Normal matrix and passed it to the Uniform buffer together with the current camera position.
+Lastly during sending uniforms to the shader I have calculated the Normal matrix and passed it to the Uniform buffer together with the current camera position.
 
 ```c++
 void HelloTriangle::UpdateUniformBuffer(uint32_t currentImage) {  

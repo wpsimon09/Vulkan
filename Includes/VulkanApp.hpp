@@ -20,6 +20,7 @@
 #include "Camera/Camera.hpp"
 #include "memory"
 #include "VertexData.hpp"
+#include <stb/stb_image.h>
 
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
@@ -82,6 +83,7 @@ private:
     // BUFFERS, (VERTEX, COMMAND ETC.) + DESCRIPTORS
     //-----------------------------------------------
     void CreateFrameBuffers();
+    void CreateTextureImage();
     void CreateCommandPool();
     void CreateVertexBuffers();
     void CreateIndexBuffers();

@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "VulkanApp.hpp"
-
 int main() {
 
     VulkanApp app;
