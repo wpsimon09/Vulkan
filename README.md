@@ -14,3 +14,7 @@ Files and their meagning:
 - `main.cpp` - app instantiation 
 - `VkNotes` - directory that contains Obsidian vault with all my notes
 
+## Branches
+
+Different branches contain either important milestones like first triangle and some experiments like PBR shading
+
