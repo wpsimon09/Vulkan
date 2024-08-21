@@ -16,5 +16,5 @@ Files and their meagning:
 
 ## Branches
 
-Different branches contain either important milestones like first triangle and some experiments like PBR shading
+Different branches contain important milestones like first triangle and some experiments like PBR shading
 
