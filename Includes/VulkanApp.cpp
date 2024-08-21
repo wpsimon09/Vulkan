@@ -759,6 +759,11 @@ void VulkanApp::CreateTextureImage() {
 
     CreateBuffer(bufferInfo, stagingImageBuffer, stagingImageMemory);
 
+    void *data;
+    vkMapMemory(m_device, stagingImageMemory, 0, imageSize, 0, &data);
+        memcpy(data, pixels, static_cast<size_t>(imageSize));
+    vkUnmapMemory(m_device, stagingImageMemory);
+
     stbi_image_free(pixels);
 
         VkImageCreateInfo imageInfo{.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
@@ -787,6 +792,15 @@ void VulkanApp::CreateTextureImage() {
 
         VkMemoryRequirements memReqirements;
         vkGetImageMemoryRequirements(m_device, textureImage, &memReqirements);
+
+        VkMemoryAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
+        allocInfo.allocationSize = memReqirements.size;
+        allocInfo.memoryTypeIndex = FindMemoryType(memReqirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,m_physicalDevice);
+
+        if(vkAllocateMemory(m_device, &allocInfo, nullptr, &textureImageMemory) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to allocate image memory");
+        }
+        vkBindImageMemory(m_device, textureImage, textureImageMemory, 0);
 }
 
 void VulkanApp::CreateCommandPool() {
