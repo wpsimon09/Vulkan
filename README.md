@@ -1,6 +1,6 @@
 # PBR Shader
 
-Implemented simple GGX BRDF to achieve physically based light reflection from the surface described by roughness and tallness combine with its albedo colour.
+Implemented simple GGX BRDF to achieve physically based light reflection from the surface described by roughness and metalness parameters combine with its albedo colour.
 
 Result:
 
