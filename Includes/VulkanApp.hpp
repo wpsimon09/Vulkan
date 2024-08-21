@@ -41,7 +41,7 @@ const std::vector<const char*> validationLayers = {
 const bool enableValidationLayers =true ;
 
 
-class HelloTriangle {
+class VulkanApp {
 public:
     void run();
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(

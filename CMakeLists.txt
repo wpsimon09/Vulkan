@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 set(TARGET LearnVulkan)
 set(SOURCES src/main.cpp
-        Includes/HelloTriangle.cpp
-        Includes/HelloTriangle.hpp
+        Includes/VulkanApp.cpp
+        Includes/VulkanApp.hpp
         Includes/DebugInfoLog.hpp
         Includes/Utils.hpp
         Includes/Structs.hpp
