@@ -175,6 +175,9 @@ private:
     VkBuffer m_indexBuffer;
     VkDeviceMemory m_indexBufferMemory;
 
+    VkImage textureImage;
+    VkDeviceMemory textureImageMemory;
+
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
 
