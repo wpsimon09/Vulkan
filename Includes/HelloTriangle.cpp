@@ -58,7 +58,7 @@ void HelloTriangle::InitVulkan() {
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();
-    GenerateGeometryVertices(PLANE);
+    GenerateGeometryVertices(CUBE);
     CreateUniformBuffers();
     CreateDescriptorSetLayout();
     CreateDescriptorPool();
@@ -950,7 +950,7 @@ void HelloTriangle::CreateSyncObjects() {
 void HelloTriangle::UpdateUniformBuffer(uint32_t currentImage) {
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::scale(ubo.model, glm::vec3(100.7f));
+    ubo.model = glm::scale(ubo.model, glm::vec3(1.7f));
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
     ubo.view = m_camera->getViewMatrix();
