@@ -58,7 +58,7 @@ void HelloTriangle::InitVulkan() {
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();
-    GenerateGeometryVertices(CUBE);
+    GenerateGeometryVertices(PLANE);
     CreateUniformBuffers();
     CreateDescriptorSetLayout();
     CreateDescriptorPool();
@@ -433,6 +433,7 @@ void HelloTriangle::CreateRenderPass() {
 void HelloTriangle::CreateDescriptorSetLayout() {
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
     uboLayoutBinding.binding = 0;
+
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     uboLayoutBinding.descriptorCount = 1;
     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -882,7 +883,7 @@ void HelloTriangle:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
     const float red = glm::abs(glm::sin(glfwGetTime()));
 
-    VkClearValue clearValue = {{{0.01, 0.01f, 0.01,1.0f}}};
+    VkClearValue clearValue = {{{0.3f, 0.3f, 0.3f,1.0f}}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearValue;
 
@@ -949,7 +950,7 @@ void HelloTriangle::CreateSyncObjects() {
 void HelloTriangle::UpdateUniformBuffer(uint32_t currentImage) {
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::scale(ubo.model, glm::vec3(2.7f));
+    ubo.model = glm::scale(ubo.model, glm::vec3(100.7f));
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
     ubo.view = m_camera->getViewMatrix();

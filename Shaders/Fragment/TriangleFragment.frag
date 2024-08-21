@@ -8,8 +8,8 @@ layout (location = 2) in vec3 cameraPosition;
 layout (location = 3) in vec3 fragPos;
 
 
-float roughness = 0.2;
-float metlaness = 1;
+float roughness = 0.5;
+float metlaness = 0.2;
 float ao = 0.2;
 vec3 albedo = vec3(0.0, 0.0, 0.7);
 

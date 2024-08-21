@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Appendix A - PBR Sphere.md",
+                "file": "6 Buffers/6.8 Descriptor and pool set.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Appendix A - PBR Sphere.md",
+                "file": "6 Buffers/6.8 Descriptor and pool set.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Appendix A - PBR Sphere.md",
+                "file": "6 Buffers/6.8 Descriptor and pool set.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Appendix A - PBR Sphere.md"
+                "file": "6 Buffers/6.8 Descriptor and pool set.md"
               }
             }
           }
