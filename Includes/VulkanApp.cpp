@@ -780,7 +780,6 @@ void VulkanApp::CreateTextureImage() {
     imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
     CreateImage(imageCreateInfo, m_textureImage, m_textureImageMemory);
-
 }
 
 void VulkanApp::CreateCommandPool() {

@@ -15,6 +15,7 @@
 
 #include "Structs.hpp"
 
+
 const std::vector<const char *> deviceExtentions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
@@ -309,11 +310,10 @@ static inline void CreateImage(const ImageCreateInfo &createImageInfo, VkImage &
     vkBindImageMemory(createImageInfo.logicalDevice, image, textureMemory, 0);
 }
 
-static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCommandPool transferCommandPool,VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-    VkCommandBufferAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+inline static VkCommandBuffer BeginSingleTimeCommand(VkDevice logicalDevice, VkCommandPool commandPool) {
+    VkCommandBufferAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
+    allocInfo.commandPool = commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = transferCommandPool;
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
@@ -321,7 +321,27 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
 
     VkCommandBufferBeginInfo beginInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
     vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    return commandBuffer;
+}
+
+inline static void EndSingleTimeCommand(VkDevice logicalDevice,VkCommandPool commandPool,VkCommandBuffer commandBuffer, VkQueue queue) {
+    vkEndCommandBuffer(commandBuffer);
+
+    VkSubmitInfo submitInfo{.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(queue);
+    vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+}
+
+static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCommandPool transferCommandPool,VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+
+    VkCommandBuffer commandBuffer = BeginSingleTimeCommand(logicalDevice, transferCommandPool);
 
     VkBufferCopy copyRegion{};
     copyRegion.srcOffset = 0;
@@ -329,17 +349,9 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
     copyRegion.size = size;
     vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer,1,&copyRegion);
 
-    vkEndCommandBuffer(commandBuffer);
-
-    VkSubmitInfo submitInfo{.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO};
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffer;
-
-    vkQueueSubmit(transferQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(transferQueue);
-
-    vkFreeCommandBuffers(logicalDevice, transferCommandPool, 1, &commandBuffer);
+    EndSingleTimeCommand(logicalDevice, transferCommandPool, commandBuffer, transferQueue);
 }
+
 
 
 static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {

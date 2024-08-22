@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "7. Texturing/7.1 Images.md",
+                "file": "7. Texturing/7.2 Layout transition.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "7. Texturing/7.1 Images.md",
+                "file": "7. Texturing/7.2 Layout transition.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "7. Texturing/7.1 Images.md",
+                "file": "7. Texturing/7.2 Layout transition.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "7. Texturing/7.1 Images.md"
+                "file": "7. Texturing/7.2 Layout transition.md"
               }
             }
           }
@@ -161,8 +161,9 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
-    "Untitled.md",
     "7. Texturing/7.1 Images.md",
+    "7. Texturing/7.2 Layout transition.md",
+    "Untitled.md",
     "7. Texturing",
     "Appendix A - PBR Sphere.md",
     "6. Buffers/6.8 Descriptor and pool set.md",
@@ -191,7 +192,6 @@
     "4. Drawing/4.5 Frames in flight.md",
     "5. Swap chain recreation",
     "3. Pipeline/3.5 Combination.md",
-    "3. Pipeline/3.1 Graphics pipeline in Vulkan.md",
     "4. Drawing",
     "images/swapchain-info.png",
     "images/NDC-inVulkan.png",
