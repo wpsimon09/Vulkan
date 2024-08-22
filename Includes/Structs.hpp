@@ -131,6 +131,12 @@ struct ImageCreateInfo {
     VkImageTiling imageTiling = VK_IMAGE_TILING_OPTIMAL;
 };
 
+struct ImageLayoutDependencyInfo {
+    VkDevice logicalDevice;
+    VkCommandPool commandPool;
+    VkQueue transformQueue;
+};
+
 enum GEOMETRY_TYPE {
     PLANE = 0,
     CUBE = 1,

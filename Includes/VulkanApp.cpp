@@ -780,6 +780,14 @@ void VulkanApp::CreateTextureImage() {
     imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
     CreateImage(imageCreateInfo, m_textureImage, m_textureImageMemory);
+
+    ImageLayoutDependencyInfo dependencyInfo{};
+    dependencyInfo.commandPool = m_transferCommandPool;
+    dependencyInfo.logicalDevice = m_device;
+    dependencyInfo.transformQueue = m_transferQueue;
+    TransferImageLayout(dependencyInfo, m_textureImage, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+    CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_textureImage, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 }
 
 void VulkanApp::CreateCommandPool() {

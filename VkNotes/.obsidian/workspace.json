@@ -163,6 +163,7 @@
   "lastOpenFiles": [
     "7. Texturing/7.1 Images.md",
     "7. Texturing/7.2 Layout transition.md",
+    "images/vkCmdPipelineBarier.png",
     "Untitled.md",
     "7. Texturing",
     "Appendix A - PBR Sphere.md",
@@ -191,7 +192,6 @@
     "4. Drawing/4.1 Frame buffer.md",
     "4. Drawing/4.5 Frames in flight.md",
     "5. Swap chain recreation",
-    "3. Pipeline/3.5 Combination.md",
     "4. Drawing",
     "images/swapchain-info.png",
     "images/NDC-inVulkan.png",
