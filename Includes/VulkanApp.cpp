@@ -788,6 +788,8 @@ void VulkanApp::CreateTextureImage() {
     TransferImageLayout(dependencyInfo, m_textureImage, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
     CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_textureImage, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
+
+    TransferImageLayout(dependencyInfo, m_textureImage, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 
 void VulkanApp::CreateCommandPool() {
