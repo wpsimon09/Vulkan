@@ -227,7 +227,7 @@ static inline uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags
     throw std::runtime_error("Fialed to find suitable memmory type");
 }
 
-static inline void CreateBuffer(BufferCreateInfo bufferCreateInfo, VkBuffer& buffer, VkDeviceMemory &bufferMemory ){
+static inline void CreateBuffer(const BufferCreateInfo &bufferCreateInfo, VkBuffer& buffer, VkDeviceMemory &bufferMemory ){
     QueueFamilyIndices indices = FindQueueFamilies(bufferCreateInfo.physicalDevice, bufferCreateInfo.surface);
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -264,6 +264,51 @@ static inline void CreateBuffer(BufferCreateInfo bufferCreateInfo, VkBuffer& buf
     vkBindBufferMemory(bufferCreateInfo.logicalDevice, buffer,bufferMemory, 0);
 }
 
+static inline void CreateImage(const ImageCreateInfo &createImageInfo, VkImage &image, VkDeviceMemory &textureMemory) {
+
+    QueueFamilyIndices indices = FindQueueFamilies(createImageInfo.physicalDevice, createImageInfo.surface);
+    VkImageCreateInfo imageInfo{.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
+
+    //what coordinate systems will be used for the image access
+    imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    imageInfo.extent.width = createImageInfo.width;
+    imageInfo.extent.height = createImageInfo.height;
+    // 1 textel on Z axis not 0 texels
+    imageInfo.extent.depth = 1;
+    imageInfo.mipLevels = 1;
+    imageInfo.arrayLayers = 1;
+    //use the same format as pixels that were loaded
+    //using different format might result in crash during copying
+    imageInfo.format = createImageInfo.format;
+    imageInfo.tiling = createImageInfo.imageTiling;
+    imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    imageInfo.usage = createImageInfo.usage;
+    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsFamily.value(), indices.transferFamily.value()};
+    imageInfo.queueFamilyIndexCount = static_cast<uint32_t>(sharedQueueFamilies.size());
+    imageInfo.pQueueFamilyIndices = sharedQueueFamilies.data();
+
+    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.flags = 0;
+
+    if(vkCreateImage(createImageInfo.logicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create vulkan image ");
+    }
+
+    VkMemoryRequirements memReqirements;
+    vkGetImageMemoryRequirements(createImageInfo.logicalDevice, image, &memReqirements);
+
+    VkMemoryAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
+    allocInfo.allocationSize = memReqirements.size;
+    allocInfo.memoryTypeIndex = FindMemoryType(memReqirements.memoryTypeBits, createImageInfo.memoryProperteis,createImageInfo.physicalDevice);
+
+    if(vkAllocateMemory(createImageInfo.logicalDevice, &allocInfo, nullptr, &textureMemory) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate image memory");
+    }
+    vkBindImageMemory(createImageInfo.logicalDevice, image, textureMemory, 0);
+}
+
 static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCommandPool transferCommandPool,VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -295,6 +340,7 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
 
     vkFreeCommandBuffers(logicalDevice, transferCommandPool, 1, &commandBuffer);
 }
+
 
 static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {
     const unsigned int X_SEGMENTS = 64;

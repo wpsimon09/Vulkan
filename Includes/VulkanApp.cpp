@@ -4,6 +4,7 @@
 
 #include "VulkanApp.hpp"
 
+#include <emmintrin.h>
 #include <unistd.h>
 
 
@@ -766,41 +767,20 @@ void VulkanApp::CreateTextureImage() {
 
     stbi_image_free(pixels);
 
-        VkImageCreateInfo imageInfo{.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
+    ImageCreateInfo imageCreateInfo {};
+    imageCreateInfo.physicalDevice = m_physicalDevice;
+    imageCreateInfo.logicalDevice = m_device;
+    imageCreateInfo.surface = m_sruface;
+    imageCreateInfo.width = texWidth;
+    imageCreateInfo.height = texHeight;
+    imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+    imageCreateInfo.imageTiling = VK_IMAGE_TILING_OPTIMAL;
+    imageCreateInfo.size = imageSize;
+    imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-        //what coordinate systems will be used for the image access
-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
-        imageInfo.extent.width = static_cast<uint32_t>(texWidth);
-        imageInfo.extent.height = static_cast<uint32_t>(texHeight);
-        // 1 textel on Z axis not 0 texels
-        imageInfo.extent.depth = 1;
-        imageInfo.mipLevels = 1;
-        imageInfo.arrayLayers = 1;
-        //use the same format as pixels that were loaded
-        //using different format might result in crash during copying
-        imageInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-        imageInfo.flags = 0;
+    CreateImage(imageCreateInfo, m_textureImage, m_textureImageMemory);
 
-        if(vkCreateImage(m_device, &imageInfo, nullptr, &textureImage) != VK_SUCCESS) {
-            throw std::runtime_error("Failed to create vulkan image ");
-        }
-
-        VkMemoryRequirements memReqirements;
-        vkGetImageMemoryRequirements(m_device, textureImage, &memReqirements);
-
-        VkMemoryAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
-        allocInfo.allocationSize = memReqirements.size;
-        allocInfo.memoryTypeIndex = FindMemoryType(memReqirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,m_physicalDevice);
-
-        if(vkAllocateMemory(m_device, &allocInfo, nullptr, &textureImageMemory) != VK_SUCCESS) {
-            throw std::runtime_error("Failed to allocate image memory");
-        }
-        vkBindImageMemory(m_device, textureImage, textureImageMemory, 0);
 }
 
 void VulkanApp::CreateCommandPool() {

@@ -118,8 +118,23 @@ struct UniformBufferObject {
     alignas(16)glm::mat4 normal;
 };
 
+struct ImageCreateInfo {
+    VkPhysicalDevice physicalDevice;
+    VkSurfaceKHR surface;
+    VkDevice logicalDevice;
+    VkDeviceSize size;
+    VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
+    uint32_t width;
+    uint32_t height;
+    VkImageUsageFlags usage;
+    VkMemoryPropertyFlags memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    VkImageTiling imageTiling = VK_IMAGE_TILING_OPTIMAL;
+};
+
 enum GEOMETRY_TYPE {
     PLANE = 0,
     CUBE = 1,
     SPHERE = 2,
 };
+
+
