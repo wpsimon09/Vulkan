@@ -66,8 +66,8 @@ void VulkanApp::InitVulkan() {
     CreateDescriptorSet();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
-    CreateTextureImage();
     CreateCommandPool();
+    CreateTextureImage();
     CreateVertexBuffers();
     CreateIndexBuffers();
     CreateCommandBuffers();
