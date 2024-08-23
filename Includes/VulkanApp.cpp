@@ -69,6 +69,7 @@ void VulkanApp::InitVulkan() {
     CreateCommandPool();
     CreateTextureImage();
     CreateTextureImageView();
+    CreateTextureSampler();
     CreateVertexBuffers();
     CreateIndexBuffers();
     CreateCommandBuffers();
@@ -898,6 +899,42 @@ void VulkanApp::CreateTextureImageView() {
 
 }
 
+void VulkanApp::CreateTextureSampler() {
+    VkSamplerCreateInfo samplerInfo{.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
+    samplerInfo.magFilter = VK_FILTER_LINEAR; //can be VK_FILTER_NEREAST (resutls in pixelatino)
+    samplerInfo.minFilter = VK_FILTER_LINEAR; //can be VK_FILTER_NEREAST (resutls in pixelatino)
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT; // what happens when we attemp to sample where there are not pixels
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT; // can be repeat, clamp to eadge or clamp to border
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.anisotropyEnable = VK_TRUE;
+
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    vkGetPhysicalDeviceProperties(m_physicalDevice, &physicalDeviceProperties);
+    samplerInfo.maxAnisotropy = physicalDeviceProperties.limits.maxSamplerAnisotropy;
+
+    //color to be used when VK_SAMPLER_ADRESSS_MODE_BORDER is selected
+    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+
+    // use uv coordinates in range (0,1) - true or (0,imageLimit) - false
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+
+    // compare values against reference, this will be important while calculating PCF shadow
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+
+    // mip mapping
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    samplerInfo.mipLodBias = 0.0f; // can also be physicalDeviceProperties.limits.maxSamplerLodBias
+    samplerInfo.minLod = 0.0;
+    samplerInfo.maxLod = 0.0f;
+
+    if(vkCreateSampler(m_device, &samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create texture sampler");
+    }
+
+}
+
+
 void VulkanApp::CreateCommandBuffers() {
     m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
     VkCommandBufferAllocateInfo allocInfo{};
@@ -1058,6 +1095,8 @@ void VulkanApp::CreateLogicalDevice() {
     }
 
     VkPhysicalDeviceFeatures deviceFeatures{};
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
+
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -1122,10 +1161,11 @@ void VulkanApp::CleanUp() {
     }
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
     vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
-    CleanupSwapChain();
 
+    CleanupSwapChain();
     vkDestroyImageView(m_device, m_textureImageView, nullptr);
     vkDestroyImage(m_device, m_textureImage, nullptr);
+    vkDestroySampler(m_device, m_textureSampler, nullptr);
     vkFreeMemory(m_device, m_textureImageMemory, nullptr);
 
     for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {

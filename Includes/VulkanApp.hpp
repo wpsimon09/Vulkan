@@ -83,17 +83,23 @@ private:
     // BUFFERS, (VERTEX, COMMAND ETC.) + DESCRIPTORS
     //-----------------------------------------------
     void CreateFrameBuffers();
-    void CreateTextureImage();
     void CreateCommandPool();
     void CreateVertexBuffers();
     void CreateIndexBuffers();
     void CreateUniformBuffers();
-    void CreateTextureImageView();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateDescriptorPool();
     void CreateDescriptorSet();
     //-----------------------------------
+
+    //---------------------
+    // TEXTURES AND IMAGES
+    //---------------------
+    void CreateTextureImage();
+    void CreateTextureImageView();
+    void CreateTextureSampler();
+    //---------------------
 
     //---------------------
     // SYNCHRONIZATION
@@ -179,6 +185,7 @@ private:
     VkImage m_textureImage;
     VkImageView m_textureImageView;
     VkDeviceMemory m_textureImageMemory;
+    VkSampler m_textureSampler;
 
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
