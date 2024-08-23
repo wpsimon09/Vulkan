@@ -176,6 +176,7 @@ private:
     VkDeviceMemory m_indexBufferMemory;
 
     VkImage m_textureImage;
+    VkImageView m_textureImageView;
     VkDeviceMemory m_textureImageMemory;
 
     VkDescriptorPool m_descriptorPool;

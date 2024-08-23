@@ -790,6 +790,9 @@ void VulkanApp::CreateTextureImage() {
     CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_textureImage, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
     TransferImageLayout(dependencyInfo, m_textureImage, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+    vkDestroyBuffer(m_device, stagingImageBuffer, nullptr);
+    vkFreeMemory(m_device, stagingImageMemory, nullptr);
 }
 
 void VulkanApp::CreateCommandPool() {
@@ -1133,6 +1136,9 @@ void VulkanApp::CleanUp() {
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
     vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
     CleanupSwapChain();
+
+    vkDestroyImage(m_device, m_textureImage, nullptr);
+    vkFreeMemory(m_device, m_textureImageMemory, nullptr);
 
     for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
