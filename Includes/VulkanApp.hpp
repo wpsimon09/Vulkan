@@ -88,6 +88,7 @@ private:
     void CreateVertexBuffers();
     void CreateIndexBuffers();
     void CreateUniformBuffers();
+    void CreateTextureImageView();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void CreateDescriptorPool();

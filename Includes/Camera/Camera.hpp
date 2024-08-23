@@ -40,7 +40,7 @@ public:
 
     bool getIsFirstMouse() const {return m_isFirstMouse;}
 
-    bool setIsFirstMouse(bool val = false ) {this->m_isFirstMouse = val;}
+    void setIsFirstMouse(bool val = false ) {this->m_isFirstMouse = val;}
 
     void update();
 

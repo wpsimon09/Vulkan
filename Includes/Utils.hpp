@@ -426,6 +426,26 @@ static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,
 
 
 
+static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB) {
+    VkImageViewCreateInfo viewInfo{.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
+    viewInfo.image = image;
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = format;
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
+
+    VkImageView imgView;
+    if(vkCreateImageView(logicalDevice, &viewInfo, nullptr, &imgView) != VK_SUCCESS) {
+        throw std::runtime_error("Filed to create image views ");
+    }
+
+    return imgView;
+}
+
+
 static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {
     const unsigned int X_SEGMENTS = 64;
     const unsigned int Y_SEGMENTS = 64;
@@ -447,8 +467,6 @@ static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uin
             vertices.push_back(tempVertex);
         }
     }
-
-
 
     bool oddRow = false;
     for (unsigned int y = 0; y < Y_SEGMENTS; ++y)
