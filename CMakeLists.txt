@@ -16,7 +16,9 @@ set(SOURCES src/main.cpp
         Includes/Camera/Camera.hpp
         Includes/VertexData.hpp
         Includes/stb/stb_image.h
-        Includes/stb/stb_image.cpp)
+        Includes/stb/stb_image.cpp
+        Includes/Material/Material.cpp
+        Includes/Material/Material.hpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")

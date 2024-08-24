@@ -51,6 +51,8 @@ void VulkanApp::InitWindow() {
 }
 
 void VulkanApp::InitVulkan() {
+    this->m_material = std::make_unique<Material>();
+
     CreateInstance();
     SetUpDebugMessenger();
     CreateSurface();
@@ -59,8 +61,7 @@ void VulkanApp::InitVulkan() {
     CreateSwapChain();
     CreateImageViews();
     CreateRenderPass();
-    GenerateGeometryVertices(PLANE);
-
+    GenerateGeometryVertices(CUBE);
     CreateDescriptorSetLayout();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
@@ -445,6 +446,7 @@ void VulkanApp::CreateDescriptorSetLayout() {
 
 void VulkanApp::CreateDescriptorPool() {
     std::array<VkDescriptorPoolSize,2> poolSizes{};
+
     // for UBO
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -760,15 +762,11 @@ void VulkanApp::CreateFrameBuffers() {
 }
 
 void VulkanApp::CreateTextureImage() {
-    int texWidth, texHeight, texChanels;
-    stbi_uc* pixels = stbi_load("Textures/wood.png", &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
 
-    if(!pixels) {
-        throw std::runtime_error("Failed to load textue");
-    }
-
-    // times 4 becaus   e we have RGBA
-    VkDeviceSize imageSize = texWidth * texHeight * 4;
+    TEXTURE_TYPE texturesToProcess[] = {TEXTURE_TYPE_ALBEDO, TEXTURE_TYPE_ARM, TEXTURE_TYPE_NORMAL};
+    std::vector<std::string> paths = {
+        "Textures/albedo.png", "Textures/arm.png", "Textures/normal.png"
+    };
 
     VkBuffer stagingImageBuffer;
     VkDeviceMemory stagingImageMemory;
@@ -779,43 +777,59 @@ void VulkanApp::CreateTextureImage() {
     bufferInfo.surface = m_sruface;
     bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
     bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-    bufferInfo.size = imageSize;
-
-    CreateBuffer(bufferInfo, stagingImageBuffer, stagingImageMemory);
-
-    void *data;
-    vkMapMemory(m_device, stagingImageMemory, 0, imageSize, 0, &data);
-        memcpy(data, pixels, static_cast<size_t>(imageSize));
-    vkUnmapMemory(m_device, stagingImageMemory);
-
-    stbi_image_free(pixels);
 
     ImageCreateInfo imageCreateInfo {};
     imageCreateInfo.physicalDevice = m_physicalDevice;
     imageCreateInfo.logicalDevice = m_device;
     imageCreateInfo.surface = m_sruface;
-    imageCreateInfo.width = texWidth;
-    imageCreateInfo.height = texHeight;
     imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
     imageCreateInfo.imageTiling = VK_IMAGE_TILING_OPTIMAL;
-    imageCreateInfo.size = imageSize;
     imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
     imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-    CreateImage(imageCreateInfo, m_textureImage, m_textureImageMemory);
+    for(int i = 0; i < paths.size(); i++) {
+        int texWidth, texHeight, texChanels;
+        stbi_uc* pixels = stbi_load(paths[i].c_str(), &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
 
-    ImageLayoutDependencyInfo dependencyInfo{};
-    dependencyInfo.commandPool = m_transferCommandPool;
-    dependencyInfo.logicalDevice = m_device;
-    dependencyInfo.transformQueue = m_transferQueue;
-    TransferImageLayout(dependencyInfo, m_textureImage, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        std::cout<<"Loading texture: "<< paths[i] <<std::endl;
 
-    CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_textureImage, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
+        if(!pixels) {
+            throw std::runtime_error("Failed to load textue");
+        }
 
-    TransferImageLayout(dependencyInfo, m_textureImage, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        // times 4 becaus   e we have RGBA
+        VkDeviceSize imageSize = texWidth * texHeight * 4;
+        bufferInfo.size = imageSize;
+        CreateBuffer(bufferInfo, stagingImageBuffer, stagingImageMemory);
 
-    vkDestroyBuffer(m_device, stagingImageBuffer, nullptr);
-    vkFreeMemory(m_device, stagingImageMemory, nullptr);
+        void *data;
+        vkMapMemory(m_device, stagingImageMemory, 0, imageSize, 0, &data);
+            memcpy(data, pixels, static_cast<size_t>(imageSize));
+        vkUnmapMemory(m_device, stagingImageMemory);
+
+        stbi_image_free(pixels);
+
+        imageCreateInfo.width = texWidth;
+        imageCreateInfo.height = texHeight;
+        imageCreateInfo.size = imageSize;
+
+        CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
+
+        ImageLayoutDependencyInfo dependencyInfo{};
+        dependencyInfo.commandPool = m_transferCommandPool;
+        dependencyInfo.logicalDevice = m_device;
+        dependencyInfo.transformQueue = m_transferQueue;
+
+        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
+
+        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        vkDestroyBuffer(m_device, stagingImageBuffer, nullptr);
+        vkFreeMemory(m_device, stagingImageMemory, nullptr);
+
+    }
 }
 
 void VulkanApp::CreateCommandPool() {
@@ -936,7 +950,6 @@ void VulkanApp::CreateUniformBuffers() {
 
 void VulkanApp::CreateTextureImageView() {
     m_textureImageView = GenerateImageView(m_device, m_textureImage);
-
 }
 
 void VulkanApp::CreateTextureSampler() {
@@ -1075,7 +1088,7 @@ void VulkanApp::CreateSyncObjects() {
 void VulkanApp::UpdateUniformBuffer(uint32_t currentImage) {
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::scale(ubo.model, glm::vec3(100.7f));
+    ubo.model = glm::scale(ubo.model, glm::vec3(1.7f));
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
     ubo.view = m_camera->getViewMatrix();

@@ -161,6 +161,7 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
+    "7. Texturing/7.1 Images.md~",
     "6. Buffers/6.9 Alignment requirements.md",
     "7. Texturing/7.4 Combined image sampler.md",
     "7. Texturing/7.3 Image view and sampler.md",
@@ -191,7 +192,6 @@
     "4. Drawing/4.4 Presentation.md",
     "4. Drawing/4.3 Rendering and presentation.md",
     "4. Drawing/4.2 Command buffer.md",
-    "4. Drawing/4.1 Frame buffer.md",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",
