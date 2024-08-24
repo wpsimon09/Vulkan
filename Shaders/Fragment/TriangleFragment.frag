@@ -2,10 +2,14 @@
 
 layout (location = 0) out vec4 outColor;
 
+layout (binding = 1) uniform sampler2D texSampler;
+
+
 layout (location = 0) in vec3 color;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec3 cameraPosition;
 layout (location = 3) in vec3 fragPos;
+layout (location = 4) in vec2 uv;
 
 
 float roughness = 0.5;
@@ -74,6 +78,9 @@ vec3 CalculateIrrandiance(){
     vec3 N = normalize(normal);
     vec3 V = normalize(cameraPosition - fragPos);
 
+
+    albedo = texture(texSampler, uv).rgb;;
+
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metlaness);
 
@@ -105,8 +112,9 @@ vec3 CalculateIrrandiance(){
 void main() {
 
 
+    vec3 irradiance = CalculateIrrandiance();
     vec3 ambient = vec3(0.3) * albedo * ao;
-    vec3 color = ambient + CalculateIrrandiance();
+    vec3 color = ambient + irradiance;
 
     outColor = vec4(color,1.0);
 }
