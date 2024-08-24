@@ -457,15 +457,16 @@ static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uin
     {
         for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
         {
-            Vertex tempVertex;
             float xSegment = (float)x / (float)X_SEGMENTS;
             float ySegment = (float)y / (float)Y_SEGMENTS;
             float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
             float yPos = std::cos(ySegment * PI);
             float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
 
+            Vertex tempVertex {};
             tempVertex.pos = glm::vec3(xPos, yPos, zPos);
             tempVertex.normal = glm::vec3(xPos, yPos, zPos);
+            tempVertex.uv = glm::vec2(xSegment, ySegment);
 
             vertices.push_back(tempVertex);
         }

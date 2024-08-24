@@ -60,10 +60,8 @@ void VulkanApp::InitVulkan() {
     CreateImageViews();
     CreateRenderPass();
     GenerateGeometryVertices(PLANE);
-    CreateUniformBuffers();
+
     CreateDescriptorSetLayout();
-    CreateDescriptorPool();
-    CreateDescriptorSet();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
@@ -72,6 +70,9 @@ void VulkanApp::InitVulkan() {
     CreateTextureSampler();
     CreateVertexBuffers();
     CreateIndexBuffers();
+    CreateUniformBuffers();
+    CreateDescriptorPool();
+    CreateDescriptorSet();
     CreateCommandBuffers();
     CreateSyncObjects();
 }
@@ -475,18 +476,26 @@ void VulkanApp::CreateDescriptorSet() {
     }
 
     for(size_t i = 0; i<MAX_FRAMES_IN_FLIGHT; i++) {
+        //--------
+        // UBO
+        //--------
         VkDescriptorBufferInfo bufferInfo{};
         bufferInfo.buffer = m_uniformBuffers[i];
         bufferInfo.offset = 0;
         bufferInfo.range = VK_WHOLE_SIZE;
 
+        //----------
+        // TEXTURE
+        //----------
         VkDescriptorImageInfo imageInfo{};
         imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         imageInfo.imageView = m_textureImageView;
         imageInfo.sampler = m_textureSampler;
 
 
-
+        //--------
+        // UBO
+        //--------
         std::array<VkWriteDescriptorSet,2> descriptorWrites{};
         descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[0].dstSet = m_descriptorSets[i];
@@ -498,6 +507,9 @@ void VulkanApp::CreateDescriptorSet() {
         descriptorWrites[0].pImageInfo = nullptr;
         descriptorWrites[0].pTexelBufferView = nullptr;
 
+        //----------
+        // TEXTURE
+        //----------
         descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[1].dstSet = m_descriptorSets[i];
         descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -508,7 +520,7 @@ void VulkanApp::CreateDescriptorSet() {
         descriptorWrites[1].pBufferInfo = nullptr;
         descriptorWrites[1].pTexelBufferView = nullptr;
 
-        vkUpdateDescriptorSets(m_device, 1, descriptorWrites.data(), 0, nullptr);
+        vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     }
 }
 

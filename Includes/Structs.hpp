@@ -49,6 +49,9 @@ struct Vertex {
     glm::vec3 pos;
     glm::vec3 color;
     glm::vec3 normal;
+    glm::vec2 uv;
+
+
 
     static VkVertexInputBindingDescription getBindingDescription() {
         VkVertexInputBindingDescription bindingDescription{};
@@ -63,8 +66,8 @@ struct Vertex {
         return bindingDescription;
     }
 
-    static std::array<VkVertexInputAttributeDescription,3> getAttributeDescriptions() {
-        std::array<VkVertexInputAttributeDescription,3> attributeDescriptions;
+    static std::array<VkVertexInputAttributeDescription,4> getAttributeDescriptions() {
+        std::array<VkVertexInputAttributeDescription,4> attributeDescriptions;
         //which vertex array binding to use
         attributeDescriptions[0].binding = 0;
         //location in shader
@@ -91,6 +94,15 @@ struct Vertex {
         attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
         //offset to the position
         attributeDescriptions[2].offset = offsetof(Vertex, normal);
+
+        //which vertex array binding to use
+        attributeDescriptions[3].binding = 0;
+        //location in shader
+        attributeDescriptions[3].location = 3;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[3].format = VK_FORMAT_R32G32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[3].offset = offsetof(Vertex, uv);
 
         return attributeDescriptions;
     }
