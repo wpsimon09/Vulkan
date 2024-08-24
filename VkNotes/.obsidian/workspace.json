@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "7. Texturing/7.3 Image view and sampler.md",
+                "file": "7. Texturing/7.4 Combined image sampler.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "7. Texturing/7.3 Image view and sampler.md",
+                "file": "7. Texturing/7.4 Combined image sampler.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "7. Texturing/7.3 Image view and sampler.md",
+                "file": "7. Texturing/7.4 Combined image sampler.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "7. Texturing/7.3 Image view and sampler.md"
+                "file": "7. Texturing/7.4 Combined image sampler.md"
               }
             }
           }
@@ -161,15 +161,16 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
-    "7. Texturing/7.2 Layout transition.md",
+    "6. Buffers/6.9 Alignment requirements.md",
+    "7. Texturing/7.4 Combined image sampler.md",
     "7. Texturing/7.3 Image view and sampler.md",
+    "7. Texturing/7.2 Layout transition.md",
     "7. Texturing/7.1 Images.md",
     "images/vkCmdPipelineBarier.png",
     "Untitled.md",
     "7. Texturing",
     "Appendix A - PBR Sphere.md",
     "6. Buffers/6.8 Descriptor and pool set.md",
-    "6. Buffers/6.9 Alignment requirements.md",
     "6. Buffers/6.6 Index buffer.md",
     "3. Pipeline/3.4 Render pass.md",
     "3. Pipeline/3.3 Fixed function pipeline.md",
@@ -191,7 +192,6 @@
     "4. Drawing/4.3 Rendering and presentation.md",
     "4. Drawing/4.2 Command buffer.md",
     "4. Drawing/4.1 Frame buffer.md",
-    "4. Drawing/4.5 Frames in flight.md",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",
