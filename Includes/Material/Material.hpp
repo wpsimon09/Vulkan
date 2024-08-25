@@ -23,14 +23,17 @@ enum TEXTURE_TYPE {
 
 class Material {
 public:
-    Material();
+    Material(VkDevice &logicalDevic);
 
     std::map<TEXTURE_TYPE, Texture> GetTextures(){return this->materials;};
 
     Texture getAlbedo() {return materials[TEXTURE_TYPE_ALBEDO];};
     Texture getArm() {return materials[TEXTURE_TYPE_ARM];};
     Texture getNormal() {return materials[TEXTURE_TYPE_NORMAL];};
+
+    ~Material();
 private:
+    VkDevice logicalDevice;
     std::map<TEXTURE_TYPE,Texture> materials;
 };
 

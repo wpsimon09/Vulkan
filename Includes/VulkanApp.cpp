@@ -51,7 +51,6 @@ void VulkanApp::InitWindow() {
 }
 
 void VulkanApp::InitVulkan() {
-    this->m_material = std::make_unique<Material>();
 
     CreateInstance();
     SetUpDebugMessenger();
@@ -133,6 +132,7 @@ void VulkanApp::CreateInstance() {
     } else {
         std::cout << "Vulkan instance created successfuly \n";
     }
+
 }
 
 bool VulkanApp::CheckValidationLayerSupport() {
@@ -826,10 +826,9 @@ void VulkanApp::CreateTextureImage() {
 
         TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-        vkDestroyBuffer(m_device, stagingImageBuffer, nullptr);
         vkFreeMemory(m_device, stagingImageMemory, nullptr);
-
     }
+        vkDestroyBuffer(m_device, stagingImageBuffer, nullptr);
 }
 
 void VulkanApp::CreateCommandPool() {
@@ -1172,6 +1171,8 @@ void VulkanApp::CreateLogicalDevice() {
     vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
     vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentationQueue);
     vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_transferQueue);
+
+    this->m_material = std::make_unique<Material>(m_device);
 }
 
 void VulkanApp::CreateSurface() {
