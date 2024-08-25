@@ -25,7 +25,7 @@ class Material {
 public:
     Material(VkDevice &logicalDevic);
 
-    std::map<TEXTURE_TYPE, Texture> GetTextures(){return this->materials;};
+    std::map<TEXTURE_TYPE, Texture> &GetTextures(){return this->materials;};
 
     Texture getAlbedo() {return materials[TEXTURE_TYPE_ALBEDO];};
     Texture getArm() {return materials[TEXTURE_TYPE_ARM];};
