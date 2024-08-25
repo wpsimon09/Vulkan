@@ -491,30 +491,31 @@ void VulkanApp::CreateDescriptorSet() {
         //----------
         // TEXTURE
         //----------
-        VkDescriptorImageInfo imageInfo{};
+        /*VkDescriptorImageInfo imageInfo{};
         imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         imageInfo.imageView = m_textureImageView;
-        imageInfo.sampler = m_textureSampler;
+        imageInfo.sampler = m_textureSampler;*/
 
 
         //--------
         // UBO
         //--------
-        std::array<VkWriteDescriptorSet,2> descriptorWrites{};
-        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[0].dstSet = m_descriptorSets[i];
-        descriptorWrites[0].dstBinding = 0;
-        descriptorWrites[0].dstArrayElement = 0;
-        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptorWrites[0].descriptorCount = 1;
-        descriptorWrites[0].pBufferInfo = &bufferInfo;
-        descriptorWrites[0].pImageInfo = nullptr;
-        descriptorWrites[0].pTexelBufferView = nullptr;
+        VkWriteDescriptorSet bufferDescriptorWrite;
+        bufferDescriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        bufferDescriptorWrite.dstSet = m_descriptorSets[i];
+        bufferDescriptorWrite.dstBinding = 0;
+        bufferDescriptorWrite.dstArrayElement = 0;
+        bufferDescriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bufferDescriptorWrite.descriptorCount = 1;
+        bufferDescriptorWrite.pBufferInfo = &bufferInfo;
+        bufferDescriptorWrite.pImageInfo = nullptr;
+        bufferDescriptorWrite.pTexelBufferView = nullptr;
+        bufferDescriptorWrite.pNext = nullptr;
 
         //----------
         // TEXTURE
         //----------
-        descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        /*descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[1].dstSet = m_descriptorSets[i];
         descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
         descriptorWrites[1].dstBinding = 1;
@@ -522,7 +523,10 @@ void VulkanApp::CreateDescriptorSet() {
         descriptorWrites[1].descriptorCount = 1;
         descriptorWrites[1].pImageInfo = &imageInfo;
         descriptorWrites[1].pBufferInfo = nullptr;
-        descriptorWrites[1].pTexelBufferView = nullptr;
+        descriptorWrites[1].pTexelBufferView = nullptr;*/
+
+        auto descriptorWrites = m_material->GetDescriptorWrites(m_descriptorSets[i]);
+        descriptorWrites.insert(descriptorWrites.begin(),bufferDescriptorWrite);
 
         vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     }
