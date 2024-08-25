@@ -20,7 +20,7 @@ float ao = 0.2;
 vec3 albedo = vec3(0.0, 0.0, 0.7);
 
 vec3 lightPos = vec3(0.0f, 20.0f, -9.0f);
-vec3 lightColor = vec3(4.0);
+vec3 lightColor = vec3(3.0);
 
 const float PI = 3.14159265359;
 
