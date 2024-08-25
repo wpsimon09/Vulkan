@@ -22,6 +22,8 @@
 #include "VertexData.hpp"
 #include <stb/stb_image.h>
 
+#include "Material/Material.hpp"
+
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
@@ -202,6 +204,7 @@ private:
     bool m_frameBufferResized = false;
     ApplicationStatusNotifier m_appNotifier;
     std::unique_ptr<Camera> m_camera;
+    std::unique_ptr<Material> m_material;
     double m_lastX;
     double m_lastY;
     bool m_isMousePressed = false;
