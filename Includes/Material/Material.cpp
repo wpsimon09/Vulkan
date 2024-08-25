@@ -40,14 +40,17 @@ VkDescriptorPoolSize Material::GetDescriptorPoolSize(uint32_t MAX_FRAMES_IN_FLIG
 
 std::vector<VkWriteDescriptorSet> Material::GetDescriptorWrites(VkDescriptorSet descriptorSet) {
     std::vector<VkWriteDescriptorSet> descritorWrites;
-    for (auto texture: m_materials) {
+    descritorWrites.resize(static_cast<uint32_t>(m_materials.size()));
+    m_descriptorImageInfos.resize(static_cast<uint32_t>(m_materials.size()));
+    int i = 0;
+    for (auto &texture: m_materials) {
 
         VkDescriptorImageInfo imageInfo{};
         imageInfo.sampler = texture.second.sampler;
         imageInfo.imageView = texture.second.imageView;
         imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-        m_descriptorImageInfos.emplace_back(imageInfo);
+        m_descriptorImageInfos[i] = imageInfo;
 
         VkWriteDescriptorSet descriptorWrite{};
         descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -56,12 +59,14 @@ std::vector<VkWriteDescriptorSet> Material::GetDescriptorWrites(VkDescriptorSet 
         descriptorWrite.dstArrayElement = 0;
         descriptorWrite.descriptorCount = 1;
         descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrite.pImageInfo = &m_descriptorImageInfos.back();
+        descriptorWrite.pImageInfo = &m_descriptorImageInfos[i];
         descriptorWrite.pBufferInfo = nullptr;
         descriptorWrite.pTexelBufferView = nullptr;
         descriptorWrite.pNext = nullptr;
 
-        descritorWrites.emplace_back(descriptorWrite);
+        descritorWrites[i] = descriptorWrite;
+
+        i++;
     }
 
     return descritorWrites;
