@@ -948,7 +948,11 @@ void VulkanApp::CreateUniformBuffers() {
 }
 
 void VulkanApp::CreateTextureImageView() {
-    m_textureImageView = GenerateImageView(m_device, m_textureImage);
+    //m_textureImageView = GenerateImageView(m_device, m_textureImage);
+
+    for(auto &materialTexture:m_material->GetTextures()) {
+        materialTexture.second.imageView = GenerateImageView(m_device, materialTexture.second.image);
+    }
 }
 
 void VulkanApp::CreateTextureSampler() {
@@ -982,6 +986,10 @@ void VulkanApp::CreateTextureSampler() {
 
     if(vkCreateSampler(m_device, &samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create texture sampler");
+    }
+
+    for(auto &material: m_material->GetTextures()) {
+        material.second.sampler = m_textureSampler;
     }
 
 }
