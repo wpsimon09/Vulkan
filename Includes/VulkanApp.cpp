@@ -418,6 +418,7 @@ void VulkanApp::CreateRenderPass() {
 }
 
 void VulkanApp::CreateDescriptorSetLayout() {
+
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -425,14 +426,16 @@ void VulkanApp::CreateDescriptorSetLayout() {
     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     uboLayoutBinding.pImmutableSamplers = nullptr;
 
+    auto bindings = m_material->GetLayoutBindings(1);
+    bindings.emplace_back(uboLayoutBinding);
+    /*
     VkDescriptorSetLayoutBinding imageSamplerLayoutBinding{};
     imageSamplerLayoutBinding.binding = 1;
     imageSamplerLayoutBinding.descriptorCount = 1;
     imageSamplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     imageSamplerLayoutBinding.pImmutableSamplers = nullptr;
     imageSamplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-    std::array<VkDescriptorSetLayoutBinding,2> bindings = {uboLayoutBinding, imageSamplerLayoutBinding};
+    */
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -452,8 +455,7 @@ void VulkanApp::CreateDescriptorPool() {
     poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     // for Sampler
-    poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    poolSizes[1] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
 
     VkDescriptorPoolCreateInfo poolInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
     poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
@@ -993,7 +995,6 @@ void VulkanApp::CreateTextureSampler() {
     }
 
 }
-
 
 void VulkanApp::CreateCommandBuffers() {
     m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);

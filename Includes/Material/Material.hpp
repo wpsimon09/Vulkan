@@ -27,6 +27,10 @@ public:
 
     std::map<TEXTURE_TYPE, Texture> &GetTextures(){return this->materials;};
 
+    std::vector<VkDescriptorSetLayoutBinding> GetLayoutBindings(int startsFrom = 0);
+
+    VkDescriptorPoolSize GetDescriptorPoolSize(uint32_t MAX_FRAMES_IN_FLIGHT);
+
 
 
     Texture getAlbedo() {return materials[TEXTURE_TYPE_ALBEDO];};
