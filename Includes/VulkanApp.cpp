@@ -791,6 +791,7 @@ void VulkanApp::CreateTextureImage() {
     imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
     imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
+
     for(int i = 0; i < paths.size(); i++) {
         int texWidth, texHeight, texChanels;
         stbi_uc* pixels = stbi_load(paths[i].c_str(), &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
@@ -820,7 +821,7 @@ void VulkanApp::CreateTextureImage() {
         CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
 
         ImageLayoutDependencyInfo dependencyInfo{};
-        dependencyInfo.commandPool = m_transferCommandPool;
+        dependencyInfo.commandBuffer = StartRecordingCommandBuffer();
         dependencyInfo.logicalDevice = m_device;
         dependencyInfo.transformQueue = m_transferQueue;
 
@@ -829,6 +830,8 @@ void VulkanApp::CreateTextureImage() {
         CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
         TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        FlushCommandBuffer(dependencyInfo.commandBuffer);
 
         vkFreeMemory(m_device, stagingImageMemory, nullptr);
     }
