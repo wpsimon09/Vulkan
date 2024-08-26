@@ -64,6 +64,7 @@ void VulkanApp::InitVulkan() {
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
+    CreateDepthResources();
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -1022,6 +1023,9 @@ void VulkanApp::CreateCommandBuffers() {
     if(vkAllocateCommandBuffers(m_device,&allocInfo,m_commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate command buffer");
     }
+}
+
+void VulkanApp::CreateDepthResources() {
 }
 
 void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {

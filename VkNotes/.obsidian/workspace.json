@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "8. Depth testing/8.2 Depth Image and View.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "8. Depth testing/8.2 Depth Image and View.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md",
+                "file": "8. Depth testing/8.2 Depth Image and View.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "4. Drawing/4.2 Command buffer.md"
+                "file": "8. Depth testing/8.2 Depth Image and View.md"
               }
             }
           }
@@ -161,14 +161,18 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
+    "6. Buffers/6.9 Alignment requirements.md",
+    "8. Depth testing/8.2 Depth Image and View.md",
+    "8. Depth testing/8.1 Introduction.md",
+    "Untitled.md",
+    "8. Depth testing",
+    "4. Drawing/4.2 Command buffer.md",
     "7. Texturing/7.3 Image view and sampler.md",
     "7. Texturing/7.4 Combined image sampler.md",
     "7. Texturing/7.2 Layout transition.md",
     "7. Texturing/7.1 Images.md~",
-    "6. Buffers/6.9 Alignment requirements.md",
     "7. Texturing/7.1 Images.md",
     "images/vkCmdPipelineBarier.png",
-    "Untitled.md",
     "7. Texturing",
     "Appendix A - PBR Sphere.md",
     "6. Buffers/6.8 Descriptor and pool set.md",
@@ -190,8 +194,6 @@
     "6. Buffers",
     "5. Swap chain recreation/5.1  Recreating the swap chain.md",
     "4. Drawing/4.4 Presentation.md",
-    "4. Drawing/4.3 Rendering and presentation.md",
-    "4. Drawing/4.2 Command buffer.md",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",

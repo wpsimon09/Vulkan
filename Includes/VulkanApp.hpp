@@ -90,6 +90,7 @@ private:
     void CreateIndexBuffers();
     void CreateUniformBuffers();
     void CreateCommandBuffers();
+    void CreateDepthResources();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     VkCommandBuffer StartRecordingCommandBuffer();
     void FlushCommandBuffer(VkCommandBuffer commandBuffer);
@@ -190,6 +191,10 @@ private:
     VkImageView m_textureImageView;
     VkDeviceMemory m_textureImageMemory;
     VkSampler m_textureSampler;
+
+    VkImage m_depthImage;
+    VkDeviceMemory m_depthMemory;
+    VkImageView m_depthImageView;
 
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;

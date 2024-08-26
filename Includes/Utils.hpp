@@ -457,6 +457,12 @@ static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image
     return imgView;
 }
 
+inline static VkFormat FinsSupportedFormat(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags) {
+    for(auto format: candidates) {
+        VkFormatProperties props;
+        vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
+    }
+}
 
 static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {
     const unsigned int X_SEGMENTS = 64;
