@@ -1,0 +1,582 @@
+        -:    0:Source:/usr/include/glm/ext/matrix_clip_space.inl
+        -:    0:Graph:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.gcno
+        -:    0:Data:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.gcda
+        -:    0:Runs:1
+        -:    1:namespace glm
+        -:    2:{
+        -:    3:	template<typename T>
+        -:    4:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> ortho(T left, T right, T bottom, T top)
+        -:    5:	{
+        -:    6:		mat<4, 4, T, defaultp> Result(static_cast<T>(1));
+        -:    7:		Result[0][0] = static_cast<T>(2) / (right - left);
+        -:    8:		Result[1][1] = static_cast<T>(2) / (top - bottom);
+        -:    9:		Result[2][2] = - static_cast<T>(1);
+        -:   10:		Result[3][0] = - (right + left) / (right - left);
+        -:   11:		Result[3][1] = - (top + bottom) / (top - bottom);
+        -:   12:		return Result;
+        -:   13:	}
+        -:   14:
+        -:   15:	template<typename T>
+        -:   16:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoLH_ZO(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   17:	{
+        -:   18:		mat<4, 4, T, defaultp> Result(1);
+        -:   19:		Result[0][0] = static_cast<T>(2) / (right - left);
+        -:   20:		Result[1][1] = static_cast<T>(2) / (top - bottom);
+        -:   21:		Result[2][2] = static_cast<T>(1) / (zFar - zNear);
+        -:   22:		Result[3][0] = - (right + left) / (right - left);
+        -:   23:		Result[3][1] = - (top + bottom) / (top - bottom);
+        -:   24:		Result[3][2] = - zNear / (zFar - zNear);
+        -:   25:		return Result;
+        -:   26:	}
+        -:   27:
+        -:   28:	template<typename T>
+        -:   29:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoLH_NO(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   30:	{
+        -:   31:		mat<4, 4, T, defaultp> Result(1);
+        -:   32:		Result[0][0] = static_cast<T>(2) / (right - left);
+        -:   33:		Result[1][1] = static_cast<T>(2) / (top - bottom);
+        -:   34:		Result[2][2] = static_cast<T>(2) / (zFar - zNear);
+        -:   35:		Result[3][0] = - (right + left) / (right - left);
+        -:   36:		Result[3][1] = - (top + bottom) / (top - bottom);
+        -:   37:		Result[3][2] = - (zFar + zNear) / (zFar - zNear);
+        -:   38:		return Result;
+        -:   39:	}
+        -:   40:
+        -:   41:	template<typename T>
+        -:   42:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoRH_ZO(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   43:	{
+        -:   44:		mat<4, 4, T, defaultp> Result(1);
+        -:   45:		Result[0][0] = static_cast<T>(2) / (right - left);
+        -:   46:		Result[1][1] = static_cast<T>(2) / (top - bottom);
+        -:   47:		Result[2][2] = - static_cast<T>(1) / (zFar - zNear);
+        -:   48:		Result[3][0] = - (right + left) / (right - left);
+        -:   49:		Result[3][1] = - (top + bottom) / (top - bottom);
+        -:   50:		Result[3][2] = - zNear / (zFar - zNear);
+        -:   51:		return Result;
+        -:   52:	}
+        -:   53:
+        -:   54:	template<typename T>
+        -:   55:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoRH_NO(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   56:	{
+        -:   57:		mat<4, 4, T, defaultp> Result(1);
+        -:   58:		Result[0][0] = static_cast<T>(2) / (right - left);
+        -:   59:		Result[1][1] = static_cast<T>(2) / (top - bottom);
+        -:   60:		Result[2][2] = - static_cast<T>(2) / (zFar - zNear);
+        -:   61:		Result[3][0] = - (right + left) / (right - left);
+        -:   62:		Result[3][1] = - (top + bottom) / (top - bottom);
+        -:   63:		Result[3][2] = - (zFar + zNear) / (zFar - zNear);
+        -:   64:		return Result;
+        -:   65:	}
+        -:   66:
+        -:   67:	template<typename T>
+        -:   68:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoZO(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   69:	{
+        -:   70:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:   71:			return orthoLH_ZO(left, right, bottom, top, zNear, zFar);
+        -:   72:#		else
+        -:   73:			return orthoRH_ZO(left, right, bottom, top, zNear, zFar);
+        -:   74:#		endif
+        -:   75:	}
+        -:   76:
+        -:   77:	template<typename T>
+        -:   78:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoNO(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   79:	{
+        -:   80:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:   81:			return orthoLH_NO(left, right, bottom, top, zNear, zFar);
+        -:   82:#		else
+        -:   83:			return orthoRH_NO(left, right, bottom, top, zNear, zFar);
+        -:   84:#		endif
+        -:   85:	}
+        -:   86:
+        -:   87:	template<typename T>
+        -:   88:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoLH(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:   89:	{
+        -:   90:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:   91:			return orthoLH_ZO(left, right, bottom, top, zNear, zFar);
+        -:   92:#		else
+        -:   93:			return orthoLH_NO(left, right, bottom, top, zNear, zFar);
+        -:   94:#		endif
+        -:   95:
+        -:   96:	}
+        -:   97:
+        -:   98:	template<typename T>
+        -:   99:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> orthoRH(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:  100:	{
+        -:  101:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  102:			return orthoRH_ZO(left, right, bottom, top, zNear, zFar);
+        -:  103:#		else
+        -:  104:			return orthoRH_NO(left, right, bottom, top, zNear, zFar);
+        -:  105:#		endif
+        -:  106:	}
+        -:  107:
+        -:  108:	template<typename T>
+        -:  109:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> ortho(T left, T right, T bottom, T top, T zNear, T zFar)
+        -:  110:	{
+        -:  111:#		if GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_ZO
+        -:  112:			return orthoLH_ZO(left, right, bottom, top, zNear, zFar);
+        -:  113:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_NO
+        -:  114:			return orthoLH_NO(left, right, bottom, top, zNear, zFar);
+        -:  115:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_ZO
+        -:  116:			return orthoRH_ZO(left, right, bottom, top, zNear, zFar);
+        -:  117:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_NO
+        -:  118:			return orthoRH_NO(left, right, bottom, top, zNear, zFar);
+        -:  119:#		endif
+        -:  120:	}
+        -:  121:
+        -:  122:	template<typename T>
+        -:  123:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumLH_ZO(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  124:	{
+        -:  125:		mat<4, 4, T, defaultp> Result(0);
+        -:  126:		Result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
+        -:  127:		Result[1][1] = (static_cast<T>(2) * nearVal) / (top - bottom);
+        -:  128:		Result[2][0] = (right + left) / (right - left);
+        -:  129:		Result[2][1] = (top + bottom) / (top - bottom);
+        -:  130:		Result[2][2] = farVal / (farVal - nearVal);
+        -:  131:		Result[2][3] = static_cast<T>(1);
+        -:  132:		Result[3][2] = -(farVal * nearVal) / (farVal - nearVal);
+        -:  133:		return Result;
+        -:  134:	}
+        -:  135:
+        -:  136:	template<typename T>
+        -:  137:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumLH_NO(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  138:	{
+        -:  139:		mat<4, 4, T, defaultp> Result(0);
+        -:  140:		Result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
+        -:  141:		Result[1][1] = (static_cast<T>(2) * nearVal) / (top - bottom);
+        -:  142:		Result[2][0] = (right + left) / (right - left);
+        -:  143:		Result[2][1] = (top + bottom) / (top - bottom);
+        -:  144:		Result[2][2] = (farVal + nearVal) / (farVal - nearVal);
+        -:  145:		Result[2][3] = static_cast<T>(1);
+        -:  146:		Result[3][2] = - (static_cast<T>(2) * farVal * nearVal) / (farVal - nearVal);
+        -:  147:		return Result;
+        -:  148:	}
+        -:  149:
+        -:  150:	template<typename T>
+        -:  151:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumRH_ZO(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  152:	{
+        -:  153:		mat<4, 4, T, defaultp> Result(0);
+        -:  154:		Result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
+        -:  155:		Result[1][1] = (static_cast<T>(2) * nearVal) / (top - bottom);
+        -:  156:		Result[2][0] = (right + left) / (right - left);
+        -:  157:		Result[2][1] = (top + bottom) / (top - bottom);
+        -:  158:		Result[2][2] = farVal / (nearVal - farVal);
+        -:  159:		Result[2][3] = static_cast<T>(-1);
+        -:  160:		Result[3][2] = -(farVal * nearVal) / (farVal - nearVal);
+        -:  161:		return Result;
+        -:  162:	}
+        -:  163:
+        -:  164:	template<typename T>
+        -:  165:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumRH_NO(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  166:	{
+        -:  167:		mat<4, 4, T, defaultp> Result(0);
+        -:  168:		Result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
+        -:  169:		Result[1][1] = (static_cast<T>(2) * nearVal) / (top - bottom);
+        -:  170:		Result[2][0] = (right + left) / (right - left);
+        -:  171:		Result[2][1] = (top + bottom) / (top - bottom);
+        -:  172:		Result[2][2] = - (farVal + nearVal) / (farVal - nearVal);
+        -:  173:		Result[2][3] = static_cast<T>(-1);
+        -:  174:		Result[3][2] = - (static_cast<T>(2) * farVal * nearVal) / (farVal - nearVal);
+        -:  175:		return Result;
+        -:  176:	}
+        -:  177:
+        -:  178:	template<typename T>
+        -:  179:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumZO(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  180:	{
+        -:  181:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  182:			return frustumLH_ZO(left, right, bottom, top, nearVal, farVal);
+        -:  183:#		else
+        -:  184:			return frustumRH_ZO(left, right, bottom, top, nearVal, farVal);
+        -:  185:#		endif
+        -:  186:	}
+        -:  187:
+        -:  188:	template<typename T>
+        -:  189:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumNO(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  190:	{
+        -:  191:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  192:			return frustumLH_NO(left, right, bottom, top, nearVal, farVal);
+        -:  193:#		else
+        -:  194:			return frustumRH_NO(left, right, bottom, top, nearVal, farVal);
+        -:  195:#		endif
+        -:  196:	}
+        -:  197:
+        -:  198:	template<typename T>
+        -:  199:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumLH(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  200:	{
+        -:  201:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  202:			return frustumLH_ZO(left, right, bottom, top, nearVal, farVal);
+        -:  203:#		else
+        -:  204:			return frustumLH_NO(left, right, bottom, top, nearVal, farVal);
+        -:  205:#		endif
+        -:  206:	}
+        -:  207:
+        -:  208:	template<typename T>
+        -:  209:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustumRH(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  210:	{
+        -:  211:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  212:			return frustumRH_ZO(left, right, bottom, top, nearVal, farVal);
+        -:  213:#		else
+        -:  214:			return frustumRH_NO(left, right, bottom, top, nearVal, farVal);
+        -:  215:#		endif
+        -:  216:	}
+        -:  217:
+        -:  218:	template<typename T>
+        -:  219:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> frustum(T left, T right, T bottom, T top, T nearVal, T farVal)
+        -:  220:	{
+        -:  221:#		if GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_ZO
+        -:  222:			return frustumLH_ZO(left, right, bottom, top, nearVal, farVal);
+        -:  223:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_NO
+        -:  224:			return frustumLH_NO(left, right, bottom, top, nearVal, farVal);
+        -:  225:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_ZO
+        -:  226:			return frustumRH_ZO(left, right, bottom, top, nearVal, farVal);
+        -:  227:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_NO
+        -:  228:			return frustumRH_NO(left, right, bottom, top, nearVal, farVal);
+        -:  229:#		endif
+        -:  230:	}
+        -:  231:
+        -:  232:	template<typename T>
+        -:  233:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveRH_ZO(T fovy, T aspect, T zNear, T zFar)
+        -:  234:	{
+        -:  235:		assert(abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+        -:  236:
+        -:  237:		T const tanHalfFovy = tan(fovy / static_cast<T>(2));
+        -:  238:
+        -:  239:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  240:		Result[0][0] = static_cast<T>(1) / (aspect * tanHalfFovy);
+        -:  241:		Result[1][1] = static_cast<T>(1) / (tanHalfFovy);
+        -:  242:		Result[2][2] = zFar / (zNear - zFar);
+        -:  243:		Result[2][3] = - static_cast<T>(1);
+        -:  244:		Result[3][2] = -(zFar * zNear) / (zFar - zNear);
+        -:  245:		return Result;
+        -:  246:	}
+        -:  247:
+        -:  248:	template<typename T>
+function _ZN3glm16perspectiveRH_NOIfEENS_3matILi4ELi4ET_LNS_9qualifierE0EEES2_S2_S2_S2_ called 1 returned 100% blocks executed 94%
+        1:  249:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveRH_NO(T fovy, T aspect, T zNear, T zFar)
+        -:  250:	{
+       1*:  251:		assert(abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+        1:  251-block 2
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 0 (fallthrough)
+branch  3 taken 1
+    %%%%%:  251-block 5
+call    4 never executed
+        -:  252:
+        1:  253:		T const tanHalfFovy = tan(fovy / static_cast<T>(2));
+        1:  253-block 6
+call    0 returned 1
+        -:  254:
+        1:  255:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        1:  256:		Result[0][0] = static_cast<T>(1) / (aspect * tanHalfFovy);
+call    0 returned 1
+call    1 returned 1
+        1:  257:		Result[1][1] = static_cast<T>(1) / (tanHalfFovy);
+call    0 returned 1
+call    1 returned 1
+        1:  258:		Result[2][2] = - (zFar + zNear) / (zFar - zNear);
+call    0 returned 1
+call    1 returned 1
+        1:  259:		Result[2][3] = - static_cast<T>(1);
+call    0 returned 1
+call    1 returned 1
+        1:  260:		Result[3][2] = - (static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
+call    0 returned 1
+call    1 returned 1
+        1:  261:		return Result;
+        -:  262:	}
+        -:  263:
+        -:  264:	template<typename T>
+        -:  265:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveLH_ZO(T fovy, T aspect, T zNear, T zFar)
+        -:  266:	{
+        -:  267:		assert(abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+        -:  268:
+        -:  269:		T const tanHalfFovy = tan(fovy / static_cast<T>(2));
+        -:  270:
+        -:  271:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  272:		Result[0][0] = static_cast<T>(1) / (aspect * tanHalfFovy);
+        -:  273:		Result[1][1] = static_cast<T>(1) / (tanHalfFovy);
+        -:  274:		Result[2][2] = zFar / (zFar - zNear);
+        -:  275:		Result[2][3] = static_cast<T>(1);
+        -:  276:		Result[3][2] = -(zFar * zNear) / (zFar - zNear);
+        -:  277:		return Result;
+        -:  278:	}
+        -:  279:
+        -:  280:	template<typename T>
+        -:  281:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveLH_NO(T fovy, T aspect, T zNear, T zFar)
+        -:  282:	{
+        -:  283:		assert(abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+        -:  284:
+        -:  285:		T const tanHalfFovy = tan(fovy / static_cast<T>(2));
+        -:  286:
+        -:  287:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  288:		Result[0][0] = static_cast<T>(1) / (aspect * tanHalfFovy);
+        -:  289:		Result[1][1] = static_cast<T>(1) / (tanHalfFovy);
+        -:  290:		Result[2][2] = (zFar + zNear) / (zFar - zNear);
+        -:  291:		Result[2][3] = static_cast<T>(1);
+        -:  292:		Result[3][2] = - (static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
+        -:  293:		return Result;
+        -:  294:	}
+        -:  295:
+        -:  296:	template<typename T>
+        -:  297:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveZO(T fovy, T aspect, T zNear, T zFar)
+        -:  298:	{
+        -:  299:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  300:			return perspectiveLH_ZO(fovy, aspect, zNear, zFar);
+        -:  301:#		else
+        -:  302:			return perspectiveRH_ZO(fovy, aspect, zNear, zFar);
+        -:  303:#		endif
+        -:  304:	}
+        -:  305:
+        -:  306:	template<typename T>
+        -:  307:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveNO(T fovy, T aspect, T zNear, T zFar)
+        -:  308:	{
+        -:  309:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  310:			return perspectiveLH_NO(fovy, aspect, zNear, zFar);
+        -:  311:#		else
+        -:  312:			return perspectiveRH_NO(fovy, aspect, zNear, zFar);
+        -:  313:#		endif
+        -:  314:	}
+        -:  315:
+        -:  316:	template<typename T>
+        -:  317:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveLH(T fovy, T aspect, T zNear, T zFar)
+        -:  318:	{
+        -:  319:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  320:			return perspectiveLH_ZO(fovy, aspect, zNear, zFar);
+        -:  321:#		else
+        -:  322:			return perspectiveLH_NO(fovy, aspect, zNear, zFar);
+        -:  323:#		endif
+        -:  324:
+        -:  325:	}
+        -:  326:
+        -:  327:	template<typename T>
+        -:  328:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveRH(T fovy, T aspect, T zNear, T zFar)
+        -:  329:	{
+        -:  330:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  331:			return perspectiveRH_ZO(fovy, aspect, zNear, zFar);
+        -:  332:#		else
+        -:  333:			return perspectiveRH_NO(fovy, aspect, zNear, zFar);
+        -:  334:#		endif
+        -:  335:	}
+        -:  336:
+        -:  337:	template<typename T>
+function _ZN3glm11perspectiveIfEENS_3matILi4ELi4ET_LNS_9qualifierE0EEES2_S2_S2_S2_ called 1 returned 100% blocks executed 100%
+        1:  338:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspective(T fovy, T aspect, T zNear, T zFar)
+        -:  339:	{
+        -:  340:#		if GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_ZO
+        -:  341:			return perspectiveLH_ZO(fovy, aspect, zNear, zFar);
+        -:  342:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_NO
+        -:  343:			return perspectiveLH_NO(fovy, aspect, zNear, zFar);
+        -:  344:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_ZO
+        -:  345:			return perspectiveRH_ZO(fovy, aspect, zNear, zFar);
+        -:  346:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_NO
+        1:  347:			return perspectiveRH_NO(fovy, aspect, zNear, zFar);
+        1:  347-block 2
+call    0 returned 1
+        -:  348:#		endif
+        -:  349:	}
+        -:  350:
+        -:  351:	template<typename T>
+        -:  352:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovRH_ZO(T fov, T width, T height, T zNear, T zFar)
+        -:  353:	{
+        -:  354:		assert(width > static_cast<T>(0));
+        -:  355:		assert(height > static_cast<T>(0));
+        -:  356:		assert(fov > static_cast<T>(0));
+        -:  357:
+        -:  358:		T const rad = fov;
+        -:  359:		T const h = glm::cos(static_cast<T>(0.5) * rad) / glm::sin(static_cast<T>(0.5) * rad);
+        -:  360:		T const w = h * height / width; ///todo max(width , Height) / min(width , Height)?
+        -:  361:
+        -:  362:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  363:		Result[0][0] = w;
+        -:  364:		Result[1][1] = h;
+        -:  365:		Result[2][2] = zFar / (zNear - zFar);
+        -:  366:		Result[2][3] = - static_cast<T>(1);
+        -:  367:		Result[3][2] = -(zFar * zNear) / (zFar - zNear);
+        -:  368:		return Result;
+        -:  369:	}
+        -:  370:
+        -:  371:	template<typename T>
+        -:  372:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovRH_NO(T fov, T width, T height, T zNear, T zFar)
+        -:  373:	{
+        -:  374:		assert(width > static_cast<T>(0));
+        -:  375:		assert(height > static_cast<T>(0));
+        -:  376:		assert(fov > static_cast<T>(0));
+        -:  377:
+        -:  378:		T const rad = fov;
+        -:  379:		T const h = glm::cos(static_cast<T>(0.5) * rad) / glm::sin(static_cast<T>(0.5) * rad);
+        -:  380:		T const w = h * height / width; ///todo max(width , Height) / min(width , Height)?
+        -:  381:
+        -:  382:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  383:		Result[0][0] = w;
+        -:  384:		Result[1][1] = h;
+        -:  385:		Result[2][2] = - (zFar + zNear) / (zFar - zNear);
+        -:  386:		Result[2][3] = - static_cast<T>(1);
+        -:  387:		Result[3][2] = - (static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
+        -:  388:		return Result;
+        -:  389:	}
+        -:  390:
+        -:  391:	template<typename T>
+        -:  392:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovLH_ZO(T fov, T width, T height, T zNear, T zFar)
+        -:  393:	{
+        -:  394:		assert(width > static_cast<T>(0));
+        -:  395:		assert(height > static_cast<T>(0));
+        -:  396:		assert(fov > static_cast<T>(0));
+        -:  397:
+        -:  398:		T const rad = fov;
+        -:  399:		T const h = glm::cos(static_cast<T>(0.5) * rad) / glm::sin(static_cast<T>(0.5) * rad);
+        -:  400:		T const w = h * height / width; ///todo max(width , Height) / min(width , Height)?
+        -:  401:
+        -:  402:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  403:		Result[0][0] = w;
+        -:  404:		Result[1][1] = h;
+        -:  405:		Result[2][2] = zFar / (zFar - zNear);
+        -:  406:		Result[2][3] = static_cast<T>(1);
+        -:  407:		Result[3][2] = -(zFar * zNear) / (zFar - zNear);
+        -:  408:		return Result;
+        -:  409:	}
+        -:  410:
+        -:  411:	template<typename T>
+        -:  412:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovLH_NO(T fov, T width, T height, T zNear, T zFar)
+        -:  413:	{
+        -:  414:		assert(width > static_cast<T>(0));
+        -:  415:		assert(height > static_cast<T>(0));
+        -:  416:		assert(fov > static_cast<T>(0));
+        -:  417:
+        -:  418:		T const rad = fov;
+        -:  419:		T const h = glm::cos(static_cast<T>(0.5) * rad) / glm::sin(static_cast<T>(0.5) * rad);
+        -:  420:		T const w = h * height / width; ///todo max(width , Height) / min(width , Height)?
+        -:  421:
+        -:  422:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  423:		Result[0][0] = w;
+        -:  424:		Result[1][1] = h;
+        -:  425:		Result[2][2] = (zFar + zNear) / (zFar - zNear);
+        -:  426:		Result[2][3] = static_cast<T>(1);
+        -:  427:		Result[3][2] = - (static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
+        -:  428:		return Result;
+        -:  429:	}
+        -:  430:
+        -:  431:	template<typename T>
+        -:  432:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovZO(T fov, T width, T height, T zNear, T zFar)
+        -:  433:	{
+        -:  434:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  435:			return perspectiveFovLH_ZO(fov, width, height, zNear, zFar);
+        -:  436:#		else
+        -:  437:			return perspectiveFovRH_ZO(fov, width, height, zNear, zFar);
+        -:  438:#		endif
+        -:  439:	}
+        -:  440:
+        -:  441:	template<typename T>
+        -:  442:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovNO(T fov, T width, T height, T zNear, T zFar)
+        -:  443:	{
+        -:  444:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  445:			return perspectiveFovLH_NO(fov, width, height, zNear, zFar);
+        -:  446:#		else
+        -:  447:			return perspectiveFovRH_NO(fov, width, height, zNear, zFar);
+        -:  448:#		endif
+        -:  449:	}
+        -:  450:
+        -:  451:	template<typename T>
+        -:  452:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovLH(T fov, T width, T height, T zNear, T zFar)
+        -:  453:	{
+        -:  454:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  455:			return perspectiveFovLH_ZO(fov, width, height, zNear, zFar);
+        -:  456:#		else
+        -:  457:			return perspectiveFovLH_NO(fov, width, height, zNear, zFar);
+        -:  458:#		endif
+        -:  459:	}
+        -:  460:
+        -:  461:	template<typename T>
+        -:  462:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovRH(T fov, T width, T height, T zNear, T zFar)
+        -:  463:	{
+        -:  464:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
+        -:  465:			return perspectiveFovRH_ZO(fov, width, height, zNear, zFar);
+        -:  466:#		else
+        -:  467:			return perspectiveFovRH_NO(fov, width, height, zNear, zFar);
+        -:  468:#		endif
+        -:  469:	}
+        -:  470:
+        -:  471:	template<typename T>
+        -:  472:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFov(T fov, T width, T height, T zNear, T zFar)
+        -:  473:	{
+        -:  474:#		if GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_ZO
+        -:  475:			return perspectiveFovLH_ZO(fov, width, height, zNear, zFar);
+        -:  476:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_LH_NO
+        -:  477:			return perspectiveFovLH_NO(fov, width, height, zNear, zFar);
+        -:  478:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_ZO
+        -:  479:			return perspectiveFovRH_ZO(fov, width, height, zNear, zFar);
+        -:  480:#		elif GLM_CONFIG_CLIP_CONTROL == GLM_CLIP_CONTROL_RH_NO
+        -:  481:			return perspectiveFovRH_NO(fov, width, height, zNear, zFar);
+        -:  482:#		endif
+        -:  483:	}
+        -:  484:
+        -:  485:	template<typename T>
+        -:  486:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> infinitePerspectiveRH(T fovy, T aspect, T zNear)
+        -:  487:	{
+        -:  488:		T const range = tan(fovy / static_cast<T>(2)) * zNear;
+        -:  489:		T const left = -range * aspect;
+        -:  490:		T const right = range * aspect;
+        -:  491:		T const bottom = -range;
+        -:  492:		T const top = range;
+        -:  493:
+        -:  494:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  495:		Result[0][0] = (static_cast<T>(2) * zNear) / (right - left);
+        -:  496:		Result[1][1] = (static_cast<T>(2) * zNear) / (top - bottom);
+        -:  497:		Result[2][2] = - static_cast<T>(1);
+        -:  498:		Result[2][3] = - static_cast<T>(1);
+        -:  499:		Result[3][2] = - static_cast<T>(2) * zNear;
+        -:  500:		return Result;
+        -:  501:	}
+        -:  502:
+        -:  503:	template<typename T>
+        -:  504:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> infinitePerspectiveLH(T fovy, T aspect, T zNear)
+        -:  505:	{
+        -:  506:		T const range = tan(fovy / static_cast<T>(2)) * zNear;
+        -:  507:		T const left = -range * aspect;
+        -:  508:		T const right = range * aspect;
+        -:  509:		T const bottom = -range;
+        -:  510:		T const top = range;
+        -:  511:
+        -:  512:		mat<4, 4, T, defaultp> Result(T(0));
+        -:  513:		Result[0][0] = (static_cast<T>(2) * zNear) / (right - left);
+        -:  514:		Result[1][1] = (static_cast<T>(2) * zNear) / (top - bottom);
+        -:  515:		Result[2][2] = static_cast<T>(1);
+        -:  516:		Result[2][3] = static_cast<T>(1);
+        -:  517:		Result[3][2] = - static_cast<T>(2) * zNear;
+        -:  518:		return Result;
+        -:  519:	}
+        -:  520:
+        -:  521:	template<typename T>
+        -:  522:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> infinitePerspective(T fovy, T aspect, T zNear)
+        -:  523:	{
+        -:  524:#		if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT
+        -:  525:			return infinitePerspectiveLH(fovy, aspect, zNear);
+        -:  526:#		else
+        -:  527:			return infinitePerspectiveRH(fovy, aspect, zNear);
+        -:  528:#		endif
+        -:  529:	}
+        -:  530:
+        -:  531:	// Infinite projection matrix: http://www.terathon.com/gdc07_lengyel.pdf
+        -:  532:	template<typename T>
+        -:  533:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> tweakedInfinitePerspective(T fovy, T aspect, T zNear, T ep)
+        -:  534:	{
+        -:  535:		T const range = tan(fovy / static_cast<T>(2)) * zNear;
+        -:  536:		T const left = -range * aspect;
+        -:  537:		T const right = range * aspect;
+        -:  538:		T const bottom = -range;
+        -:  539:		T const top = range;
+        -:  540:
+        -:  541:		mat<4, 4, T, defaultp> Result(static_cast<T>(0));
+        -:  542:		Result[0][0] = (static_cast<T>(2) * zNear) / (right - left);
+        -:  543:		Result[1][1] = (static_cast<T>(2) * zNear) / (top - bottom);
+        -:  544:		Result[2][2] = ep - static_cast<T>(1);
+        -:  545:		Result[2][3] = static_cast<T>(-1);
+        -:  546:		Result[3][2] = (ep - static_cast<T>(2)) * zNear;
+        -:  547:		return Result;
+        -:  548:	}
+        -:  549:
+        -:  550:	template<typename T>
+        -:  551:	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> tweakedInfinitePerspective(T fovy, T aspect, T zNear)
+        -:  552:	{
+        -:  553:		return tweakedInfinitePerspective(fovy, aspect, zNear, epsilon<T>());
+        -:  554:	}
+        -:  555:}//namespace glm

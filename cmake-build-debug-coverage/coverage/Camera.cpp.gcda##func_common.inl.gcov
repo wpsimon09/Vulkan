@@ -1,0 +1,799 @@
+        -:    0:Source:/usr/include/glm/detail/func_common.inl
+        -:    0:Graph:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.gcno
+        -:    0:Data:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.gcda
+        -:    0:Runs:1
+        -:    1:/// @ref core
+        -:    2:/// @file glm/detail/func_common.inl
+        -:    3:
+        -:    4:#include "../vector_relational.hpp"
+        -:    5:#include "compute_common.hpp"
+        -:    6:#include "type_vec1.hpp"
+        -:    7:#include "type_vec2.hpp"
+        -:    8:#include "type_vec3.hpp"
+        -:    9:#include "type_vec4.hpp"
+        -:   10:#include "_vectorize.hpp"
+        -:   11:#include <limits>
+        -:   12:
+        -:   13:namespace glm
+        -:   14:{
+        -:   15:	// min
+        -:   16:	template<typename genType>
+        -:   17:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR genType min(genType x, genType y)
+        -:   18:	{
+        -:   19:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer, "'min' only accept floating-point or integer inputs");
+        -:   20:		return (y < x) ? y : x;
+        -:   21:	}
+        -:   22:
+        -:   23:	// max
+        -:   24:	template<typename genType>
+        -:   25:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR genType max(genType x, genType y)
+        -:   26:	{
+        -:   27:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer, "'max' only accept floating-point or integer inputs");
+        -:   28:
+        -:   29:		return (x < y) ? y : x;
+        -:   30:	}
+        -:   31:
+        -:   32:	// abs
+        -:   33:	template<>
+        -:   34:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR int abs(int x)
+        -:   35:	{
+        -:   36:		int const y = x >> (sizeof(int) * 8 - 1);
+        -:   37:		return (x ^ y) - y;
+        -:   38:	}
+        -:   39:
+        -:   40:	// round
+        -:   41:#	if GLM_HAS_CXX11_STL
+        -:   42:		using ::std::round;
+        -:   43:#	else
+        -:   44:		template<typename genType>
+        -:   45:		GLM_FUNC_QUALIFIER genType round(genType x)
+        -:   46:		{
+        -:   47:			GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'round' only accept floating-point inputs");
+        -:   48:
+        -:   49:			return x < static_cast<genType>(0) ? static_cast<genType>(int(x - static_cast<genType>(0.5))) : static_cast<genType>(int(x + static_cast<genType>(0.5)));
+        -:   50:		}
+        -:   51:#	endif
+        -:   52:
+        -:   53:	// trunc
+        -:   54:#	if GLM_HAS_CXX11_STL
+        -:   55:		using ::std::trunc;
+        -:   56:#	else
+        -:   57:		template<typename genType>
+        -:   58:		GLM_FUNC_QUALIFIER genType trunc(genType x)
+        -:   59:		{
+        -:   60:			GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'trunc' only accept floating-point inputs");
+        -:   61:
+        -:   62:			return x < static_cast<genType>(0) ? -std::floor(-x) : std::floor(x);
+        -:   63:		}
+        -:   64:#	endif
+        -:   65:
+        -:   66:}//namespace glm
+        -:   67:
+        -:   68:namespace glm{
+        -:   69:namespace detail
+        -:   70:{
+        -:   71:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:   72:	struct compute_abs_vector
+        -:   73:	{
+        -:   74:		GLM_FUNC_QUALIFIER GLM_CONSTEXPR static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:   75:		{
+        -:   76:			return detail::functor1<vec, L, T, T, Q>::call(abs, x);
+        -:   77:		}
+        -:   78:	};
+        -:   79:
+        -:   80:	template<length_t L, typename T, typename U, qualifier Q, bool Aligned>
+        -:   81:	struct compute_mix_vector
+        -:   82:	{
+        -:   83:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& y, vec<L, U, Q> const& a)
+        -:   84:		{
+        -:   85:			GLM_STATIC_ASSERT(std::numeric_limits<U>::is_iec559 || GLM_CONFIG_UNRESTRICTED_GENTYPE, "'mix' only accept floating-point inputs for the interpolator a");
+        -:   86:
+        -:   87:			return vec<L, T, Q>(vec<L, U, Q>(x) * (static_cast<U>(1) - a) + vec<L, U, Q>(y) * a);
+        -:   88:		}
+        -:   89:	};
+        -:   90:
+        -:   91:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:   92:	struct compute_mix_vector<L, T, bool, Q, Aligned>
+        -:   93:	{
+        -:   94:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& y, vec<L, bool, Q> const& a)
+        -:   95:		{
+        -:   96:			vec<L, T, Q> Result;
+        -:   97:			for(length_t i = 0; i < x.length(); ++i)
+        -:   98:				Result[i] = a[i] ? y[i] : x[i];
+        -:   99:			return Result;
+        -:  100:		}
+        -:  101:	};
+        -:  102:
+        -:  103:	template<length_t L, typename T, typename U, qualifier Q, bool Aligned>
+        -:  104:	struct compute_mix_scalar
+        -:  105:	{
+        -:  106:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& y, U const& a)
+        -:  107:		{
+        -:  108:			GLM_STATIC_ASSERT(std::numeric_limits<U>::is_iec559 || GLM_CONFIG_UNRESTRICTED_GENTYPE, "'mix' only accept floating-point inputs for the interpolator a");
+        -:  109:
+        -:  110:			return vec<L, T, Q>(vec<L, U, Q>(x) * (static_cast<U>(1) - a) + vec<L, U, Q>(y) * a);
+        -:  111:		}
+        -:  112:	};
+        -:  113:
+        -:  114:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  115:	struct compute_mix_scalar<L, T, bool, Q, Aligned>
+        -:  116:	{
+        -:  117:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& y, bool const& a)
+        -:  118:		{
+        -:  119:			return a ? y : x;
+        -:  120:		}
+        -:  121:	};
+        -:  122:
+        -:  123:	template<typename T, typename U>
+        -:  124:	struct compute_mix
+        -:  125:	{
+        -:  126:		GLM_FUNC_QUALIFIER static T call(T const& x, T const& y, U const& a)
+        -:  127:		{
+        -:  128:			GLM_STATIC_ASSERT(std::numeric_limits<U>::is_iec559 || GLM_CONFIG_UNRESTRICTED_GENTYPE, "'mix' only accept floating-point inputs for the interpolator a");
+        -:  129:
+        -:  130:			return static_cast<T>(static_cast<U>(x) * (static_cast<U>(1) - a) + static_cast<U>(y) * a);
+        -:  131:		}
+        -:  132:	};
+        -:  133:
+        -:  134:	template<typename T>
+        -:  135:	struct compute_mix<T, bool>
+        -:  136:	{
+        -:  137:		GLM_FUNC_QUALIFIER static T call(T const& x, T const& y, bool const& a)
+        -:  138:		{
+        -:  139:			return a ? y : x;
+        -:  140:		}
+        -:  141:	};
+        -:  142:
+        -:  143:	template<length_t L, typename T, qualifier Q, bool isFloat, bool Aligned>
+        -:  144:	struct compute_sign
+        -:  145:	{
+        -:  146:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  147:		{
+        -:  148:			return vec<L, T, Q>(glm::lessThan(vec<L, T, Q>(0), x)) - vec<L, T, Q>(glm::lessThan(x, vec<L, T, Q>(0)));
+        -:  149:		}
+        -:  150:	};
+        -:  151:
+        -:  152:#	if GLM_ARCH == GLM_ARCH_X86
+        -:  153:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  154:	struct compute_sign<L, T, Q, false, Aligned>
+        -:  155:	{
+        -:  156:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  157:		{
+        -:  158:			T const Shift(static_cast<T>(sizeof(T) * 8 - 1));
+        -:  159:			vec<L, T, Q> const y(vec<L, typename detail::make_unsigned<T>::type, Q>(-x) >> typename detail::make_unsigned<T>::type(Shift));
+        -:  160:
+        -:  161:			return (x >> Shift) | y;
+        -:  162:		}
+        -:  163:	};
+        -:  164:#	endif
+        -:  165:
+        -:  166:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  167:	struct compute_floor
+        -:  168:	{
+        -:  169:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  170:		{
+        -:  171:			return detail::functor1<vec, L, T, T, Q>::call(std::floor, x);
+        -:  172:		}
+        -:  173:	};
+        -:  174:
+        -:  175:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  176:	struct compute_ceil
+        -:  177:	{
+        -:  178:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  179:		{
+        -:  180:			return detail::functor1<vec, L, T, T, Q>::call(std::ceil, x);
+        -:  181:		}
+        -:  182:	};
+        -:  183:
+        -:  184:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  185:	struct compute_fract
+        -:  186:	{
+        -:  187:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  188:		{
+        -:  189:			return x - floor(x);
+        -:  190:		}
+        -:  191:	};
+        -:  192:
+        -:  193:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  194:	struct compute_trunc
+        -:  195:	{
+        -:  196:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  197:		{
+        -:  198:			return detail::functor1<vec, L, T, T, Q>::call(trunc, x);
+        -:  199:		}
+        -:  200:	};
+        -:  201:
+        -:  202:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  203:	struct compute_round
+        -:  204:	{
+        -:  205:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x)
+        -:  206:		{
+        -:  207:			return detail::functor1<vec, L, T, T, Q>::call(round, x);
+        -:  208:		}
+        -:  209:	};
+        -:  210:
+        -:  211:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  212:	struct compute_mod
+        -:  213:	{
+        -:  214:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& a, vec<L, T, Q> const& b)
+        -:  215:		{
+        -:  216:			GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'mod' only accept floating-point inputs. Include <glm/gtc/integer.hpp> for integer inputs.");
+        -:  217:			return a - b * floor(a / b);
+        -:  218:		}
+        -:  219:	};
+        -:  220:
+        -:  221:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  222:	struct compute_min_vector
+        -:  223:	{
+        -:  224:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& y)
+        -:  225:		{
+        -:  226:			return detail::functor2<vec, L, T, Q>::call(min, x, y);
+        -:  227:		}
+        -:  228:	};
+        -:  229:
+        -:  230:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  231:	struct compute_max_vector
+        -:  232:	{
+        -:  233:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& y)
+        -:  234:		{
+        -:  235:			return detail::functor2<vec, L, T, Q>::call(max, x, y);
+        -:  236:		}
+        -:  237:	};
+        -:  238:
+        -:  239:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  240:	struct compute_clamp_vector
+        -:  241:	{
+        -:  242:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& x, vec<L, T, Q> const& minVal, vec<L, T, Q> const& maxVal)
+        -:  243:		{
+        -:  244:			return min(max(x, minVal), maxVal);
+        -:  245:		}
+        -:  246:	};
+        -:  247:
+        -:  248:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  249:	struct compute_step_vector
+        -:  250:	{
+        -:  251:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& edge, vec<L, T, Q> const& x)
+        -:  252:		{
+        -:  253:			return mix(vec<L, T, Q>(1), vec<L, T, Q>(0), glm::lessThan(x, edge));
+        -:  254:		}
+        -:  255:	};
+        -:  256:
+        -:  257:	template<length_t L, typename T, qualifier Q, bool Aligned>
+        -:  258:	struct compute_smoothstep_vector
+        -:  259:	{
+        -:  260:		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& edge0, vec<L, T, Q> const& edge1, vec<L, T, Q> const& x)
+        -:  261:		{
+        -:  262:			GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559 || GLM_CONFIG_UNRESTRICTED_GENTYPE, "'smoothstep' only accept floating-point inputs");
+        -:  263:			vec<L, T, Q> const tmp(clamp((x - edge0) / (edge1 - edge0), static_cast<T>(0), static_cast<T>(1)));
+        -:  264:			return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2) * tmp);
+        -:  265:		}
+        -:  266:	};
+        -:  267:}//namespace detail
+        -:  268:
+        -:  269:	template<typename genFIType>
+function _ZN3glm3absIfEET_S1_ called 1 returned 100% blocks executed 100%
+        1:  270:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR genFIType abs(genFIType x)
+        -:  271:	{
+        1:  272:		return detail::compute_abs<genFIType, std::numeric_limits<genFIType>::is_signed>::call(x);
+        1:  272-block 2
+call    0 returned 1
+        -:  273:	}
+        -:  274:
+        -:  275:	template<length_t L, typename T, qualifier Q>
+        -:  276:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> abs(vec<L, T, Q> const& x)
+        -:  277:	{
+        -:  278:		return detail::compute_abs_vector<L, T, Q, detail::is_aligned<Q>::value>::call(x);
+        -:  279:	}
+        -:  280:
+        -:  281:	// sign
+        -:  282:	// fast and works for any type
+        -:  283:	template<typename genFIType>
+        -:  284:	GLM_FUNC_QUALIFIER genFIType sign(genFIType x)
+        -:  285:	{
+        -:  286:		GLM_STATIC_ASSERT(
+        -:  287:			std::numeric_limits<genFIType>::is_iec559 || (std::numeric_limits<genFIType>::is_signed && std::numeric_limits<genFIType>::is_integer),
+        -:  288:			"'sign' only accept signed inputs");
+        -:  289:
+        -:  290:		return detail::compute_sign<1, genFIType, defaultp,
+        -:  291:                                    std::numeric_limits<genFIType>::is_iec559, detail::is_aligned<highp>::value>::call(vec<1, genFIType>(x)).x;
+        -:  292:	}
+        -:  293:
+        -:  294:	template<length_t L, typename T, qualifier Q>
+        -:  295:	GLM_FUNC_QUALIFIER vec<L, T, Q> sign(vec<L, T, Q> const& x)
+        -:  296:	{
+        -:  297:		GLM_STATIC_ASSERT(
+        -:  298:			std::numeric_limits<T>::is_iec559 || (std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_integer),
+        -:  299:			"'sign' only accept signed inputs");
+        -:  300:
+        -:  301:		return detail::compute_sign<L, T, Q, std::numeric_limits<T>::is_iec559, detail::is_aligned<Q>::value>::call(x);
+        -:  302:	}
+        -:  303:
+        -:  304:	// floor
+        -:  305:	using ::std::floor;
+        -:  306:	template<length_t L, typename T, qualifier Q>
+        -:  307:	GLM_FUNC_QUALIFIER vec<L, T, Q> floor(vec<L, T, Q> const& x)
+        -:  308:	{
+        -:  309:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'floor' only accept floating-point inputs.");
+        -:  310:		return detail::compute_floor<L, T, Q, detail::is_aligned<Q>::value>::call(x);
+        -:  311:	}
+        -:  312:
+        -:  313:	template<length_t L, typename T, qualifier Q>
+        -:  314:	GLM_FUNC_QUALIFIER vec<L, T, Q> trunc(vec<L, T, Q> const& x)
+        -:  315:	{
+        -:  316:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'trunc' only accept floating-point inputs");
+        -:  317:		return detail::compute_trunc<L, T, Q, detail::is_aligned<Q>::value>::call(x);
+        -:  318:	}
+        -:  319:
+        -:  320:	template<length_t L, typename T, qualifier Q>
+        -:  321:	GLM_FUNC_QUALIFIER vec<L, T, Q> round(vec<L, T, Q> const& x)
+        -:  322:	{
+        -:  323:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'round' only accept floating-point inputs");
+        -:  324:		return detail::compute_round<L, T, Q, detail::is_aligned<Q>::value>::call(x);
+        -:  325:	}
+        -:  326:
+        -:  327:/*
+        -:  328:	// roundEven
+        -:  329:	template<typename genType>
+        -:  330:	GLM_FUNC_QUALIFIER genType roundEven(genType const& x)
+        -:  331:	{
+        -:  332:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'roundEven' only accept floating-point inputs");
+        -:  333:
+        -:  334:		return genType(int(x + genType(int(x) % 2)));
+        -:  335:	}
+        -:  336:*/
+        -:  337:
+        -:  338:	// roundEven
+        -:  339:	template<typename genType>
+        -:  340:	GLM_FUNC_QUALIFIER genType roundEven(genType x)
+        -:  341:	{
+        -:  342:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'roundEven' only accept floating-point inputs");
+        -:  343:
+        -:  344:		int Integer = static_cast<int>(x);
+        -:  345:		genType IntegerPart = static_cast<genType>(Integer);
+        -:  346:		genType FractionalPart = fract(x);
+        -:  347:
+        -:  348:		if(FractionalPart > static_cast<genType>(0.5) || FractionalPart < static_cast<genType>(0.5))
+        -:  349:		{
+        -:  350:			return round(x);
+        -:  351:		}
+        -:  352:		else if((Integer % 2) == 0)
+        -:  353:		{
+        -:  354:			return IntegerPart;
+        -:  355:		}
+        -:  356:		else if(x <= static_cast<genType>(0)) // Work around...
+        -:  357:		{
+        -:  358:			return IntegerPart - static_cast<genType>(1);
+        -:  359:		}
+        -:  360:		else
+        -:  361:		{
+        -:  362:			return IntegerPart + static_cast<genType>(1);
+        -:  363:		}
+        -:  364:		//else // Bug on MinGW 4.5.2
+        -:  365:		//{
+        -:  366:		//	return mix(IntegerPart + genType(-1), IntegerPart + genType(1), x <= genType(0));
+        -:  367:		//}
+        -:  368:	}
+        -:  369:
+        -:  370:	template<length_t L, typename T, qualifier Q>
+        -:  371:	GLM_FUNC_QUALIFIER vec<L, T, Q> roundEven(vec<L, T, Q> const& x)
+        -:  372:	{
+        -:  373:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'roundEven' only accept floating-point inputs");
+        -:  374:		return detail::functor1<vec, L, T, T, Q>::call(roundEven, x);
+        -:  375:	}
+        -:  376:
+        -:  377:	// ceil
+        -:  378:	using ::std::ceil;
+        -:  379:	template<length_t L, typename T, qualifier Q>
+        -:  380:	GLM_FUNC_QUALIFIER vec<L, T, Q> ceil(vec<L, T, Q> const& x)
+        -:  381:	{
+        -:  382:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'ceil' only accept floating-point inputs");
+        -:  383:		return detail::compute_ceil<L, T, Q, detail::is_aligned<Q>::value>::call(x);
+        -:  384:	}
+        -:  385:
+        -:  386:	// fract
+        -:  387:	template<typename genType>
+        -:  388:	GLM_FUNC_QUALIFIER genType fract(genType x)
+        -:  389:	{
+        -:  390:		return fract(vec<1, genType>(x)).x;
+        -:  391:	}
+        -:  392:
+        -:  393:	template<length_t L, typename T, qualifier Q>
+        -:  394:	GLM_FUNC_QUALIFIER vec<L, T, Q> fract(vec<L, T, Q> const& x)
+        -:  395:	{
+        -:  396:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'fract' only accept floating-point inputs");
+        -:  397:		return detail::compute_fract<L, T, Q, detail::is_aligned<Q>::value>::call(x);
+        -:  398:	}
+        -:  399:
+        -:  400:	// mod
+        -:  401:	template<typename genType>
+        -:  402:	GLM_FUNC_QUALIFIER genType mod(genType x, genType y)
+        -:  403:	{
+        -:  404:#		if GLM_COMPILER & GLM_COMPILER_CUDA
+        -:  405:			// Another Cuda compiler bug https://github.com/g-truc/glm/issues/530
+        -:  406:			vec<1, genType, defaultp> Result(mod(vec<1, genType, defaultp>(x), y));
+        -:  407:			return Result.x;
+        -:  408:#		else
+        -:  409:			return mod(vec<1, genType, defaultp>(x), y).x;
+        -:  410:#		endif
+        -:  411:	}
+        -:  412:
+        -:  413:	template<length_t L, typename T, qualifier Q>
+        -:  414:	GLM_FUNC_QUALIFIER vec<L, T, Q> mod(vec<L, T, Q> const& x, T y)
+        -:  415:	{
+        -:  416:		return detail::compute_mod<L, T, Q, detail::is_aligned<Q>::value>::call(x, vec<L, T, Q>(y));
+        -:  417:	}
+        -:  418:
+        -:  419:	template<length_t L, typename T, qualifier Q>
+        -:  420:	GLM_FUNC_QUALIFIER vec<L, T, Q> mod(vec<L, T, Q> const& x, vec<L, T, Q> const& y)
+        -:  421:	{
+        -:  422:		return detail::compute_mod<L, T, Q, detail::is_aligned<Q>::value>::call(x, y);
+        -:  423:	}
+        -:  424:
+        -:  425:	// modf
+        -:  426:	template<typename genType>
+        -:  427:	GLM_FUNC_QUALIFIER genType modf(genType x, genType & i)
+        -:  428:	{
+        -:  429:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'modf' only accept floating-point inputs");
+        -:  430:		return std::modf(x, &i);
+        -:  431:	}
+        -:  432:
+        -:  433:	template<typename T, qualifier Q>
+        -:  434:	GLM_FUNC_QUALIFIER vec<1, T, Q> modf(vec<1, T, Q> const& x, vec<1, T, Q> & i)
+        -:  435:	{
+        -:  436:		return vec<1, T, Q>(
+        -:  437:			modf(x.x, i.x));
+        -:  438:	}
+        -:  439:
+        -:  440:	template<typename T, qualifier Q>
+        -:  441:	GLM_FUNC_QUALIFIER vec<2, T, Q> modf(vec<2, T, Q> const& x, vec<2, T, Q> & i)
+        -:  442:	{
+        -:  443:		return vec<2, T, Q>(
+        -:  444:			modf(x.x, i.x),
+        -:  445:			modf(x.y, i.y));
+        -:  446:	}
+        -:  447:
+        -:  448:	template<typename T, qualifier Q>
+        -:  449:	GLM_FUNC_QUALIFIER vec<3, T, Q> modf(vec<3, T, Q> const& x, vec<3, T, Q> & i)
+        -:  450:	{
+        -:  451:		return vec<3, T, Q>(
+        -:  452:			modf(x.x, i.x),
+        -:  453:			modf(x.y, i.y),
+        -:  454:			modf(x.z, i.z));
+        -:  455:	}
+        -:  456:
+        -:  457:	template<typename T, qualifier Q>
+        -:  458:	GLM_FUNC_QUALIFIER vec<4, T, Q> modf(vec<4, T, Q> const& x, vec<4, T, Q> & i)
+        -:  459:	{
+        -:  460:		return vec<4, T, Q>(
+        -:  461:			modf(x.x, i.x),
+        -:  462:			modf(x.y, i.y),
+        -:  463:			modf(x.z, i.z),
+        -:  464:			modf(x.w, i.w));
+        -:  465:	}
+        -:  466:
+        -:  467:	//// Only valid if (INT_MIN <= x-y <= INT_MAX)
+        -:  468:	//// min(x,y)
+        -:  469:	//r = y + ((x - y) & ((x - y) >> (sizeof(int) *
+        -:  470:	//CHAR_BIT - 1)));
+        -:  471:	//// max(x,y)
+        -:  472:	//r = x - ((x - y) & ((x - y) >> (sizeof(int) *
+        -:  473:	//CHAR_BIT - 1)));
+        -:  474:
+        -:  475:	// min
+        -:  476:	template<length_t L, typename T, qualifier Q>
+        -:  477:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> min(vec<L, T, Q> const& a, T b)
+        -:  478:	{
+        -:  479:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'min' only accept floating-point or integer inputs");
+        -:  480:		return detail::compute_min_vector<L, T, Q, detail::is_aligned<Q>::value>::call(a, vec<L, T, Q>(b));
+        -:  481:	}
+        -:  482:
+        -:  483:	template<length_t L, typename T, qualifier Q>
+        -:  484:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> min(vec<L, T, Q> const& a, vec<L, T, Q> const& b)
+        -:  485:	{
+        -:  486:		return detail::compute_min_vector<L, T, Q, detail::is_aligned<Q>::value>::call(a, b);
+        -:  487:	}
+        -:  488:
+        -:  489:	// max
+        -:  490:	template<length_t L, typename T, qualifier Q>
+        -:  491:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> max(vec<L, T, Q> const& a, T b)
+        -:  492:	{
+        -:  493:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'max' only accept floating-point or integer inputs");
+        -:  494:		return detail::compute_max_vector<L, T, Q, detail::is_aligned<Q>::value>::call(a, vec<L, T, Q>(b));
+        -:  495:	}
+        -:  496:
+        -:  497:	template<length_t L, typename T, qualifier Q>
+        -:  498:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> max(vec<L, T, Q> const& a, vec<L, T, Q> const& b)
+        -:  499:	{
+        -:  500:		return detail::compute_max_vector<L, T, Q, detail::is_aligned<Q>::value>::call(a, b);
+        -:  501:	}
+        -:  502:
+        -:  503:	// clamp
+        -:  504:	template<typename genType>
+        -:  505:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR genType clamp(genType x, genType minVal, genType maxVal)
+        -:  506:	{
+        -:  507:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer, "'clamp' only accept floating-point or integer inputs");
+        -:  508:		return min(max(x, minVal), maxVal);
+        -:  509:	}
+        -:  510:
+        -:  511:	template<length_t L, typename T, qualifier Q>
+        -:  512:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> clamp(vec<L, T, Q> const& x, T minVal, T maxVal)
+        -:  513:	{
+        -:  514:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'clamp' only accept floating-point or integer inputs");
+        -:  515:		return detail::compute_clamp_vector<L, T, Q, detail::is_aligned<Q>::value>::call(x, vec<L, T, Q>(minVal), vec<L, T, Q>(maxVal));
+        -:  516:	}
+        -:  517:
+        -:  518:	template<length_t L, typename T, qualifier Q>
+        -:  519:	GLM_FUNC_QUALIFIER GLM_CONSTEXPR vec<L, T, Q> clamp(vec<L, T, Q> const& x, vec<L, T, Q> const& minVal, vec<L, T, Q> const& maxVal)
+        -:  520:	{
+        -:  521:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'clamp' only accept floating-point or integer inputs");
+        -:  522:		return detail::compute_clamp_vector<L, T, Q, detail::is_aligned<Q>::value>::call(x, minVal, maxVal);
+        -:  523:	}
+        -:  524:
+        -:  525:	template<typename genTypeT, typename genTypeU>
+        -:  526:	GLM_FUNC_QUALIFIER genTypeT mix(genTypeT x, genTypeT y, genTypeU a)
+        -:  527:	{
+        -:  528:		return detail::compute_mix<genTypeT, genTypeU>::call(x, y, a);
+        -:  529:	}
+        -:  530:
+        -:  531:	template<length_t L, typename T, typename U, qualifier Q>
+        -:  532:	GLM_FUNC_QUALIFIER vec<L, T, Q> mix(vec<L, T, Q> const& x, vec<L, T, Q> const& y, U a)
+        -:  533:	{
+        -:  534:		return detail::compute_mix_scalar<L, T, U, Q, detail::is_aligned<Q>::value>::call(x, y, a);
+        -:  535:	}
+        -:  536:
+        -:  537:	template<length_t L, typename T, typename U, qualifier Q>
+        -:  538:	GLM_FUNC_QUALIFIER vec<L, T, Q> mix(vec<L, T, Q> const& x, vec<L, T, Q> const& y, vec<L, U, Q> const& a)
+        -:  539:	{
+        -:  540:		return detail::compute_mix_vector<L, T, U, Q, detail::is_aligned<Q>::value>::call(x, y, a);
+        -:  541:	}
+        -:  542:
+        -:  543:	// step
+        -:  544:	template<typename genType>
+        -:  545:	GLM_FUNC_QUALIFIER genType step(genType edge, genType x)
+        -:  546:	{
+        -:  547:		return mix(static_cast<genType>(1), static_cast<genType>(0), x < edge);
+        -:  548:	}
+        -:  549:
+        -:  550:	template<length_t L, typename T, qualifier Q>
+        -:  551:	GLM_FUNC_QUALIFIER vec<L, T, Q> step(T edge, vec<L, T, Q> const& x)
+        -:  552:	{
+        -:  553:		return detail::compute_step_vector<L, T, Q, detail::is_aligned<Q>::value>::call(vec<L, T, Q>(edge), x);
+        -:  554:	}
+        -:  555:
+        -:  556:	template<length_t L, typename T, qualifier Q>
+        -:  557:	GLM_FUNC_QUALIFIER vec<L, T, Q> step(vec<L, T, Q> const& edge, vec<L, T, Q> const& x)
+        -:  558:	{
+        -:  559:		return detail::compute_step_vector<L, T, Q, detail::is_aligned<Q>::value>::call(edge, x);
+        -:  560:	}
+        -:  561:
+        -:  562:	// smoothstep
+        -:  563:	template<typename genType>
+        -:  564:	GLM_FUNC_QUALIFIER genType smoothstep(genType edge0, genType edge1, genType x)
+        -:  565:	{
+        -:  566:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559 || GLM_CONFIG_UNRESTRICTED_GENTYPE, "'smoothstep' only accept floating-point inputs");
+        -:  567:
+        -:  568:		genType const tmp(clamp((x - edge0) / (edge1 - edge0), genType(0), genType(1)));
+        -:  569:		return tmp * tmp * (genType(3) - genType(2) * tmp);
+        -:  570:	}
+        -:  571:
+        -:  572:	template<length_t L, typename T, qualifier Q>
+        -:  573:	GLM_FUNC_QUALIFIER vec<L, T, Q> smoothstep(T edge0, T edge1, vec<L, T, Q> const& x)
+        -:  574:	{
+        -:  575:		return detail::compute_smoothstep_vector<L, T, Q, detail::is_aligned<Q>::value>::call(vec<L, T, Q>(edge0), vec<L, T, Q>(edge1), x);
+        -:  576:	}
+        -:  577:
+        -:  578:	template<length_t L, typename T, qualifier Q>
+        -:  579:	GLM_FUNC_QUALIFIER vec<L, T, Q> smoothstep(vec<L, T, Q> const& edge0, vec<L, T, Q> const& edge1, vec<L, T, Q> const& x)
+        -:  580:	{
+        -:  581:		return detail::compute_smoothstep_vector<L, T, Q, detail::is_aligned<Q>::value>::call(edge0, edge1, x);
+        -:  582:	}
+        -:  583:
+        -:  584:#	if GLM_HAS_CXX11_STL
+        -:  585:		using std::isnan;
+        -:  586:#	else
+        -:  587:		template<typename genType>
+        -:  588:		GLM_FUNC_QUALIFIER bool isnan(genType x)
+        -:  589:		{
+        -:  590:			GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'isnan' only accept floating-point inputs");
+        -:  591:
+        -:  592:#			if GLM_HAS_CXX11_STL
+        -:  593:				return std::isnan(x);
+        -:  594:#			elif GLM_COMPILER & GLM_COMPILER_VC
+        -:  595:				return _isnan(x) != 0;
+        -:  596:#			elif GLM_COMPILER & GLM_COMPILER_INTEL
+        -:  597:#				if GLM_PLATFORM & GLM_PLATFORM_WINDOWS
+        -:  598:					return _isnan(x) != 0;
+        -:  599:#				else
+        -:  600:					return ::isnan(x) != 0;
+        -:  601:#				endif
+        -:  602:#			elif (GLM_COMPILER & (GLM_COMPILER_GCC | GLM_COMPILER_CLANG)) && (GLM_PLATFORM & GLM_PLATFORM_ANDROID) && __cplusplus < 201103L
+        -:  603:				return _isnan(x) != 0;
+        -:  604:#			elif GLM_COMPILER & GLM_COMPILER_CUDA
+        -:  605:				return ::isnan(x) != 0;
+        -:  606:#			else
+        -:  607:				return std::isnan(x);
+        -:  608:#			endif
+        -:  609:		}
+        -:  610:#	endif
+        -:  611:
+        -:  612:	template<length_t L, typename T, qualifier Q>
+        -:  613:	GLM_FUNC_QUALIFIER vec<L, bool, Q> isnan(vec<L, T, Q> const& v)
+        -:  614:	{
+        -:  615:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'isnan' only accept floating-point inputs");
+        -:  616:
+        -:  617:		vec<L, bool, Q> Result;
+        -:  618:		for (length_t l = 0; l < v.length(); ++l)
+        -:  619:			Result[l] = glm::isnan(v[l]);
+        -:  620:		return Result;
+        -:  621:	}
+        -:  622:
+        -:  623:#	if GLM_HAS_CXX11_STL
+        -:  624:		using std::isinf;
+        -:  625:#	else
+        -:  626:		template<typename genType>
+        -:  627:		GLM_FUNC_QUALIFIER bool isinf(genType x)
+        -:  628:		{
+        -:  629:			GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'isinf' only accept floating-point inputs");
+        -:  630:
+        -:  631:#			if GLM_HAS_CXX11_STL
+        -:  632:				return std::isinf(x);
+        -:  633:#			elif GLM_COMPILER & (GLM_COMPILER_INTEL | GLM_COMPILER_VC)
+        -:  634:#				if(GLM_PLATFORM & GLM_PLATFORM_WINDOWS)
+        -:  635:					return _fpclass(x) == _FPCLASS_NINF || _fpclass(x) == _FPCLASS_PINF;
+        -:  636:#				else
+        -:  637:					return ::isinf(x);
+        -:  638:#				endif
+        -:  639:#			elif GLM_COMPILER & (GLM_COMPILER_GCC | GLM_COMPILER_CLANG)
+        -:  640:#				if(GLM_PLATFORM & GLM_PLATFORM_ANDROID && __cplusplus < 201103L)
+        -:  641:					return _isinf(x) != 0;
+        -:  642:#				else
+        -:  643:					return std::isinf(x);
+        -:  644:#				endif
+        -:  645:#			elif GLM_COMPILER & GLM_COMPILER_CUDA
+        -:  646:				// http://developer.download.nvidia.com/compute/cuda/4_2/rel/toolkit/docs/online/group__CUDA__MATH__DOUBLE_g13431dd2b40b51f9139cbb7f50c18fab.html#g13431dd2b40b51f9139cbb7f50c18fab
+        -:  647:				return ::isinf(double(x)) != 0;
+        -:  648:#			else
+        -:  649:				return std::isinf(x);
+        -:  650:#			endif
+        -:  651:	}
+        -:  652:#	endif
+        -:  653:
+        -:  654:	template<length_t L, typename T, qualifier Q>
+        -:  655:	GLM_FUNC_QUALIFIER vec<L, bool, Q> isinf(vec<L, T, Q> const& v)
+        -:  656:	{
+        -:  657:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'isinf' only accept floating-point inputs");
+        -:  658:
+        -:  659:		vec<L, bool, Q> Result;
+        -:  660:		for (length_t l = 0; l < v.length(); ++l)
+        -:  661:			Result[l] = glm::isinf(v[l]);
+        -:  662:		return Result;
+        -:  663:	}
+        -:  664:
+        -:  665:	GLM_FUNC_QUALIFIER int floatBitsToInt(float const& v)
+        -:  666:	{
+        -:  667:		union
+        -:  668:		{
+        -:  669:			float in;
+        -:  670:			int out;
+        -:  671:		} u;
+        -:  672:
+        -:  673:		u.in = v;
+        -:  674:
+        -:  675:		return u.out;
+        -:  676:	}
+        -:  677:
+        -:  678:	template<length_t L, qualifier Q>
+        -:  679:	GLM_FUNC_QUALIFIER vec<L, int, Q> floatBitsToInt(vec<L, float, Q> const& v)
+        -:  680:	{
+        -:  681:		return reinterpret_cast<vec<L, int, Q>&>(const_cast<vec<L, float, Q>&>(v));
+        -:  682:	}
+        -:  683:
+        -:  684:	GLM_FUNC_QUALIFIER uint floatBitsToUint(float const& v)
+        -:  685:	{
+        -:  686:		union
+        -:  687:		{
+        -:  688:			float in;
+        -:  689:			uint out;
+        -:  690:		} u;
+        -:  691:
+        -:  692:		u.in = v;
+        -:  693:
+        -:  694:		return u.out;
+        -:  695:	}
+        -:  696:
+        -:  697:	template<length_t L, qualifier Q>
+        -:  698:	GLM_FUNC_QUALIFIER vec<L, uint, Q> floatBitsToUint(vec<L, float, Q> const& v)
+        -:  699:	{
+        -:  700:		return reinterpret_cast<vec<L, uint, Q>&>(const_cast<vec<L, float, Q>&>(v));
+        -:  701:	}
+        -:  702:
+        -:  703:	GLM_FUNC_QUALIFIER float intBitsToFloat(int const& v)
+        -:  704:	{
+        -:  705:		union
+        -:  706:		{
+        -:  707:			int in;
+        -:  708:			float out;
+        -:  709:		} u;
+        -:  710:
+        -:  711:		u.in = v;
+        -:  712:
+        -:  713:		return u.out;
+        -:  714:	}
+        -:  715:
+        -:  716:	template<length_t L, qualifier Q>
+        -:  717:	GLM_FUNC_QUALIFIER vec<L, float, Q> intBitsToFloat(vec<L, int, Q> const& v)
+        -:  718:	{
+        -:  719:		return reinterpret_cast<vec<L, float, Q>&>(const_cast<vec<L, int, Q>&>(v));
+        -:  720:	}
+        -:  721:
+        -:  722:	GLM_FUNC_QUALIFIER float uintBitsToFloat(uint const& v)
+        -:  723:	{
+        -:  724:		union
+        -:  725:		{
+        -:  726:			uint in;
+        -:  727:			float out;
+        -:  728:		} u;
+        -:  729:
+        -:  730:		u.in = v;
+        -:  731:
+        -:  732:		return u.out;
+        -:  733:	}
+        -:  734:
+        -:  735:	template<length_t L, qualifier Q>
+        -:  736:	GLM_FUNC_QUALIFIER vec<L, float, Q> uintBitsToFloat(vec<L, uint, Q> const& v)
+        -:  737:	{
+        -:  738:		return reinterpret_cast<vec<L, float, Q>&>(const_cast<vec<L, uint, Q>&>(v));
+        -:  739:	}
+        -:  740:
+        -:  741:#	if GLM_HAS_CXX11_STL
+        -:  742:		using std::fma;
+        -:  743:#	else
+        -:  744:		template<typename genType>
+        -:  745:		GLM_FUNC_QUALIFIER genType fma(genType const& a, genType const& b, genType const& c)
+        -:  746:		{
+        -:  747:			return a * b + c;
+        -:  748:		}
+        -:  749:#	endif
+        -:  750:
+        -:  751:	template<typename genType>
+        -:  752:	GLM_FUNC_QUALIFIER genType frexp(genType x, int& exp)
+        -:  753:	{
+        -:  754:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'frexp' only accept floating-point inputs");
+        -:  755:
+        -:  756:		return std::frexp(x, &exp);
+        -:  757:	}
+        -:  758:
+        -:  759:	template<length_t L, typename T, qualifier Q>
+        -:  760:	GLM_FUNC_QUALIFIER vec<L, T, Q> frexp(vec<L, T, Q> const& v, vec<L, int, Q>& exp)
+        -:  761:	{
+        -:  762:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'frexp' only accept floating-point inputs");
+        -:  763:
+        -:  764:		vec<L, T, Q> Result;
+        -:  765:		for (length_t l = 0; l < v.length(); ++l)
+        -:  766:			Result[l] = std::frexp(v[l], &exp[l]);
+        -:  767:		return Result;
+        -:  768:	}
+        -:  769:
+        -:  770:	template<typename genType>
+        -:  771:	GLM_FUNC_QUALIFIER genType ldexp(genType const& x, int const& exp)
+        -:  772:	{
+        -:  773:		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'ldexp' only accept floating-point inputs");
+        -:  774:
+        -:  775:		return std::ldexp(x, exp);
+        -:  776:	}
+        -:  777:
+        -:  778:	template<length_t L, typename T, qualifier Q>
+        -:  779:	GLM_FUNC_QUALIFIER vec<L, T, Q> ldexp(vec<L, T, Q> const& v, vec<L, int, Q> const& exp)
+        -:  780:	{
+        -:  781:		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'ldexp' only accept floating-point inputs");
+        -:  782:
+        -:  783:		vec<L, T, Q> Result;
+        -:  784:		for (length_t l = 0; l < v.length(); ++l)
+        -:  785:			Result[l] = std::ldexp(v[l], exp[l]);
+        -:  786:		return Result;
+        -:  787:	}
+        -:  788:}//namespace glm
+        -:  789:
+        -:  790:#if GLM_CONFIG_SIMD == GLM_ENABLE
+        -:  791:#	include "func_common_simd.inl"
+        -:  792:#endif

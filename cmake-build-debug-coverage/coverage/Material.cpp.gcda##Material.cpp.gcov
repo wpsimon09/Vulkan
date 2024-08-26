@@ -1,0 +1,196 @@
+        -:    0:Source:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/Includes/Material/Material.cpp
+        -:    0:Graph:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Material/Material.cpp.gcno
+        -:    0:Data:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Material/Material.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by wpsimon09 on 24/08/24.
+        -:    3://
+        -:    4:
+        -:    5:#include "Material.hpp"
+        -:    6:
+function _ZN8MaterialC2ERP10VkDevice_T called 1 returned 100% blocks executed 45%
+        1:    7:Material::Material(VkDevice &logicalDevic) {
+        1:    7-block 2
+call    0 returned 1
+call    1 returned 1
+        1:    8:    this->m_materials.insert(std::make_pair(TEXTURE_TYPE_ALBEDO, Texture{}));
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:    8-block 5
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+    $$$$$:    8-block 11
+    $$$$$:    8-block 12
+    $$$$$:    8-block 13
+        1:    9:    this->m_materials.insert(std::make_pair(TEXTURE_TYPE_ARM, Texture{}));
+        1:    9-block 6
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:    9-block 7
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+    $$$$$:    9-block 14
+    $$$$$:    9-block 15
+    $$$$$:    9-block 16
+        1:   10:    this->m_materials.insert(std::make_pair(TEXTURE_TYPE_NORMAL, Texture{}));
+        1:   10-block 8
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   10-block 9
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+    $$$$$:   10-block 17
+    $$$$$:   10-block 18
+    $$$$$:   10-block 19
+        -:   11:
+        1:   12:    this->m_logicalDevice = logicalDevic;
+        1:   13:}
+        1:   13-block 10
+    $$$$$:   13-block 20
+call    0 never executed
+    $$$$$:   13-block 22
+call    1 never executed
+        -:   14:
+function _ZN8Material17GetLayoutBindingsEi called 1 returned 100% blocks executed 79%
+        1:   15:std::vector<VkDescriptorSetLayoutBinding> Material::GetLayoutBindings(int startsFrom) {
+        1:   16:    int i = startsFrom;
+        1:   17:    std::vector<VkDescriptorSetLayoutBinding> layoutBinidngs;
+        1:   17-block 2
+call    0 returned 1
+        4:   18:    for (auto &texture: this->m_materials) {
+call    0 returned 1
+call    1 returned 1
+        3:   18-block 5
+call    2 returned 3
+        4:   18-block 8
+call    3 returned 4
+branch  4 taken 3
+branch  5 taken 1 (fallthrough)
+        3:   19:        VkDescriptorSetLayoutBinding imageSamplerLayoutBinding{};
+        3:   20:        imageSamplerLayoutBinding.binding = i;
+        3:   21:        imageSamplerLayoutBinding.descriptorCount = 1;
+        3:   22:        imageSamplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        3:   23:        imageSamplerLayoutBinding.pImmutableSamplers = nullptr;
+        3:   24:        imageSamplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+        3:   25:        texture.second.binding = i;
+        -:   26:
+        3:   27:        layoutBinidngs.emplace_back(imageSamplerLayoutBinding);
+call    0 returned 3
+branch  1 taken 3 (fallthrough)
+branch  2 taken 0 (throw)
+        3:   28:        i++;
+        3:   28-block 7
+call    0 returned 3
+        -:   29:    }
+        -:   30:
+        1:   31:    return layoutBinidngs;
+        1:   31-block 10
+        1:   31-block 11
+    =====:   32:}
+    $$$$$:   32-block 14
+call    0 never executed
+        -:   33:
+function _ZN8Material21GetDescriptorPoolSizeEj called 1 returned 100% blocks executed 100%
+        1:   34:VkDescriptorPoolSize Material::GetDescriptorPoolSize(uint32_t MAX_FRAMES_IN_FLIGHT) {
+        1:   35:    VkDescriptorPoolSize poolSize{};
+        1:   36:    poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        1:   37:    poolSize.descriptorCount = m_materials.size() * MAX_FRAMES_IN_FLIGHT;
+        1:   37-block 2
+call    0 returned 1
+        1:   38:    return poolSize;
+        -:   39:}
+        -:   40:
+function _ZN8Material19GetDescriptorWritesEP17VkDescriptorSet_T called 2 returned 100% blocks executed 94%
+        2:   41:std::vector<VkWriteDescriptorSet> Material::GetDescriptorWrites(VkDescriptorSet descriptorSet) {
+        2:   42:    std::vector<VkWriteDescriptorSet> descritorWrites;
+        2:   42-block 2
+call    0 returned 2
+        2:   43:    descritorWrites.resize(static_cast<uint32_t>(m_materials.size()));
+call    0 returned 2
+call    1 returned 2
+branch  2 taken 2 (fallthrough)
+branch  3 taken 0 (throw)
+        2:   44:    m_descriptorImageInfos.resize(static_cast<uint32_t>(m_materials.size()));
+        2:   44-block 5
+call    0 returned 2
+call    1 returned 2
+branch  2 taken 2 (fallthrough)
+branch  3 taken 0 (throw)
+        2:   45:    int i = 0;
+        8:   46:    for (auto &texture: m_materials) {
+        2:   46-block 7
+call    0 returned 2
+call    1 returned 2
+        6:   46-block 9
+call    2 returned 6
+        8:   46-block 14
+call    3 returned 8
+branch  4 taken 6
+branch  5 taken 2 (fallthrough)
+        -:   47:
+        6:   48:        VkDescriptorImageInfo imageInfo{};
+        6:   49:        imageInfo.sampler = texture.second.sampler;
+        6:   50:        imageInfo.imageView = texture.second.imageView;
+        6:   51:        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        -:   52:
+        6:   53:        m_descriptorImageInfos[i] = imageInfo;
+call    0 returned 6
+        -:   54:
+        6:   55:        VkWriteDescriptorSet descriptorWrite{};
+        6:   56:        descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        6:   57:        descriptorWrite.dstSet = descriptorSet;
+        6:   58:        descriptorWrite.dstBinding = texture.second.binding;
+        6:   59:        descriptorWrite.dstArrayElement = 0;
+        6:   60:        descriptorWrite.descriptorCount = 1;
+        6:   61:        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        6:   62:        descriptorWrite.pImageInfo = &m_descriptorImageInfos[i];
+call    0 returned 6
+        6:   63:        descriptorWrite.pBufferInfo = nullptr;
+        6:   64:        descriptorWrite.pTexelBufferView = nullptr;
+        6:   65:        descriptorWrite.pNext = nullptr;
+        -:   66:
+        6:   67:        descritorWrites[i] = descriptorWrite;
+call    0 returned 6
+        -:   68:
+        6:   69:        i++;
+call    0 returned 6
+        -:   70:    }
+        -:   71:
+        2:   72:    return descritorWrites;
+        2:   72-block 16
+        2:   72-block 17
+    =====:   73:}
+    $$$$$:   73-block 18
+call    0 never executed
+        -:   74:
+        -:   75:
+function _ZN8MaterialD2Ev called 1 returned 100% blocks executed 100%
+        1:   76:Material::~Material() {
+        4:   77:    for (auto texture: this->m_materials) {
+        1:   77-block 2
+call    0 returned 1
+call    1 returned 1
+        3:   77-block 4
+call    2 returned 3
+call    3 returned 3
+        4:   77-block 9
+call    4 returned 4
+branch  5 taken 3
+branch  6 taken 1 (fallthrough)
+        3:   78:        vkDestroyImageView(m_logicalDevice, texture.second.imageView, nullptr);
+call    0 returned 3
+        3:   79:        vkDestroyImage(m_logicalDevice, texture.second.image, nullptr);
+call    0 returned 3
+        3:   80:        vkFreeMemory(m_logicalDevice, texture.second.memory, nullptr);
+call    0 returned 3
+        -:   81:    }
+        1:   82:}
+        1:   82-block 11
+call    0 returned 1
+call    1 returned 1

@@ -4,6 +4,7 @@
 
 #include "VulkanApp.hpp"
 
+#include <chrono>
 #include <emmintrin.h>
 #include <unistd.h>
 
@@ -63,7 +64,15 @@ void VulkanApp::InitVulkan() {
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     CreateTextureImage();
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Time taken by myFunction: " << duration.count() << " ms" << std::endl;
+
     CreateTextureImageView();
     CreateTextureSampler();
     CreateVertexBuffers();
@@ -767,6 +776,8 @@ void VulkanApp::CreateFrameBuffers() {
 
 void VulkanApp::CreateTextureImage() {
 
+
+
     TEXTURE_TYPE texturesToProcess[] = {TEXTURE_TYPE_ALBEDO, TEXTURE_TYPE_ARM, TEXTURE_TYPE_NORMAL};
     std::vector<std::string> paths = {
         "Textures/albedo.png", "Textures/arm.png", "Textures/normal.png"
@@ -790,6 +801,7 @@ void VulkanApp::CreateTextureImage() {
     imageCreateInfo.imageTiling = VK_IMAGE_TILING_OPTIMAL;
     imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
     imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
 
 
     for(int i = 0; i < paths.size(); i++) {
@@ -818,23 +830,21 @@ void VulkanApp::CreateTextureImage() {
         imageCreateInfo.height = texHeight;
         imageCreateInfo.size = imageSize;
 
-        CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
-
         ImageLayoutDependencyInfo dependencyInfo{};
         dependencyInfo.commandBuffer = StartRecordingCommandBuffer();
         dependencyInfo.logicalDevice = m_device;
         dependencyInfo.transformQueue = m_transferQueue;
+
+        CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
 
         TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
         CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
         TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
         FlushCommandBuffer(dependencyInfo.commandBuffer);
-
-        vkFreeMemory(m_device, stagingImageMemory, nullptr);
     }
+        vkFreeMemory(m_device, stagingImageMemory, nullptr);
         vkDestroyBuffer(m_device, stagingImageBuffer, nullptr);
 }
 

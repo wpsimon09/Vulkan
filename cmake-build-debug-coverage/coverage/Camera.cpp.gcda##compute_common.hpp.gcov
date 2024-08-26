@@ -1,0 +1,61 @@
+        -:    0:Source:/usr/include/glm/detail/compute_common.hpp
+        -:    0:Graph:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.gcno
+        -:    0:Data:/home/wpsimon09/Desktop/LearningVulkan/Vulkan/cmake-build-debug-coverage/CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#pragma once
+        -:    2:
+        -:    3:#include "setup.hpp"
+        -:    4:#include <limits>
+        -:    5:
+        -:    6:namespace glm{
+        -:    7:namespace detail
+        -:    8:{
+        -:    9:	template<typename genFIType, bool /*signed*/>
+        -:   10:	struct compute_abs
+        -:   11:	{};
+        -:   12:
+        -:   13:	template<typename genFIType>
+        -:   14:	struct compute_abs<genFIType, true>
+        -:   15:	{
+function _ZN3glm6detail11compute_absIfLb1EE4callEf called 1 returned 100% blocks executed 80%
+        1:   16:		GLM_FUNC_QUALIFIER GLM_CONSTEXPR static genFIType call(genFIType x)
+        -:   17:		{
+        -:   18:			GLM_STATIC_ASSERT(
+        -:   19:				std::numeric_limits<genFIType>::is_iec559 || std::numeric_limits<genFIType>::is_signed,
+        -:   20:				"'abs' only accept floating-point and integer scalar or vector inputs");
+        -:   21:
+       1*:   22:			return x >= genFIType(0) ? x : -x;
+        1:   22-block 2
+branch  0 taken 1 (fallthrough)
+branch  1 taken 0
+        1:   22-block 3
+    %%%%%:   22-block 4
+        1:   22-block 5
+        -:   23:			// TODO, perf comp with: *(((int *) &x) + 1) &= 0x7fffffff;
+        -:   24:		}
+        -:   25:	};
+        -:   26:
+        -:   27:#if GLM_COMPILER & GLM_COMPILER_CUDA
+        -:   28:	template<>
+        -:   29:	struct compute_abs<float, true>
+        -:   30:	{
+        -:   31:		GLM_FUNC_QUALIFIER GLM_CONSTEXPR static float call(float x)
+        -:   32:		{
+        -:   33:			return fabsf(x);
+        -:   34:		}
+        -:   35:	};
+        -:   36:#endif
+        -:   37:
+        -:   38:	template<typename genFIType>
+        -:   39:	struct compute_abs<genFIType, false>
+        -:   40:	{
+        -:   41:		GLM_FUNC_QUALIFIER GLM_CONSTEXPR static genFIType call(genFIType x)
+        -:   42:		{
+        -:   43:			GLM_STATIC_ASSERT(
+        -:   44:				(!std::numeric_limits<genFIType>::is_signed && std::numeric_limits<genFIType>::is_integer),
+        -:   45:				"'abs' only accept floating-point and integer scalar or vector inputs");
+        -:   46:			return x;
+        -:   47:		}
+        -:   48:	};
+        -:   49:}//namespace detail
+        -:   50:}//namespace glm
