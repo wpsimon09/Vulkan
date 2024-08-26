@@ -355,8 +355,21 @@ static inline void CopyBuffer(VkDevice logicalDevice,VkQueue transferQueue,VkCom
     EndSingleTimeCommand(logicalDevice, transferCommandPool, commandBuffer, transferQueue);
 }
 
+static inline void CopyBuffer(VkDevice logicalDevice,VkCommandBuffer commandBuffer,VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+
+    //VkCommandBuffer commandBuffer = BeginSingleTimeCommand(logicalDevice, transferCommandPool);
+
+    VkBufferCopy copyRegion{};
+    copyRegion.srcOffset = 0;
+    copyRegion.dstOffset = 0;
+    copyRegion.size = size;
+    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer,1,&copyRegion);
+
+    //EndSingleTimeCommand(logicalDevice, transferCommandPool, commandBuffer, transferQueue);
+}
+
 static inline void CopyBufferToImage(ImageLayoutDependencyInfo dependencyInfo, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
-    VkCommandBuffer commandBuffer = BeginSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool);
+    //VkCommandBuffer commandBuffer = BeginSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool);
 
     VkBufferImageCopy region{};
     region.bufferOffset = 0;
@@ -371,13 +384,12 @@ static inline void CopyBufferToImage(ImageLayoutDependencyInfo dependencyInfo, V
     region.imageOffset={0,0,0};
     region.imageExtent = {width, height,1};
 
-    vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+    vkCmdCopyBufferToImage(dependencyInfo.commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-    EndSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool, commandBuffer, dependencyInfo.transformQueue);
+    //EndSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool, commandBuffer, dependencyInfo.transformQueue);
 }
 
 static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
-    VkCommandBuffer commandBuffer = BeginSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool);
 
     VkImageMemoryBarrier barrier{.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
     barrier.oldLayout = oldLayout;
@@ -415,16 +427,13 @@ static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,
     }
 
     vkCmdPipelineBarrier(
-        commandBuffer,
+        dependencyInfo.commandBuffer,
         sourceStage, destinationStage,
         0,
         0, nullptr,
         0, nullptr,
         1, &barrier
     );
-
-
-    EndSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool, commandBuffer, dependencyInfo.transformQueue);
 }
 
 

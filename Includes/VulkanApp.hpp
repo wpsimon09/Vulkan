@@ -91,6 +91,8 @@ private:
     void CreateUniformBuffers();
     void CreateCommandBuffers();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    VkCommandBuffer StartRecordingCommandBuffer();
+    void FlushCommandBuffer(VkCommandBuffer commandBuffer);
     void CreateDescriptorPool();
     void CreateDescriptorSet();
     //-----------------------------------

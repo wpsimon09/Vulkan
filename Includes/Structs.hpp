@@ -145,7 +145,7 @@ struct ImageCreateInfo {
 
 struct ImageLayoutDependencyInfo {
     VkDevice logicalDevice;
-    VkCommandPool commandPool;
+    VkCommandBuffer commandBuffer;
     VkQueue transformQueue;
 };
 
