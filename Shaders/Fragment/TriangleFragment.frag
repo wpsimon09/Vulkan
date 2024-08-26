@@ -3,6 +3,8 @@
 layout (location = 0) out vec4 outColor;
 
 layout (binding = 1) uniform sampler2D texSampler;
+layout (binding = 2) uniform sampler2D armMap;
+layout (binding = 3) uniform sampler2D normalMap;
 
 
 layout (location = 0) in vec3 color;
@@ -17,11 +19,28 @@ float metlaness = 0.2;
 float ao = 0.2;
 vec3 albedo = vec3(0.0, 0.0, 0.7);
 
-vec3 lightPos = vec3(0.0f, 4.0f, -4.0f);
-vec3 lightColor = vec3(4.0);
+vec3 lightPos = vec3(0.0f, 20.0f, -9.0f);
+vec3 lightColor = vec3(3.0);
 
 const float PI = 3.14159265359;
 
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(normalMap, uv).xyz * 2.0 - 1.0;
+
+    vec3 Q1 = dFdx(fragPos);
+    vec3 Q2 = dFdy(fragPos);
+    vec2 st1 = dFdx(uv);
+    vec2 st2 = dFdy(uv);
+
+    vec3 N = normalize(normal);
+    vec3 T = normalize(Q1 * st2.t - Q2 * st1.t);
+    vec3 B = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
 
 vec3 FresnelShlick(float cosTheta, vec3 F0)
 {
@@ -75,11 +94,15 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 }
 
 vec3 CalculateIrrandiance(){
-    vec3 N = normalize(normal);
+    vec3 N = getNormalFromMap();
     vec3 V = normalize(cameraPosition - fragPos);
 
+    vec3 armValues = texture(armMap, uv).rgb;
 
-    albedo = texture(texSampler, uv).rgb;;
+    albedo = texture(texSampler, uv).rgb;
+    roughness = armValues.g;
+    metlaness = armValues.b;
+    ao = armValues.r;
 
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metlaness);

@@ -13,6 +13,7 @@ struct Texture {
     VkImageView imageView;
     VkDeviceMemory memory;
     VkSampler sampler;
+    uint32_t binding;
 };
 
 enum TEXTURE_TYPE {
@@ -23,15 +24,25 @@ enum TEXTURE_TYPE {
 
 class Material {
 public:
-    Material();
+    Material(VkDevice &logicalDevic);
 
-    std::map<TEXTURE_TYPE, Texture> GetTextures(){return this->materials;};
+    std::map<TEXTURE_TYPE, Texture> &GetTextures(){return this->m_materials;};
 
-    Texture getAlbedo() {return materials[TEXTURE_TYPE_ALBEDO];};
-    Texture getArm() {return materials[TEXTURE_TYPE_ARM];};
-    Texture getNormal() {return materials[TEXTURE_TYPE_NORMAL];};
+    std::vector<VkDescriptorSetLayoutBinding> GetLayoutBindings(int startsFrom = 0);
+
+    VkDescriptorPoolSize GetDescriptorPoolSize(uint32_t MAX_FRAMES_IN_FLIGHT);
+
+    std::vector<VkWriteDescriptorSet> GetDescriptorWrites(VkDescriptorSet descriptorSet);
+
+    Texture getAlbedo() {return m_materials[TEXTURE_TYPE_ALBEDO];};
+    Texture getArm() {return m_materials[TEXTURE_TYPE_ARM];};
+    Texture getNormal() {return m_materials[TEXTURE_TYPE_NORMAL];};
+
+    ~Material();
 private:
-    std::map<TEXTURE_TYPE,Texture> materials;
+    std::vector<VkDescriptorImageInfo> m_descriptorImageInfos;
+    VkDevice m_logicalDevice;
+    std::map<TEXTURE_TYPE,Texture> m_materials;
 };
 
 
