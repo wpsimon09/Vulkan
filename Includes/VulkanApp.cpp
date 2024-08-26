@@ -791,6 +791,7 @@ void VulkanApp::CreateTextureImage() {
     imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
     imageCreateInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
+
     for(int i = 0; i < paths.size(); i++) {
         int texWidth, texHeight, texChanels;
         stbi_uc* pixels = stbi_load(paths[i].c_str(), &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
@@ -820,7 +821,7 @@ void VulkanApp::CreateTextureImage() {
         CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
 
         ImageLayoutDependencyInfo dependencyInfo{};
-        dependencyInfo.commandPool = m_transferCommandPool;
+        dependencyInfo.commandBuffer = StartRecordingCommandBuffer();
         dependencyInfo.logicalDevice = m_device;
         dependencyInfo.transformQueue = m_transferQueue;
 
@@ -829,6 +830,8 @@ void VulkanApp::CreateTextureImage() {
         CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
         TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        FlushCommandBuffer(dependencyInfo.commandBuffer);
 
         vkFreeMemory(m_device, stagingImageMemory, nullptr);
     }
@@ -1071,6 +1074,35 @@ void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
     if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("Failed to record command buffer !");
     }
+}
+
+VkCommandBuffer VulkanApp::StartRecordingCommandBuffer() {
+    VkCommandBufferAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
+    allocInfo.commandPool = m_transferCommandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(m_device, &allocInfo, &commandBuffer);
+
+    VkCommandBufferBeginInfo beginInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    return commandBuffer;
+}
+
+void VulkanApp::FlushCommandBuffer(VkCommandBuffer commandBuffer) {
+    vkEndCommandBuffer(commandBuffer);
+
+    VkSubmitInfo submitInfo{.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(m_transferQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(m_transferQueue);
+    vkFreeCommandBuffers(m_device, m_transferCommandPool, 1, &commandBuffer);
 }
 
 void VulkanApp::CreateSyncObjects() {
