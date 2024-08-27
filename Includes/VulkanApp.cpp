@@ -72,7 +72,7 @@ void VulkanApp::InitVulkan() {
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
-    std::cout << "Time taken by myFunction: " << duration.count() << " ms" << std::endl;
+    std::cout << "Time taken while generating material resources: " << duration.count() << " ms" << std::endl;
 
     CreateTextureImageView();
     CreateTextureSampler();
@@ -1292,9 +1292,11 @@ void VulkanApp::CleanUp() {
     vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
 
     CleanupSwapChain();
-    //vkDestroyImageView(m_device, m_textureImageView, nullptr);
-    //vkDestroyImage(m_device, m_textureImage, nullptr);
-//    vkFreeMemory(m_device, m_textureImageMemory, nullptr);
+
+    vkDestroyImageView(m_device,m_depthImageView, nullptr);
+    vkDestroyImage(m_device, m_depthImage, nullptr);
+    vkFreeMemory(m_device, m_depthMemory, nullptr);
+
     vkDestroySampler(m_device, m_textureSampler, nullptr);
 
     for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
