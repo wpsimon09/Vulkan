@@ -1026,6 +1026,7 @@ void VulkanApp::CreateCommandBuffers() {
 }
 
 void VulkanApp::CreateDepthResources() {
+    VkFormat format = FindDepthFormat();
 }
 
 void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
@@ -1380,4 +1381,8 @@ void VulkanApp::GenerateGeometryVertices(GEOMETRY_TYPE geometryType) {
             break;
         }
     }
+}
+
+VkFormat VulkanApp::FindDepthFormat() {
+    return FinsSupportedFormat(m_physicalDevice, m_device, {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT}, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }

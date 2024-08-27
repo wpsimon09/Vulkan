@@ -142,6 +142,7 @@ private:
     // MISCELLANEOUS
     //---------------------
     void GenerateGeometryVertices(GEOMETRY_TYPE geometryType);
+    VkFormat FindDepthFormat();
 
     //-----------------
     // VULKAN STUFF

@@ -457,11 +457,22 @@ static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image
     return imgView;
 }
 
-inline static VkFormat FinsSupportedFormat(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags) {
+inline static VkFormat FinsSupportedFormat(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
     for(auto format: candidates) {
         VkFormatProperties props;
         vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
+
+        // for linear tiling
+        if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+            return format;
+        }
+        // for optimal tiling
+        else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+            return format;
+        }
     }
+
+    throw std::runtime_error("Failed to retrieve right format");
 }
 
 static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) {
