@@ -438,12 +438,12 @@ static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,
 
 
 
-static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB) {
+static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB, VkImageAspectFlags aspectFlag = VK_IMAGE_ASPECT_COLOR_BIT) {
     VkImageViewCreateInfo viewInfo{.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
     viewInfo.image = image;
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = format;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.aspectMask = aspectFlag;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
     viewInfo.subresourceRange.baseArrayLayer = 0;
@@ -493,7 +493,6 @@ static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uin
             tempVertex.pos = glm::vec3(xPos, yPos, zPos);
             tempVertex.normal = glm::vec3(xPos, yPos, zPos);
             tempVertex.uv = glm::vec2(xSegment, ySegment);
-
             vertices.push_back(tempVertex);
         }
     }
@@ -520,6 +519,10 @@ static inline void GenerateSphere(std::vector<Vertex> &vertices, std::vector<uin
         oddRow = !oddRow;
     }
 
+}
+
+inline static bool HasStencilComponent(VkFormat format) {
+    return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
 

@@ -1027,6 +1027,23 @@ void VulkanApp::CreateCommandBuffers() {
 
 void VulkanApp::CreateDepthResources() {
     VkFormat format = FindDepthFormat();
+
+    ImageCreateInfo imageInfo{};
+    imageInfo.physicalDevice = m_physicalDevice;
+    imageInfo.logicalDevice= m_device;
+    imageInfo.surface = m_sruface;
+    imageInfo.format = format;
+    imageInfo.size = (m_swapChainExtent.width * m_swapChainExtent.height);
+    imageInfo.width = m_swapChainExtent.width;
+    imageInfo.height = m_swapChainExtent.height;
+    imageInfo.imageTiling = VK_IMAGE_TILING_OPTIMAL;
+    imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+    imageInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+    CreateImage(imageInfo, m_depthImage, m_depthMemory);
+
+    m_depthImageView = GenerateImageView(m_device, m_depthImage, format, VK_IMAGE_ASPECT_DEPTH_BIT);
+
 }
 
 void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
