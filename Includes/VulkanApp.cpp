@@ -58,13 +58,13 @@ void VulkanApp::InitVulkan() {
     CreateLogicalDevice();
     CreateSwapChain();
     CreateImageViews();
+    CreateDepthResources();
     CreateRenderPass();
     GenerateGeometryVertices(PLANE);
     CreateDescriptorSetLayout();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
     CreateCommandPool();
-    CreateDepthResources();
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -413,6 +413,7 @@ void VulkanApp::CreateRenderPass() {
     subPass.pColorAttachments = &colorAttachmentRef;
     subPass.pDepthStencilAttachment = &depthAttachmentRef;
 
+    std::array<VkAttachmentDescription,2> attachemnts = {colorAttachment, depthAttachment};
 
     //--------------------
     // SUB PASS DEPENDENCY
@@ -423,20 +424,19 @@ void VulkanApp::CreateRenderPass() {
     //dst subpass must be heigher than srcSubpass, only exception is if src is VK_SUBPASS_EXTERNAL
     dependency.dstSubpass = 0;
     //dependecy start
-    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT|VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     //we are not targeting any memmory so 0
     dependency.srcAccessMask = 0;
 
     //dependency end
-    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT|VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     //we want to access colour attachemnt so that we can write to it
-    dependency.dstAccessMask= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
+    dependency.dstAccessMask= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
     VkRenderPassCreateInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderPassInfo.attachmentCount = 1;
-    renderPassInfo.pAttachments = &colorAttachment;
+    renderPassInfo.attachmentCount = static_cast<uint32_t>(attachemnts.size());
+    renderPassInfo.pAttachments = attachemnts.data();
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subPass;
     renderPassInfo.dependencyCount = 1;
@@ -781,14 +781,15 @@ void VulkanApp::CreateFrameBuffers() {
     m_swapChainFrameBuffers.resize(m_swapChainImageViews.size());
 
     for(size_t i=0; i<m_swapChainImageViews.size(); i++) {
-        VkImageView attachments[] = {
-            m_swapChainImageViews[i]
+        std::array<VkImageView,2> attachments = {
+            m_swapChainImageViews[i],
+            m_depthImageView
         };
         VkFramebufferCreateInfo frameBufferInfo{};
         frameBufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         frameBufferInfo.renderPass = m_renderPass;
-        frameBufferInfo.attachmentCount = 1;
-        frameBufferInfo.pAttachments = attachments;
+        frameBufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        frameBufferInfo.pAttachments = attachments.data();
         frameBufferInfo.width = m_swapChainExtent.width;
         frameBufferInfo.height = m_swapChainExtent.height;
         frameBufferInfo.layers = 1;
