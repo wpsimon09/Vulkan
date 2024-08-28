@@ -154,6 +154,7 @@ enum GEOMETRY_TYPE {
     PLANE = 0,
     CUBE = 1,
     SPHERE = 2,
+    MODEL = 3,
 };
 
 

@@ -8,6 +8,8 @@
 #include <emmintrin.h>
 #include <unistd.h>
 
+#include "tiny_obj_loader/tiny_obj_loader.h"
+
 
 void VulkanApp::run() {
     InitWindow();
@@ -60,7 +62,7 @@ void VulkanApp::InitVulkan() {
     CreateImageViews();
     CreateDepthResources();
     CreateRenderPass();
-    GenerateGeometryVertices(PLANE);
+    GenerateGeometryVertices(MODEL);
     CreateDescriptorSetLayout();
     CreateGraphicsPipeline();
     CreateFrameBuffers();
@@ -1448,6 +1450,52 @@ void VulkanApp::GenerateGeometryVertices(GEOMETRY_TYPE geometryType) {
         }case SPHERE: {
             GenerateSphere(vertices, indices);
             break;
+        }case MODEL: {
+            LoadModel();
+        }
+
+    }
+}
+
+void VulkanApp::LoadModel() {
+
+    //contains vertices, normals, uv all packed together
+    tinyobj::attrib_t attrib;
+    //contains all of the objects and their faces by keeping the index of the vertices loaded above
+    std::vector<tinyobj::shape_t>shapes;
+    //materials and textures per face
+    std::vector<tinyobj::material_t>materials;
+    std::string warn, err;
+
+    if(!tinyobj::LoadObj(&attrib, &shapes, &materials,&warn, &err, MODEL_PATH.c_str())) {
+        throw std::runtime_error(warn + err);
+    }
+
+    for(const auto& shape: shapes) {
+        for(const auto& index: shape.mesh.indices) {
+            Vertex vertex{};
+
+            vertex.pos= {
+                attrib.vertices[3*index.vertex_index + 0],
+                attrib.vertices[3*index.vertex_index + 1],
+                attrib.vertices[3*index.vertex_index + 2]
+            };
+
+            vertex.uv = {
+                attrib.texcoords[2*index.texcoord_index + 0],
+                1.0 - attrib.texcoords[2*index.texcoord_index + 1]
+            };
+
+            vertex.normal ={
+                attrib.normals[3*index.normal_index + 0],
+                attrib.normals[3*index.normal_index + 1],
+                attrib.normals[3*index.normal_index + 2],
+            };
+
+            vertex.color = {1.0,1.0,1.0};
+
+            vertices.push_back(vertex);
+            indices.push_back(indices.size());
         }
     }
 }
