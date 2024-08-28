@@ -1072,6 +1072,11 @@ void VulkanApp::CreateDepthResources() {
 }
 
 void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+
+    std::array<VkClearValue, 2> clearValues{};
+    clearValues[0].color ={{0.0f, 0.0f, 0.0f, 1.0f}};
+    clearValues[1].depthStencil = {1.0f, 0};
+
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     beginInfo.flags = 0;
@@ -1092,8 +1097,8 @@ void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
     const float red = glm::abs(glm::sin(glfwGetTime()));
 
     VkClearValue clearValue = {{{0.3f, 0.3f, 0.3f,1.0f}}};
-    renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues = &clearValue;
+    renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+    renderPassInfo.pClearValues = clearValues.data();
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
