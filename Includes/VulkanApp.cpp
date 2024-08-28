@@ -697,7 +697,22 @@ void VulkanApp::CreateGraphicsPipeline() {
     //-----------------------
     // DEPTH AND STENCIL TEST
     //-----------------------
-    //later|
+    VkPipelineDepthStencilStateCreateInfo depthStencil{
+        .sType =  VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO};
+    depthStencil.depthTestEnable = VK_TRUE;
+    //should fragments that pass the depht test be written to the frame buffer ?
+    depthStencil.depthWriteEnable = VK_TRUE;
+    //fragemnts pass the depht test if their value is smaller than value allredy written in depth buffer
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    //allows us to keep only fragments that fall within specific range
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f;
+    depthStencil.maxDepthBounds = 1.0f;
+
+    depthStencil.stencilTestEnable = VK_FALSE;
+    depthStencil.front = {};
+    depthStencil.back = {};
+
 
     //----------------
     // COLOUR BLENDING
@@ -753,7 +768,7 @@ void VulkanApp::CreateGraphicsPipeline() {
     pipelineInfo.pViewportState = &viewPortState;
     pipelineInfo.pRasterizationState= &rasterizerCreateInfo;
     pipelineInfo.pMultisampleState = &multisampleCreateInfo;
-    pipelineInfo.pDepthStencilState = nullptr;
+    pipelineInfo.pDepthStencilState = &depthStencil;
     pipelineInfo.pColorBlendState = &colourBlendCreateInfo;
     pipelineInfo.pDynamicState = &dynamicStateCreateInfo;
     //pipeline layout for uniforms
@@ -1074,7 +1089,7 @@ void VulkanApp::CreateDepthResources() {
 void VulkanApp:: RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
     std::array<VkClearValue, 2> clearValues{};
-    clearValues[0].color ={{0.0f, 0.0f, 0.0f, 1.0f}};
+    clearValues[0].color ={{0.3f, 0.3f, 0.3f,1.0f}};
     clearValues[1].depthStencil = {1.0f, 0};
 
     VkCommandBufferBeginInfo beginInfo{};
