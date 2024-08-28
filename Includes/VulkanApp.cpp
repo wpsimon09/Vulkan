@@ -362,6 +362,9 @@ void VulkanApp::CreateImageViews() {
 }
 
 void VulkanApp::CreateRenderPass() {
+    //-----------------------
+    // COLOUR ATTACHEMNT INFO
+    //-----------------------
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = m_swapChainImageFormat;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -376,6 +379,21 @@ void VulkanApp::CreateRenderPass() {
     //after render call
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
+    //-----------------------
+    // DEPTH ATTACHEMNT INFO
+    //-----------------------
+    VkAttachmentDescription depthAttachment{};
+    //format should be the same as a depht image
+    depthAttachment.format = FindDepthFormat();
+    depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    //we dont want to read from the depth attachemnt once it was drawn into
+    depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
     //---------
     // SUB PASS
     //---------
@@ -384,11 +402,17 @@ void VulkanApp::CreateRenderPass() {
     colorAttachmentRef.attachment = 0;
     colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+    VkAttachmentReference depthAttachmentRef{};
+    depthAttachmentRef.attachment = 1;
+    depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
     VkSubpassDescription subPass{};
     subPass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     //reference to the colour attachemnt
     subPass.colorAttachmentCount = 1;
     subPass.pColorAttachments = &colorAttachmentRef;
+    subPass.pDepthStencilAttachment = &depthAttachmentRef;
+
 
     //--------------------
     // SUB PASS DEPENDENCY

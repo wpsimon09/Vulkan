@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "8. Depth testing/8.2 Depth Image and View.md",
+                "file": "8. Depth testing/8.3 Render pass alteration.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "8. Depth testing/8.2 Depth Image and View.md",
+                "file": "8. Depth testing/8.3 Render pass alteration.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "8. Depth testing/8.2 Depth Image and View.md",
+                "file": "8. Depth testing/8.3 Render pass alteration.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "8. Depth testing/8.2 Depth Image and View.md"
+                "file": "8. Depth testing/8.3 Render pass alteration.md"
               }
             }
           }
@@ -161,8 +161,9 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
-    "6. Buffers/6.9 Alignment requirements.md",
     "8. Depth testing/8.2 Depth Image and View.md",
+    "8. Depth testing/8.3 Render pass alteration.md",
+    "6. Buffers/6.9 Alignment requirements.md",
     "8. Depth testing/8.1 Introduction.md",
     "Untitled.md",
     "8. Depth testing",
@@ -193,7 +194,6 @@
     "2. HelloTriangle/2.4 Logical device and queues.md",
     "6. Buffers",
     "5. Swap chain recreation/5.1  Recreating the swap chain.md",
-    "4. Drawing/4.4 Presentation.md",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",
