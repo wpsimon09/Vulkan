@@ -18,7 +18,9 @@ set(SOURCES src/main.cpp
         Includes/stb/stb_image.h
         Includes/stb/stb_image.cpp
         Includes/Material/Material.cpp
-        Includes/Material/Material.hpp)
+        Includes/Material/Material.hpp
+        Includes/tiny_obj_loader/tiny_obj_loader.h
+        Includes/tiny_obj_loader/tiny_obj_loader.cpp)
 
 set(CFLAGS_RELEASE "-O2")
 set(CFLAGS_DEBUG "-g")

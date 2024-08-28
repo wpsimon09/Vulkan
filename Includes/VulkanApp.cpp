@@ -815,13 +815,14 @@ void VulkanApp::CreateFrameBuffers() {
     }
 }
 
+
 void VulkanApp::CreateTextureImage() {
 
 
 
     TEXTURE_TYPE texturesToProcess[] = {TEXTURE_TYPE_ALBEDO, TEXTURE_TYPE_ARM, TEXTURE_TYPE_NORMAL};
     std::vector<std::string> paths = {
-        "Textures/albedo.png", "Textures/arm.png", "Textures/normal.png"
+        TEXTURE_PATH, "Textures/arm.png", "Textures/normal.png"
     };
 
     VkBuffer stagingImageBuffer;

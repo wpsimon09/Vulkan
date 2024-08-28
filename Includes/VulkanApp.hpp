@@ -28,6 +28,9 @@ constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
+const std::string MODEL_PATH = "Includes/Models/TIE Fighter.obj";
+const std::string TEXTURE_PATH = "Textures/TIE_color.png";
+
 const std::vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
@@ -104,6 +107,7 @@ private:
     void CreateTextureImage();
     void CreateTextureImageView();
     void CreateTextureSampler();
+    void LoadModelTexture();
     //---------------------
 
     //---------------------
