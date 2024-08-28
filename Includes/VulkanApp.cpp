@@ -1227,6 +1227,12 @@ void VulkanApp::CleanupSwapChain() {
         vkDestroyImageView(m_device, imageView, nullptr);
     }
 
+
+    vkDestroyImageView(m_device,m_depthImageView, nullptr);
+    vkDestroyImage(m_device, m_depthImage, nullptr);
+    vkFreeMemory(m_device, m_depthMemory, nullptr);
+
+
     vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
 }
 
@@ -1247,6 +1253,7 @@ void VulkanApp::RecreateSwapChain() {
 
     CreateSwapChain();
     CreateImageViews();
+    CreateDepthResources();
     CreateFrameBuffers();
 }
 
@@ -1338,10 +1345,6 @@ void VulkanApp::CleanUp() {
 
     CleanupSwapChain();
 
-    vkDestroyImageView(m_device,m_depthImageView, nullptr);
-    vkDestroyImage(m_device, m_depthImage, nullptr);
-    vkFreeMemory(m_device, m_depthMemory, nullptr);
-
     vkDestroySampler(m_device, m_textureSampler, nullptr);
 
     for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -1358,6 +1361,7 @@ void VulkanApp::CleanUp() {
     vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
     vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
     m_material.reset();
+
     vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
     vkDestroyRenderPass(m_device, m_renderPass, nullptr);
