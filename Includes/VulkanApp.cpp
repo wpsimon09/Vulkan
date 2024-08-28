@@ -824,7 +824,7 @@ void VulkanApp::CreateTextureImage() {
 
     TEXTURE_TYPE texturesToProcess[] = {TEXTURE_TYPE_ALBEDO, TEXTURE_TYPE_ARM, TEXTURE_TYPE_NORMAL};
     std::vector<std::string> paths = {
-        TEXTURE_PATH, "Textures/arm.png", "Textures/normal.png"
+        "Textures/tie_albeo.png", "Textures/tie_arm.png", "Textures/normal.png"
     };
 
     VkBuffer stagingImageBuffer;
@@ -1210,7 +1210,8 @@ void VulkanApp::CreateSyncObjects() {
 void VulkanApp::UpdateUniformBuffer(uint32_t currentImage) {
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::scale(ubo.model, glm::vec3(10.7f));
+    ubo.model = glm::translate(ubo.model, glm::vec3(0.0,-3.0f, 0.0f));
+    ubo.model = glm::scale(ubo.model, glm::vec3(1.7f));
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
     ubo.view = m_camera->getViewMatrix();
@@ -1483,7 +1484,7 @@ void VulkanApp::LoadModel() {
 
             vertex.uv = {
                 attrib.texcoords[2*index.texcoord_index + 0],
-                1.0 - attrib.texcoords[2*index.texcoord_index + 1]
+                attrib.texcoords[2*index.texcoord_index + 1]
             };
 
             vertex.normal ={
