@@ -2,6 +2,7 @@
 
 layout (binding = 0) uniform UnifromBufferObject {
     vec3 camPos;
+    vec3 lightPosition;
     mat4 model;
     mat4 view;
     mat4 proj;
@@ -18,6 +19,7 @@ layout (location = 1) out vec3 normal;
 layout (location = 2) out vec3 cameraPosition;
 layout (location = 3) out vec3 fragPos;
 layout (location = 4) out vec2 uv;
+layout (location = 5) out vec3 lightPos;
 
 void main() {
     gl_Position = ubo.proj* ubo.view * ubo.model * vec4(inPosition,1.0);
@@ -25,5 +27,6 @@ void main() {
     color =  inColor;
     cameraPosition = ubo.camPos;
     uv = inUv;
+    lightPos = ubo.lightPosition;
     fragPos = vec3(ubo.model * vec4(inPosition, 1.0));
 }

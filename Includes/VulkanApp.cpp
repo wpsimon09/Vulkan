@@ -168,6 +168,7 @@ bool VulkanApp::CheckValidationLayerSupport() {
 
 void VulkanApp::MainLoop() {
     while (!glfwWindowShouldClose(m_window)) {
+        ProcessKeyboardInput();
         DrawFrame();
         m_appNotifier.NotifyChange();
         glfwPollEvents();
@@ -1217,9 +1218,9 @@ void VulkanApp::UpdateUniformBuffer(uint32_t currentImage) {
     ubo.view = m_camera->getViewMatrix();
     ubo.camPos = m_camera->getPosition();
     ubo.normal = glm::transpose(glm::inverse(ubo.model));
+    ubo.lightPos = m_lightPos;
 
     memcpy(m_uniformBuffersMapped[currentFrame], &ubo, sizeof(ubo));
-
 }
 
 void VulkanApp::CleanupSwapChain() {
@@ -1434,6 +1435,29 @@ void VulkanApp::MouseClickCallback(GLFWwindow *window, int button, int action, i
 void VulkanApp::MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
     auto app = reinterpret_cast<VulkanApp*>(glfwGetWindowUserPointer((window)));
     app->m_camera->zoom((float) yoffset);
+}
+
+void VulkanApp::ProcessKeyboardInput() {
+
+        if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(m_window, true);
+
+
+        const float lightSpeed = 0.5f; // adjust accordingly
+        if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
+            m_lightPos.z += lightSpeed;
+        if (glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
+            m_lightPos.x -= lightSpeed;
+        if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
+            m_lightPos.z -= lightSpeed;
+        if (glfwGetKey(m_window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+            m_lightPos.x += lightSpeed;
+        if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            m_lightPos.y += lightSpeed;
+        if (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+            m_lightPos.y -= lightSpeed;
+
+
 }
 
 void VulkanApp::GenerateGeometryVertices(GEOMETRY_TYPE geometryType) {

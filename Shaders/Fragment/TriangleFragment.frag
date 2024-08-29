@@ -12,6 +12,7 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec3 cameraPosition;
 layout (location = 3) in vec3 fragPos;
 layout (location = 4) in vec2 uv;
+layout (location = 5) in vec3 lightPos;
 
 
 float roughness = 0.5;
@@ -19,7 +20,7 @@ float metlaness = 0.2;
 float ao = 0.2;
 vec3 albedo = vec3(0.0, 0.0, 0.7);
 
-vec3 lightPos = vec3(0.0f, 20.0f, -9.0f);
+//vec3 lightPos = vec3(0.0f, 20.0f, -9.0f);
 vec3 lightColor = vec3(3.0,0.0,0.0);
 
 const float PI = 3.14159265359;

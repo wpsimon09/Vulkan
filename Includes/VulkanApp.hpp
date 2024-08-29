@@ -140,6 +140,7 @@ private:
     static void MousePositionCallback(GLFWwindow *window, double xpos, double ypos);
     static void MouseClickCallback(GLFWwindow *window, int button, int action, int mods);
     static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);
+    void ProcessKeyboardInput();
     //---------------------
 
     //---------------------
@@ -225,6 +226,8 @@ private:
     bool m_isMousePressed = false;
     bool m_isFirstMouse = true;
     GEOMETRY_TYPE m_geometryType;
+
+    glm::vec3 m_lightPos = glm::vec3(0.0f);
 
     std::vector<Vertex>   vertices;
     std::vector<uint32_t> indices;
