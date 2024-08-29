@@ -5,3 +5,6 @@ Loaded simple **TIE Fighter 3D Model** by [metalmorag](https://sketchfab.com/3d-
 Vertices, normals and texture coordinates are loaded with the help of [tiny-obj-loader](https://github.com/tinyobjloader/tinyobjloader) library
 
 Model data are in the `.obj` file while separate textures are in `glTF` format. For now model and textures are loaded independently of each other
+
+https://github.com/user-attachments/assets/573b2e92-0083-4895-ae97-b973964049d3
+
