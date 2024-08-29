@@ -6,5 +6,7 @@ Vertices, normals and texture coordinates are loaded with the help of [tiny-obj-
 
 Model data are in the `.obj` file while separate textures are in `glTF` format. For now model and textures are loaded independently of each other
 
+Scene consists of the model and single green directional light 
+
 https://github.com/user-attachments/assets/573b2e92-0083-4895-ae97-b973964049d3
 
