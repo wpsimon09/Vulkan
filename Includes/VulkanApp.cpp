@@ -7,6 +7,7 @@
 #include <chrono>
 #include <emmintrin.h>
 #include <unistd.h>
+#include <unordered_map>
 
 #include "tiny_obj_loader/tiny_obj_loader.h"
 
@@ -1443,7 +1444,7 @@ void VulkanApp::ProcessKeyboardInput() {
             glfwSetWindowShouldClose(m_window, true);
 
 
-        const float lightSpeed = 0.5f; // adjust accordingly
+        const float lightSpeed = 0.8f; // adjust accordingly
         if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
             m_lightPos.z += lightSpeed;
         if (glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
@@ -1456,8 +1457,6 @@ void VulkanApp::ProcessKeyboardInput() {
             m_lightPos.y += lightSpeed;
         if (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
             m_lightPos.y -= lightSpeed;
-
-
 }
 
 void VulkanApp::GenerateGeometryVertices(GEOMETRY_TYPE geometryType) {
@@ -1482,6 +1481,9 @@ void VulkanApp::GenerateGeometryVertices(GEOMETRY_TYPE geometryType) {
     }
 }
 
+
+
+
 void VulkanApp::LoadModel() {
 
     //contains vertices, normals, uv all packed together
@@ -1495,6 +1497,9 @@ void VulkanApp::LoadModel() {
     if(!tinyobj::LoadObj(&attrib, &shapes, &materials,&warn, &err, MODEL_PATH.c_str())) {
         throw std::runtime_error(warn + err);
     }
+
+    std::pmr::unordered_map<Vertex,uint32_t> uniqueVetices{};
+
 
     for(const auto& shape: shapes) {
         for(const auto& index: shape.mesh.indices) {
@@ -1519,12 +1524,23 @@ void VulkanApp::LoadModel() {
 
             vertex.color = {1.0,1.0,1.0};
 
-            vertices.push_back(vertex);
-            indices.push_back(indices.size());
+            //is the vertex unique ?
+            if(uniqueVetices.count(vertex) == 0) {
+                //add its index
+                uniqueVetices[vertex] = static_cast<uint32_t>(vertices.size());
+                //add vertex itself
+                vertices.push_back(vertex);
+            }else {
+                //store only index
+                indices.push_back(uniqueVetices[vertex]);
+            }
         }
     }
 }
 
+
+
 VkFormat VulkanApp::FindDepthFormat() {
     return FinsSupportedFormat(m_physicalDevice, m_device, {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT}, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
+

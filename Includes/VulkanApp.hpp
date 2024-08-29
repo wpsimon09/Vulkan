@@ -17,10 +17,12 @@
 #include <set>
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
+
 #include "Camera/Camera.hpp"
 #include "memory"
 #include "VertexData.hpp"
 #include <stb/stb_image.h>
+#include <unordered_map>
 
 #include "Material/Material.hpp"
 

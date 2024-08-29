@@ -1,5 +1,7 @@
 #include <vulkan/vulkan_core.h>
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
 
 
 struct BufferCreateInfo {
@@ -106,6 +108,11 @@ struct Vertex {
 
         return attributeDescriptions;
     }
+
+    bool operator == (const Vertex& other) const {
+        return pos==other.pos && color == other.color && uv == other.uv && normal == other.normal;
+    }
+
 };
 
 struct QueueFamilyIndices {
@@ -157,5 +164,18 @@ enum GEOMETRY_TYPE {
     SPHERE = 2,
     MODEL = 3,
 };
+
+namespace std {
+    template<> struct hash<Vertex> {
+        size_t operator()(Vertex const& vertex) const {
+            size_t h1 = hash<glm::vec3>()(vertex.pos);
+            size_t h2 = hash<glm::vec3>()(vertex.normal);
+            size_t h3 = hash<glm::vec2>()(vertex.uv);
+            size_t h4 = hash<glm::vec3>()(vertex.color); // Hashing the color field
+
+            return (((h1 ^ (h2 << 1)) >> 1) ^ (h3 << 1)) ^ (h4 << 1);
+        }
+    };
+}
 
 
