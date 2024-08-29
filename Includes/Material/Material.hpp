@@ -14,6 +14,7 @@ struct Texture {
     VkDeviceMemory memory;
     VkSampler sampler;
     uint32_t binding;
+    uint32_t maxMipLevels;
 };
 
 enum TEXTURE_TYPE {

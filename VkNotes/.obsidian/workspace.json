@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "9. Model loading/9.1 Introduction.md",
+                "file": "10. Mip maps/10.1 Introduction.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "9. Model loading/9.1 Introduction.md",
+                "file": "10. Mip maps/10.1 Introduction.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "9. Model loading/9.1 Introduction.md",
+                "file": "10. Mip maps/10.1 Introduction.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "9. Model loading/9.1 Introduction.md"
+                "file": "10. Mip maps/10.1 Introduction.md"
               }
             }
           }
@@ -161,13 +161,15 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
+    "9. Model loading/9.1 Loading a model.md",
+    "10. Mip maps/10.1 Introduction.md",
+    "10. Mip maps",
+    "Untitled.md",
     "6. Buffers/6.9 Alignment requirements.md",
-    "9. Model loading/9.1 Introduction.md",
     "8. Depth testing/8.3 Render pass alteration.md",
     "9. Model loading",
     "8. Depth testing/8.2 Depth Image and View.md",
     "8. Depth testing/8.1 Introduction.md",
-    "Untitled.md",
     "8. Depth testing",
     "4. Drawing/4.2 Command buffer.md",
     "7. Texturing/7.3 Image view and sampler.md",
@@ -193,14 +195,12 @@
     "5. Swap chain recreation/5.2 Handling resize and minimalization.md",
     "images/Index vs vertex buffer.png",
     "2. HelloTriangle/2.3 Physical device and queue families.md",
-    "2. HelloTriangle/2.4 Logical device and queues.md",
     "6. Buffers",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",
     "images/NDC-inVulkan.png",
     "images",
-    "3. Pipeline",
-    "2. HelloTriangle"
+    "3. Pipeline"
   ]
 }

@@ -822,8 +822,6 @@ void VulkanApp::CreateFrameBuffers() {
 
 void VulkanApp::CreateTextureImage() {
 
-
-
     TEXTURE_TYPE texturesToProcess[] = {TEXTURE_TYPE_ALBEDO, TEXTURE_TYPE_ARM, TEXTURE_TYPE_NORMAL};
     std::vector<std::string> paths = {
         "Textures/tie_albeo.png", "Textures/tie_arm.png", "Textures/normal.png"
@@ -852,13 +850,15 @@ void VulkanApp::CreateTextureImage() {
 
     for(int i = 0; i < paths.size(); i++) {
         int texWidth, texHeight, texChanels;
-        stbi_uc* pixels = stbi_load(paths[i].c_str(), &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
+            stbi_uc* pixels = stbi_load(paths[i].c_str(), &texWidth, &texHeight, &texChanels, STBI_rgb_alpha);
 
-        std::cout<<"Loading texture: "<< paths[i] <<std::endl;
+            std::cout<<"Loading texture: "<< paths[i] <<std::endl;
 
-        if(!pixels) {
-            throw std::runtime_error("Failed to load textue");
-        }
+            if(!pixels) {
+                throw std::runtime_error("Failed to load textue");
+            }
+
+        m_material->GetTextures()[texturesToProcess[i]].maxMipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth,texHeight)))) + 1;;
 
         // times 4 becaus   e we have RGBA
         VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -1498,7 +1498,7 @@ void VulkanApp::LoadModel() {
         throw std::runtime_error(warn + err);
     }
 
-    std::pmr::unordered_map<Vertex,uint32_t> uniqueVetices{};
+    std::unordered_map<Vertex,uint32_t> uniqueVetices{};
 
 
     for(const auto& shape: shapes) {
@@ -1530,10 +1530,9 @@ void VulkanApp::LoadModel() {
                 uniqueVetices[vertex] = static_cast<uint32_t>(vertices.size());
                 //add vertex itself
                 vertices.push_back(vertex);
-            }else {
-                //store only index
-                indices.push_back(uniqueVetices[vertex]);
             }
+            //store only index
+            indices.push_back(uniqueVetices[vertex]);
         }
     }
 }
