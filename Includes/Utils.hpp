@@ -279,7 +279,7 @@ static inline void CreateImage(const ImageCreateInfo &createImageInfo, VkImage &
     imageInfo.extent.height = createImageInfo.height;
     // 1 textel on Z axis not 0 texels
     imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
+    imageInfo.mipLevels = createImageInfo.mipLevels;
     imageInfo.arrayLayers = 1;
     //use the same format as pixels that were loaded
     //using different format might result in crash during copying
@@ -389,7 +389,7 @@ static inline void CopyBufferToImage(ImageLayoutDependencyInfo dependencyInfo, V
     //EndSingleTimeCommand(dependencyInfo.logicalDevice, dependencyInfo.commandPool, commandBuffer, dependencyInfo.transformQueue);
 }
 
-static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
+static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
 
     VkImageMemoryBarrier barrier{.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
     barrier.oldLayout = oldLayout;
@@ -400,7 +400,7 @@ static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,
     barrier.image = image;
     barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     barrier.subresourceRange.baseMipLevel = 0;
-    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.levelCount = mipLevels;
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
 
@@ -438,14 +438,14 @@ static inline void TransferImageLayout(ImageLayoutDependencyInfo dependencyInfo,
 
 
 
-static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB, VkImageAspectFlags aspectFlag = VK_IMAGE_ASPECT_COLOR_BIT) {
+static inline VkImageView GenerateImageView(VkDevice logicalDevice,VkImage image,uint32_t mipLevels, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB, VkImageAspectFlags aspectFlag = VK_IMAGE_ASPECT_COLOR_BIT) {
     VkImageViewCreateInfo viewInfo{.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
     viewInfo.image = image;
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = format;
     viewInfo.subresourceRange.aspectMask = aspectFlag;
     viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.levelCount = mipLevels;
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 

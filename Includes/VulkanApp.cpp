@@ -361,7 +361,7 @@ void VulkanApp::CreateSwapChain() {
 void VulkanApp::CreateImageViews() {
     m_swapChainImageViews.resize(m_swapChainImages.size());
     for(size_t i = 0; i<m_swapChainImages.size(); i++) {
-        m_swapChainImageViews[i] = GenerateImageView(m_device, m_swapChainImages[i], m_swapChainImageFormat);
+        m_swapChainImageViews[i] = GenerateImageView(m_device, m_swapChainImages[i], 1,m_swapChainImageFormat);
     }
 }
 
@@ -859,6 +859,7 @@ void VulkanApp::CreateTextureImage() {
             }
 
         m_material->GetTextures()[texturesToProcess[i]].maxMipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth,texHeight)))) + 1;;
+        imageCreateInfo.mipLevels = m_material->GetTextures()[texturesToProcess[i]].maxMipLevels;
 
         // times 4 becaus   e we have RGBA
         VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -883,11 +884,11 @@ void VulkanApp::CreateTextureImage() {
 
         CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
 
-        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
 
         CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
-        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
         FlushCommandBuffer(dependencyInfo.commandBuffer);
     }
         vkFreeMemory(m_device, stagingImageMemory, nullptr);
@@ -1014,7 +1015,7 @@ void VulkanApp::CreateTextureImageView() {
     //m_textureImageView = GenerateImageView(m_device, m_textureImage);
 
     for(auto &materialTexture:m_material->GetTextures()) {
-        materialTexture.second.imageView = GenerateImageView(m_device, materialTexture.second.image);
+        materialTexture.second.imageView = GenerateImageView(m_device, materialTexture.second.image,materialTexture.second.maxMipLevels);
     }
 }
 
@@ -1087,7 +1088,7 @@ void VulkanApp::CreateDepthResources() {
 
     CreateImage(imageInfo, m_depthImage, m_depthMemory);
 
-    m_depthImageView = GenerateImageView(m_device, m_depthImage, format, VK_IMAGE_ASPECT_DEPTH_BIT);
+    m_depthImageView = GenerateImageView(m_device, m_depthImage, 1,format, VK_IMAGE_ASPECT_DEPTH_BIT);
 
 }
 

@@ -146,6 +146,7 @@ struct ImageCreateInfo {
     VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
     uint32_t width;
     uint32_t height;
+    uint32_t mipLevels = 1;
     VkImageUsageFlags usage;
     VkMemoryPropertyFlags memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
     VkImageTiling imageTiling = VK_IMAGE_TILING_OPTIMAL;
