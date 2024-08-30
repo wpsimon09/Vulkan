@@ -582,6 +582,9 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
             0, nullptr,
             0,nullptr,
             1, &barrier);
+
+
+
     }
 }
 
