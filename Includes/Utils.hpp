@@ -537,7 +537,52 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
     barrier.subresourceRange.layerCount = 1;
     barrier.subresourceRange.levelCount = 1;
 
+    int32_t mipWidth = width;
+    int32_t mipHeight = height;
 
+    for(uint32_t i =1; i<mipLevels; i++) {
+        barrier.subresourceRange.baseMipLevel = i-1;
+        barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        //access memory where data can be written into
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        //access memory where data are store for reading
+        barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+        vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT, 0,
+            0,nullptr,
+            0,nullptr,
+            1,&barrier);
+        VkImageBlit blit{};
+        //tells what data to grab from the source image
+        blit.srcOffsets[0] = {0,0,0}; //where to start
+        blit.srcOffsets[1] = {mipWidth, mipHeight,1}; //where to finish
+        blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        blit.srcSubresource.mipLevel = i-1;
+        blit.srcSubresource.baseArrayLayer = 9;
+        blit.srcSubresource.layerCount = 1;
+
+        //tells where data that was previousle retrieved should be pased
+        blit.dstOffsets[0] = {0,0,0};
+        //when either dimension is not smaller than 1 devide it by 2 otherwise put 1 there
+        blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth/2: 1,mipHeight>1? mipHeight/2 :1, 1};
+        blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        blit.dstSubresource.mipLevel = i;
+        blit.dstSubresource.baseArrayLayer = 0;
+        blit.dstSubresource.layerCount = 1;
+
+        vkCmdBlitImage(dependency.commandBuffer, image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, image ,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
+
+        barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
+            0, nullptr,
+            0,nullptr,
+            1, &barrier);
+    }
 }
 
 #endif //UTILS_HPP
