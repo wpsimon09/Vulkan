@@ -526,6 +526,11 @@ inline static bool HasStencilComponent(VkFormat format) {
 }
 
 void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32_t width, uint32_t height, uint32_t mipLevels) {
+
+    //----------------------------------------------
+    // SET UP THINGS IN MEMORY BARRIER THAT
+    // WILL NOT CHANGE DURING MIP MAP GENERATION
+    //----------------------------------------------
     VkImageMemoryBarrier barrier{.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
     barrier.image = image;
     //not transitioning owenership
@@ -540,7 +545,14 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
     int32_t mipWidth = width;
     int32_t mipHeight = height;
 
+    //-----------------------------------------------------
+    // LOOP THROUGH ALL MIP LEVELS AND FILL IT IN WITH DATA
+    //-----------------------------------------------------
     for(uint32_t i =1; i<mipLevels; i++) {
+
+        //---------------------------------------------------------
+        // TRANSITION LAYOUT OF i-1 MIP MAP IMAGE TO BE THE SOURCE
+        //---------------------------------------------------------
         barrier.subresourceRange.baseMipLevel = i-1;
         barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
         barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
@@ -548,12 +560,16 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
         barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
         //access memory where data are store for reading
         barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-
         vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT, 0,
             0,nullptr,
             0,nullptr,
             1,&barrier);
+
+        //---------------------------------------------------------
+        // SPECIFY INFORMATION FOR THE COPYING (BLITTING)
+        //---------------------------------------------------------
         VkImageBlit blit{};
+
         //tells what data to grab from the source image
         blit.srcOffsets[0] = {0,0,0}; //where to start
         blit.srcOffsets[1] = {mipWidth, mipHeight,1}; //where to finish
@@ -571,21 +587,47 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
         blit.dstSubresource.baseArrayLayer = 0;
         blit.dstSubresource.layerCount = 1;
 
+
+        //-----------------------------------------
+        // COPY THE DATA FROM i-1 to i th mip level
+        //------------------------------------------
         vkCmdBlitImage(dependency.commandBuffer, image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, image ,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
 
+        //-----------------------------------------------------------
+        // TRANSITION i-1 MIP LEVEL TO THE LAYOUT ACCESIBLE BY SHADER
+        // THIS MEANS THAT i-1 WILL NO LONGER BE USED TO COPY FROM/TO
+        //-----------------------------------------------------------
         barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
         barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
         barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
         vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
             0, nullptr,
             0,nullptr,
             1, &barrier);
 
-
-
+        //---------------------------------------------------
+        // ADJUST DIMENSIONS TO MATCH THE MIP-MAPS DIMENSIONS
+        //---------------------------------------------------
+        if(mipWidth > 1) mipWidth /= 2;
+        if(mipHeight > 1) mipHeight /= 2;
     }
+
+    //------------------------------------------------------------------------------
+    // TRANSITION THE LAST AND THE SMALLEST MIP IMAGE TO THE SHADER_READ_ONLY_LAYOUT
+    // WE HAVE TO DO IT SINCE THIS MIP LEVEL IS NEVER USED TO COPY DATA TO
+    //-------------------------------------------------------------------------------
+    barrier.subresourceRange.baseMipLevel = mipLevels -1;
+    barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+    vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0
+        0, nullptr,
+        0, nullptr,
+        1, &barrier);
+
 }
 
 #endif //UTILS_HPP
