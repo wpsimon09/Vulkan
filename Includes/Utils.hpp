@@ -525,7 +525,15 @@ inline static bool HasStencilComponent(VkFormat format) {
     return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
-inline static void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32_t width, uint32_t height, uint32_t mipLevels) {
+inline static void GenerateMipMaps(VkPhysicalDevice physicalDevice,ImageLayoutDependencyInfo dependency, VkImage image, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB) {
+
+
+    VkFormatProperties formatProperites;
+    vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &formatProperites);
+
+    if(!(formatProperites.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)) {
+        throw std::runtime_error("Texture image format does not support linear blitting");
+    }
 
     //----------------------------------------------
     // SET UP THINGS IN MEMORY BARRIER THAT

@@ -72,6 +72,16 @@ std::vector<VkWriteDescriptorSet> Material::GetDescriptorWrites(VkDescriptorSet 
     return descritorWrites;
 }
 
+uint32_t Material::GetMaximalMipValue() {
+    int smallestMipCount = m_materials[TEXTURE_TYPE_ALBEDO].maxMipLevels;
+    for (auto &texture: m_materials) {
+        if(texture.second.maxMipLevels < smallestMipCount && texture.second.maxMipLevels > 0) {
+            smallestMipCount = texture.second.maxMipLevels;
+        }
+    }
+}
+
+
 
 Material::~Material() {
     for (auto texture: this->m_materials) {

@@ -35,6 +35,8 @@ public:
 
     std::vector<VkWriteDescriptorSet> GetDescriptorWrites(VkDescriptorSet descriptorSet);
 
+    uint32_t GetMaximalMipValue();
+
     Texture getAlbedo() {return m_materials[TEXTURE_TYPE_ALBEDO];};
     Texture getArm() {return m_materials[TEXTURE_TYPE_ARM];};
     Texture getNormal() {return m_materials[TEXTURE_TYPE_NORMAL];};

@@ -888,8 +888,8 @@ void VulkanApp::CreateTextureImage() {
 
         CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
-        GenerateMipMaps(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, texWidth, texHeight,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
-        //TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+        GenerateMipMaps(m_physicalDevice,dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, texWidth, texHeight,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+
         FlushCommandBuffer(dependencyInfo.commandBuffer);
     }
         vkFreeMemory(m_device, stagingImageMemory, nullptr);
@@ -1047,7 +1047,7 @@ void VulkanApp::CreateTextureSampler() {
     samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
     samplerInfo.mipLodBias = 0.0f; // can also be physicalDeviceProperties.limits.maxSamplerLodBias
     samplerInfo.minLod = 0.0;
-    samplerInfo.maxLod = 0.0f;
+    samplerInfo.maxLod = m_material->GetMaximalMipValue();
 
     if(vkCreateSampler(m_device, &samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create texture sampler");
