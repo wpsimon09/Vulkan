@@ -525,7 +525,7 @@ inline static bool HasStencilComponent(VkFormat format) {
     return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
-void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32_t width, uint32_t height, uint32_t mipLevels) {
+inline static void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32_t width, uint32_t height, uint32_t mipLevels) {
 
     //----------------------------------------------
     // SET UP THINGS IN MEMORY BARRIER THAT
@@ -575,7 +575,7 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
         blit.srcOffsets[1] = {mipWidth, mipHeight,1}; //where to finish
         blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         blit.srcSubresource.mipLevel = i-1;
-        blit.srcSubresource.baseArrayLayer = 9;
+        blit.srcSubresource.baseArrayLayer = 0;
         blit.srcSubresource.layerCount = 1;
 
         //tells where data that was previousle retrieved should be pased
@@ -623,7 +623,7 @@ void GenerateMipMaps(ImageLayoutDependencyInfo dependency, VkImage image, uint32
     barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
-    vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0
+    vkCmdPipelineBarrier(dependency.commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
         0, nullptr,
         0, nullptr,
         1, &barrier);

@@ -888,6 +888,7 @@ void VulkanApp::CreateTextureImage() {
 
         CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
+        GenerateMipMaps(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, texWidth, texHeight,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
         //TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format,VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
         FlushCommandBuffer(dependencyInfo.commandBuffer);
     }
