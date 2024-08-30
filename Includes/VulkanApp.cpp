@@ -1316,6 +1316,15 @@ void VulkanApp::CreateSurface() {
     }
 }
 
+VkSampleCountFlagBits VulkanApp::GetMaxUsableSampleCount() {
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    vkGetPhysicalDeviceProperties(m_physicalDevice, &physicalDeviceProperties);
+
+    VkSamplerCreateFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts
+    &
+    physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+}
+
 std::vector<const char *> VulkanApp::GetRequiredExtentions() {
     uint32_t glfwExtentionsCount = 0;
     const char **glfwExtentions;

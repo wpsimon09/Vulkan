@@ -75,6 +75,7 @@ private:
     void CreateSwapChain();
     void CreateLogicalDevice();
     void CreateSurface();
+    VkSampleCountFlagBits GetMaxUsableSampleCount();
     //------------------------------
 
     //-----------------------------
@@ -213,6 +214,8 @@ private:
     std::vector<VkBuffer> m_uniformBuffers;
     std::vector<VkDeviceMemory> m_uniformBuffersMemory;
     std::vector<void*> m_uniformBuffersMapped;
+
+    VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
 
     //-----------------

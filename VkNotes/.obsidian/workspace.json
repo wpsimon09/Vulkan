@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "10. Mip maps/10.3 Configuring sampler.md",
+                "file": "11. Multi sampling/11.1 Introduction.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "10. Mip maps/10.3 Configuring sampler.md",
+                "file": "11. Multi sampling/11.1 Introduction.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "10. Mip maps/10.3 Configuring sampler.md",
+                "file": "11. Multi sampling/11.1 Introduction.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "10. Mip maps/10.3 Configuring sampler.md"
+                "file": "11. Multi sampling/11.1 Introduction.md"
               }
             }
           }
@@ -161,12 +161,14 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
-    "10. Mip maps/10.2 Generating mip-maps.md",
+    "Untitled.md",
+    "11. Multi sampling/11.1 Introduction.md",
+    "11. Multi sampling",
     "10. Mip maps/10.3 Configuring sampler.md",
+    "10. Mip maps/10.2 Generating mip-maps.md",
     "10. Mip maps/10.1 Introduction.md",
     "9. Model loading/9.1 Loading a model.md",
     "10. Mip maps",
-    "Untitled.md",
     "6. Buffers/6.9 Alignment requirements.md",
     "8. Depth testing/8.3 Render pass alteration.md",
     "9. Model loading",
@@ -193,14 +195,12 @@
     "6. Buffers/6.4 Filling in the vertex buffer.md",
     "6. Buffers/6.5 Staging buffer.md",
     "images/Alighemnt.png",
-    "6. Buffers/6.7 Uniform buffer.md",
     "images/Index vs vertex buffer.png",
     "6. Buffers",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",
     "images/NDC-inVulkan.png",
-    "images",
-    "3. Pipeline"
+    "images"
   ]
 }
