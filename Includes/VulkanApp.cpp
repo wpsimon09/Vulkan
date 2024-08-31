@@ -1108,6 +1108,7 @@ void VulkanApp::CreateDepthResources() {
     imageInfo.imageTiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
     imageInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    imageInfo.sampleCount = m_msaaSamples;
 
     CreateImage(imageInfo, m_depthImage, m_depthMemory);
 
@@ -1262,6 +1263,10 @@ void VulkanApp::CleanupSwapChain() {
     vkDestroyImage(m_device, m_depthImage, nullptr);
     vkFreeMemory(m_device, m_depthMemory, nullptr);
 
+    vkDestroyImageView(m_device,m_colorImageView, nullptr);
+    vkDestroyImage(m_device, m_colorImage, nullptr);
+    vkFreeMemory(m_device, m_colorImageMemory, nullptr);
+
 
     vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
 }
@@ -1283,6 +1288,7 @@ void VulkanApp::RecreateSwapChain() {
 
     CreateSwapChain();
     CreateImageViews();
+    CreateColorResources();
     CreateDepthResources();
     CreateFrameBuffers();
 }
