@@ -151,6 +151,7 @@ struct ImageCreateInfo {
     VkMemoryPropertyFlags memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
     VkImageTiling imageTiling = VK_IMAGE_TILING_OPTIMAL;
     VkImageAspectFlags aspectFlag = VK_IMAGE_ASPECT_COLOR_BIT;
+    VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT;
 };
 
 struct ImageLayoutDependencyInfo {

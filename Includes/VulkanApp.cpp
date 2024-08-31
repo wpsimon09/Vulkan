@@ -61,6 +61,7 @@ void VulkanApp::InitVulkan() {
     CreateLogicalDevice();
     CreateSwapChain();
     CreateImageViews();
+    CreateColorResources();
     CreateDepthResources();
     CreateRenderPass();
     GenerateGeometryVertices(MODEL);
@@ -1058,6 +1059,26 @@ void VulkanApp::CreateTextureSampler() {
         material.second.sampler = m_textureSampler;
     }
 
+}
+
+void VulkanApp::CreateColorResources() {
+    VkFormat colorFormat = m_swapChainImageFormat;
+
+    ImageCreateInfo multisampleImageInfo{};
+    multisampleImageInfo.physicalDevice = m_physicalDevice;
+    multisampleImageInfo.logicalDevice = m_device;
+    multisampleImageInfo.surface = m_sruface;
+    multisampleImageInfo.format = colorFormat;
+    multisampleImageInfo.width = m_swapChainExtent.width;
+    multisampleImageInfo.height = m_swapChainExtent.height;
+    multisampleImageInfo.mipLevels = 1;
+    multisampleImageInfo.imageTiling = VK_IMAGE_TILING_OPTIMAL;
+    multisampleImageInfo.usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    multisampleImageInfo.memoryProperteis = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    multisampleImageInfo.sampleCount = m_msaaSamples;
+    CreateImage(multisampleImageInfo, m_colorImage, m_colorImageMemory);
+
+    m_colorImageView = GenerateImageView(m_device, m_colorImage, 1, colorFormat);
 }
 
 void VulkanApp::CreateCommandBuffers() {

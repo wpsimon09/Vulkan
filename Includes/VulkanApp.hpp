@@ -110,7 +110,7 @@ private:
     void CreateTextureImage();
     void CreateTextureImageView();
     void CreateTextureSampler();
-    void LoadModelTexture();
+    void CreateColorResources();
     //---------------------
 
     //---------------------
@@ -169,7 +169,6 @@ private:
     VkQueue m_transferQueue;
 
     VkSurfaceKHR m_sruface;
-
     VkSwapchainKHR m_swapChain;
 
     std::vector<VkImage> m_swapChainImages;
@@ -203,6 +202,10 @@ private:
     VkImageView m_textureImageView;
     VkDeviceMemory m_textureImageMemory;
     VkSampler m_textureSampler;
+
+    VkImage m_colorImage;
+    VkDeviceMemory m_colorImageMemory;
+    VkImageView m_colorImageView;
 
     VkImage m_depthImage;
     VkDeviceMemory m_depthMemory;

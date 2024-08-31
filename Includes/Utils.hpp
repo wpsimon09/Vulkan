@@ -293,7 +293,7 @@ static inline void CreateImage(const ImageCreateInfo &createImageInfo, VkImage &
     imageInfo.queueFamilyIndexCount = static_cast<uint32_t>(sharedQueueFamilies.size());
     imageInfo.pQueueFamilyIndices = sharedQueueFamilies.data();
 
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.samples = createImageInfo.sampleCount;
     imageInfo.flags = 0;
 
     if(vkCreateImage(createImageInfo.logicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS) {

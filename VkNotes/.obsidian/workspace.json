@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "11. Multi sampling/11.1 Introduction.md",
+                "file": "11. Multi sampling/11.2 Setting render target.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "11. Multi sampling/11.1 Introduction.md",
+                "file": "11. Multi sampling/11.2 Setting render target.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "11. Multi sampling/11.1 Introduction.md",
+                "file": "11. Multi sampling/11.2 Setting render target.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "11. Multi sampling/11.1 Introduction.md"
+                "file": "11. Multi sampling/11.2 Setting render target.md"
               }
             }
           }
@@ -161,8 +161,9 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
-    "Untitled.md",
     "11. Multi sampling/11.1 Introduction.md",
+    "11. Multi sampling/11.2 Setting render target.md",
+    "Untitled.md",
     "11. Multi sampling",
     "10. Mip maps/10.3 Configuring sampler.md",
     "10. Mip maps/10.2 Generating mip-maps.md",
@@ -193,7 +194,6 @@
     "6. Buffers/6.2 Pipeline setup.md",
     "6. Buffers/6.1 Vertex input description.md",
     "6. Buffers/6.4 Filling in the vertex buffer.md",
-    "6. Buffers/6.5 Staging buffer.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",
