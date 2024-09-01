@@ -23,6 +23,7 @@
 #include "VertexData.hpp"
 #include <stb/stb_image.h>
 #include <unordered_map>
+#include <sys/prctl.h>
 
 #include "Material/Material.hpp"
 

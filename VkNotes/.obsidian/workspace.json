@@ -4,35 +4,18 @@
     "type": "split",
     "children": [
       {
-        "id": "8998a31d6485ea76",
+        "id": "4ff4586bf9bd45c6",
         "type": "tabs",
         "children": [
           {
-            "id": "5232b018aa640eb1",
+            "id": "0789eb27c09bd426",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "6. Buffers/6.9 Alignment requirements.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "fa720235c05af0c8",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "11. Multi sampling/11.3 Adding new attachemnt.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -98,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "11. Multi sampling/11.3 Adding new attachemnt.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "11. Multi sampling/11.3 Adding new attachemnt.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "11. Multi sampling/11.3 Adding new attachemnt.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -159,11 +138,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fa720235c05af0c8",
+  "active": "49110eea76b8449d",
   "lastOpenFiles": [
+    "12. Compute shaders",
+    "11. Multi sampling/11.3 Adding new attachemnt.md",
     "11. Multi sampling/11.2 Setting render target.md",
     "11. Multi sampling/11.1 Introduction.md",
-    "11. Multi sampling/11.3 Adding new attachemnt.md",
     "Untitled.md",
     "11. Multi sampling",
     "10. Mip maps/10.3 Configuring sampler.md",
@@ -193,7 +173,6 @@
     "3. Pipeline/3.2 Shader modules.md",
     "6. Buffers/6.3 Creating vertex buffer.md",
     "6. Buffers/6.2 Pipeline setup.md",
-    "6. Buffers/6.1 Vertex input description.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",

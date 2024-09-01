@@ -6,6 +6,7 @@
 
 #include <chrono>
 #include <emmintrin.h>
+#include <thread>
 #include <unistd.h>
 #include <unordered_map>
 
@@ -105,12 +106,14 @@ void VulkanApp::CreateInstance() {
     //--------
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Hello triangle";
+    appInfo.pApplicationName = "Vulkan app";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "No Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_3;
     appInfo.pNext = nullptr;
+
+    prctl(PR_SET_NAME, "MyVulkanApp", 0, 0, 0);
 
     //--------------
     // INSTANCE INFO
@@ -909,13 +912,23 @@ void VulkanApp::CreateTextureImage() {
         dependencyInfo.logicalDevice = m_device;
         dependencyInfo.transformQueue = m_transferQueue;
 
-        CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
+        //CreateImage(imageCreateInfo, m_material->GetTextures()[texturesToProcess[i]].image, m_material->GetTextures()[texturesToProcess[i]].memory);
+        std::thread CreateImageThread(CreateImage, imageCreateInfo, std::ref(m_material->GetTextures()[texturesToProcess[i]].image), std::ref(m_material->GetTextures()[texturesToProcess[i]].memory));
 
-        TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+        //TransferImageLayout(dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+        std::thread TransferImageLayoutThread(TransferImageLayout,dependencyInfo, std::ref(m_material->GetTextures()[texturesToProcess[i]].image), imageCreateInfo.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
 
-        CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
+        //CopyBufferToImage(dependencyInfo,stagingImageBuffer, m_material->GetTextures()[texturesToProcess[i]].image, static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
+        std::thread CopyBufferToImageThread(CopyBufferToImage,dependencyInfo,stagingImageBuffer, std::ref(m_material->GetTextures()[texturesToProcess[i]].image), static_cast<uint32_t>(texWidth),static_cast<uint32_t>(texHeight));
 
-        GenerateMipMaps(m_physicalDevice,dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, texWidth, texHeight,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+        //GenerateMipMaps(m_physicalDevice,dependencyInfo, m_material->GetTextures()[texturesToProcess[i]].image, texWidth, texHeight,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+        std::thread GenerateMipMapsThread(GenerateMipMaps,m_physicalDevice,dependencyInfo, std::ref(m_material->GetTextures()[texturesToProcess[i]].image), texWidth, texHeight,m_material->GetTextures()[texturesToProcess[i]].maxMipLevels);
+
+
+        CreateImageThread.join();
+        TransferImageLayoutThread.join();
+        CopyBufferToImageThread.join();
+        GenerateMipMapsThread.join();
 
         FlushCommandBuffer(dependencyInfo.commandBuffer);
     }
