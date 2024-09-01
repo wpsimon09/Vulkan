@@ -525,7 +525,7 @@ inline static bool HasStencilComponent(VkFormat format) {
     return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
-inline static void GenerateMipMaps(VkPhysicalDevice physicalDevice,ImageLayoutDependencyInfo dependency, VkImage image, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB) {
+inline static void GenerateMipMaps(VkPhysicalDevice physicalDevice, ImageLayoutDependencyInfo dependency, VkImage &image, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format = VK_FORMAT_R8G8B8A8_SRGB) {
 
 
     VkFormatProperties formatProperites;
