@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "11. Multi sampling/11.2 Setting render target.md",
+                "file": "11. Multi sampling/11.3 Adding new attachemnt.md",
                 "mode": "source",
                 "source": false
               }
@@ -82,7 +82,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 210.5
+    "width": 305.5
   },
   "right": {
     "id": "cb387ddb245961aa",
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "11. Multi sampling/11.2 Setting render target.md",
+                "file": "11. Multi sampling/11.3 Adding new attachemnt.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "11. Multi sampling/11.2 Setting render target.md",
+                "file": "11. Multi sampling/11.3 Adding new attachemnt.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "11. Multi sampling/11.2 Setting render target.md"
+                "file": "11. Multi sampling/11.3 Adding new attachemnt.md"
               }
             }
           }
@@ -161,8 +161,9 @@
   },
   "active": "fa720235c05af0c8",
   "lastOpenFiles": [
-    "11. Multi sampling/11.1 Introduction.md",
     "11. Multi sampling/11.2 Setting render target.md",
+    "11. Multi sampling/11.1 Introduction.md",
+    "11. Multi sampling/11.3 Adding new attachemnt.md",
     "Untitled.md",
     "11. Multi sampling",
     "10. Mip maps/10.3 Configuring sampler.md",
@@ -193,7 +194,6 @@
     "6. Buffers/6.3 Creating vertex buffer.md",
     "6. Buffers/6.2 Pipeline setup.md",
     "6. Buffers/6.1 Vertex input description.md",
-    "6. Buffers/6.4 Filling in the vertex buffer.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",

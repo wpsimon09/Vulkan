@@ -373,7 +373,7 @@ void VulkanApp::CreateRenderPass() {
     //-----------------------
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = m_swapChainImageFormat;
-    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    colorAttachment.samples = m_msaaSamples;
     //before render call colou and depth
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     //after render call colour and depth
@@ -383,7 +383,7 @@ void VulkanApp::CreateRenderPass() {
     //before render call
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     //after render call
-    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;;
 
     //-----------------------
     // DEPTH ATTACHEMNT INFO
@@ -391,7 +391,7 @@ void VulkanApp::CreateRenderPass() {
     VkAttachmentDescription depthAttachment{};
     //format should be the same as a depht image
     depthAttachment.format = FindDepthFormat();
-    depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthAttachment.samples = m_msaaSamples;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -400,9 +400,24 @@ void VulkanApp::CreateRenderPass() {
     depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-    //---------
-    // SUB PASS
-    //---------
+
+    //------------------------
+    // RESOLVE ATTACHEMTN INFO
+    //------------------------
+    VkAttachmentDescription colorAttachmentResolve{};
+    colorAttachmentResolve.format = m_swapChainImageFormat;
+    colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
+    colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachmentResolve.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+
+    //----------------------
+    // ATTACHEMNT REFERENCES
+    //----------------------
     VkAttachmentReference colorAttachmentRef{};
     //reference to the imaginary array of VkAttachmentDescription (we only have one)
     colorAttachmentRef.attachment = 0;
@@ -412,14 +427,22 @@ void VulkanApp::CreateRenderPass() {
     depthAttachmentRef.attachment = 1;
     depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
+    VkAttachmentReference colorAttachmentResolveRef{};
+    colorAttachmentResolveRef.attachment = 2;
+    colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    //---------
+    // SUB PASS
+    //---------
     VkSubpassDescription subPass{};
     subPass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     //reference to the colour attachemnt
     subPass.colorAttachmentCount = 1;
     subPass.pColorAttachments = &colorAttachmentRef;
     subPass.pDepthStencilAttachment = &depthAttachmentRef;
+    subPass.pResolveAttachments = &colorAttachmentResolveRef;
 
-    std::array<VkAttachmentDescription,2> attachemnts = {colorAttachment, depthAttachment};
+    std::array<VkAttachmentDescription,3> attachemnts = {colorAttachment, depthAttachment, colorAttachmentResolve};
 
     //--------------------
     // SUB PASS DEPENDENCY
@@ -694,7 +717,7 @@ void VulkanApp::CreateGraphicsPipeline() {
     VkPipelineMultisampleStateCreateInfo multisampleCreateInfo{};
     multisampleCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     multisampleCreateInfo.sampleShadingEnable = VK_FALSE;
-    multisampleCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    multisampleCreateInfo.rasterizationSamples = m_msaaSamples;
     multisampleCreateInfo.minSampleShading = 1.0f;
     multisampleCreateInfo.pSampleMask = nullptr;
     multisampleCreateInfo.alphaToCoverageEnable= VK_FALSE;
@@ -802,9 +825,11 @@ void VulkanApp::CreateFrameBuffers() {
     m_swapChainFrameBuffers.resize(m_swapChainImageViews.size());
 
     for(size_t i=0; i<m_swapChainImageViews.size(); i++) {
-        std::array<VkImageView,2> attachments = {
-            m_swapChainImageViews[i],
-            m_depthImageView
+        std::array<VkImageView,3> attachments = {
+            m_colorImageView,
+            m_depthImageView,
+
+            m_swapChainImageViews[i]
         };
         VkFramebufferCreateInfo frameBufferInfo{};
         frameBufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -1311,7 +1336,6 @@ void VulkanApp::CreateLogicalDevice() {
 
     VkPhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.samplerAnisotropy = VK_TRUE;
-
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
