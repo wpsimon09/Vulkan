@@ -11,8 +11,12 @@
             "id": "0789eb27c09bd426",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "12. Compute shaders/12.1 Introduction.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "12. Compute shaders/12.1 Introduction.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -97,6 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "12. Compute shaders/12.1 Introduction.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +124,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "12. Compute shaders/12.1 Introduction.md"
+              }
             }
           }
         ]
@@ -138,8 +146,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "49110eea76b8449d",
+  "active": "0789eb27c09bd426",
   "lastOpenFiles": [
+    "images/Vulkan compute pipeline.png",
+    "12. Compute shaders/12.1 Introduction.md",
     "12. Compute shaders",
     "11. Multi sampling/11.3 Adding new attachemnt.md",
     "11. Multi sampling/11.2 Setting render target.md",
@@ -172,14 +182,12 @@
     "3. Pipeline/3.3 Fixed function pipeline.md",
     "3. Pipeline/3.2 Shader modules.md",
     "6. Buffers/6.3 Creating vertex buffer.md",
-    "6. Buffers/6.2 Pipeline setup.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",
     "5. Swap chain recreation",
     "4. Drawing",
     "images/swapchain-info.png",
-    "images/NDC-inVulkan.png",
-    "images"
+    "images/NDC-inVulkan.png"
   ]
 }
