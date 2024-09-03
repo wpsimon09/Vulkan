@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "12. Compute shaders/12.1 Introduction.md",
+                "file": "12. Compute shaders/12.2 Compute queue families.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "cb387ddb245961aa",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "12. Compute shaders/12.1 Introduction.md",
+                "file": "12. Compute shaders/12.2 Compute queue families.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "12. Compute shaders/12.1 Introduction.md",
+                "file": "12. Compute shaders/12.2 Compute queue families.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "12. Compute shaders/12.1 Introduction.md"
+                "file": "12. Compute shaders/12.2 Compute queue families.md"
               }
             }
           }
@@ -149,8 +148,9 @@
   },
   "active": "0789eb27c09bd426",
   "lastOpenFiles": [
-    "images/Vulkan compute pipeline.png",
     "12. Compute shaders/12.1 Introduction.md",
+    "12. Compute shaders/12.2 Compute queue families.md",
+    "images/Vulkan compute pipeline.png",
     "12. Compute shaders",
     "11. Multi sampling/11.3 Adding new attachemnt.md",
     "11. Multi sampling/11.2 Setting render target.md",
