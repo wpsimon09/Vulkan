@@ -493,6 +493,31 @@ void VulkanApp::CreateDescriptorSetLayout() {
     auto bindings = m_material->GetLayoutBindings(1);
     bindings.emplace_back(uboLayoutBinding);
 
+
+    // UBO for delat time, SSBO for reads and SSBO for writes (3 bindings in total)
+    std::vector<VkDescriptorSetLayoutBinding> particleDescriptorLayoutBindings(3);
+    particleDescriptorLayoutBindings[0].binding = bindings.size()+1;
+    particleDescriptorLayoutBindings[0].descriptorCount = 1;
+    particleDescriptorLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    particleDescriptorLayoutBindings[0].pImmutableSamplers = nullptr;
+    particleDescriptorLayoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+    //Read SSBO
+    particleDescriptorLayoutBindings[1].binding = bindings.size()+2;
+    particleDescriptorLayoutBindings[1].descriptorCount = 1;
+    particleDescriptorLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    particleDescriptorLayoutBindings[1].pImmutableSamplers = nullptr;
+    particleDescriptorLayoutBindings[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+    //Write SSBO
+    particleDescriptorLayoutBindings[2].binding = bindings.size()+3;
+    particleDescriptorLayoutBindings[2].descriptorCount = 1;
+    particleDescriptorLayoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    particleDescriptorLayoutBindings[2].pImmutableSamplers = nullptr;
+    particleDescriptorLayoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+    bindings.insert(bindings.end(), particleDescriptorLayoutBindings.begin(), particleDescriptorLayoutBindings.end());
+
     VkDescriptorSetLayoutCreateInfo layoutInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
     layoutInfo.pBindings = bindings.data();
@@ -1171,6 +1196,32 @@ void VulkanApp::CreateShaderStorageBuffer() {
         particle.position = glm::vec2(x,y);
         particle.velocity = glm::normalize(glm::vec2(x,y))*0.00025f;
         particle.color = glm::vec4(rndDist(rndEngine),rndDist(rndEngine),rndDist(rndEngine),1.0f);
+    }
+
+    VkDeviceSize stagingBufferSize = PARTICLE_COUNT * sizeof(Particle);
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    BufferCreateInfo bufferCreateInfo;
+    bufferCreateInfo.physicalDevice = m_physicalDevice;
+    bufferCreateInfo.logicalDevice = m_device;
+    bufferCreateInfo.surface = m_sruface;
+    bufferCreateInfo.size = stagingBufferSize;
+    bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    bufferCreateInfo.properties = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+    CreateBuffer(bufferCreateInfo, stagingBuffer, stagingBufferMemory);
+
+    void* data;
+    vkMapMemory(m_device, stagingBufferMemory, 0, stagingBufferSize, 0, &data);
+    memcpy(data, particles.data(),(size_t)stagingBufferSize);
+
+    for(size_t i=0; i<MAX_FRAMES_IN_FLIGHT; i++) {
+        //note the last bit flag, it is converting the buffer to be SSBO
+        bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+        bufferCreateInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+        CreateBuffer(bufferCreateInfo, m_shaderStorageBuffer[i], m_shaderStorageBufferMemory[i]);
+        // copy from staging buffer to the acctual buffer on the GPU that acts like and SSBO
+        CopyBuffer(m_device,m_transferQueue, m_transferCommandPool, stagingBuffer, m_shaderStorageBuffer[i], stagingBufferSize);
     }
 }
 
