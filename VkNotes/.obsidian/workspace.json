@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "12. Compute shaders/12.2 Compute queue families.md",
+                "file": "12. Compute shaders/12.3 Shader storage buffers.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "12. Compute shaders/12.2 Compute queue families.md",
+                "file": "12. Compute shaders/12.3 Shader storage buffers.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "12. Compute shaders/12.2 Compute queue families.md",
+                "file": "12. Compute shaders/12.3 Shader storage buffers.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "12. Compute shaders/12.2 Compute queue families.md"
+                "file": "12. Compute shaders/12.3 Shader storage buffers.md"
               }
             }
           }
@@ -148,8 +148,9 @@
   },
   "active": "0789eb27c09bd426",
   "lastOpenFiles": [
-    "12. Compute shaders/12.1 Introduction.md",
     "12. Compute shaders/12.2 Compute queue families.md",
+    "12. Compute shaders/12.3 Shader storage buffers.md",
+    "12. Compute shaders/12.1 Introduction.md",
     "images/Vulkan compute pipeline.png",
     "12. Compute shaders",
     "11. Multi sampling/11.3 Adding new attachemnt.md",
@@ -182,7 +183,6 @@
     "3. Pipeline/3.4 Render pass.md",
     "3. Pipeline/3.3 Fixed function pipeline.md",
     "3. Pipeline/3.2 Shader modules.md",
-    "6. Buffers/6.3 Creating vertex buffer.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",

@@ -98,6 +98,7 @@ private:
     void CreateUniformBuffers();
     void CreateCommandBuffers();
     void CreateDepthResources();
+    void CreateShaderStorageBuffer();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     VkCommandBuffer StartRecordingCommandBuffer();
     void FlushCommandBuffer(VkCommandBuffer commandBuffer);
@@ -193,6 +194,9 @@ private:
     std::vector<VkSemaphore> m_imageAvailableSemaphores;
     std::vector<VkSemaphore> m_renderFinishedSemaphores;
     std::vector<VkFence> m_inFlightFences;
+
+    std::vector<VkBuffer> m_shaderStorageBuffer;
+    std::vector<VkDeviceMemory> m_shaderStorageBufferMemory;
 
     VkBuffer m_vertexBuffer;
     VkDeviceMemory m_vertexBufferMemory;

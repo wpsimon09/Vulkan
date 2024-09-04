@@ -6,6 +6,7 @@
 
 #include <chrono>
 #include <emmintrin.h>
+#include <random>
 #include <thread>
 #include <unistd.h>
 #include <unordered_map>
@@ -81,6 +82,7 @@ void VulkanApp::InitVulkan() {
     CreateTextureImageView();
     CreateTextureSampler();
     CreateVertexBuffers();
+    CreateShaderStorageBuffer();
     CreateIndexBuffers();
     CreateUniformBuffers();
     CreateDescriptorPool();
@@ -624,6 +626,7 @@ void VulkanApp::CreateGraphicsPipeline() {
     computeShaderStageInfo.module = computeShaderModule;
     computeShaderStageInfo.pName = "main";
     computeShaderStageInfo.pName = nullptr;
+    computeShaderStageInfo.pSpecializationInfo = nullptr;
 
     //todo: later add compute shader here!!
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragmentShaderStageInfo};
@@ -1146,6 +1149,16 @@ void VulkanApp::CreateDepthResources() {
     CreateImage(imageInfo, m_depthImage, m_depthMemory);
 
     m_depthImageView = GenerateImageView(m_device, m_depthImage, 1, format, VK_IMAGE_ASPECT_DEPTH_BIT);
+}
+
+void VulkanApp::CreateShaderStorageBuffer() {
+    m_shaderStorageBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+    m_shaderStorageBufferMemory.resize(MAX_FRAMES_IN_FLIGHT);
+
+    // Init particles
+    std::default_random_engine rndEngine((unsigned) time(nullptr));
+    std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
+
 }
 
 void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
