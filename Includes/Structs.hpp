@@ -116,11 +116,11 @@ struct Vertex {
 };
 
 struct QueueFamilyIndices {
-    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> graphicsAndComputeFamily;
     std::optional<uint32_t> presentFamily;
     std::optional<uint32_t> transferFamily;
 
-    bool isComplete() const { return graphicsFamily.has_value() && presentFamily.has_value() && presentFamily.has_value();  }
+    bool isComplete() const { return graphicsAndComputeFamily.has_value() && presentFamily.has_value() && presentFamily.has_value();  }
 };
 
 struct SwapChainSupportDetails {

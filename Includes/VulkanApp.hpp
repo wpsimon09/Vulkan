@@ -168,6 +168,7 @@ private:
     VkQueue m_graphicsQueue;
     VkQueue m_presentationQueue;
     VkQueue m_transferQueue;
+    VkQueue m_computeQueue;
 
     VkSurfaceKHR m_sruface;
     VkSwapchainKHR m_swapChain;

@@ -52,8 +52,8 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
 
     int i = 0;
     for (auto &queueFamily: queueFamilyProperties) {
-        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.graphicsFamily = i;
+        if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)&& (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)) {
+            indices.graphicsAndComputeFamily = i;
         }
         if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT) {
             indices.transferFamily = i;
@@ -240,7 +240,7 @@ static inline void CreateBuffer(const BufferCreateInfo &bufferCreateInfo, VkBuff
     bufferInfo.usage = bufferCreateInfo.usage;
     // specifies if it can be shared between queue families
     // we will use it only for the graphics family
-    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsFamily.value(), indices.transferFamily.value()};
+    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsAndComputeFamily.value(), indices.transferFamily.value()};
 
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     bufferInfo.queueFamilyIndexCount = static_cast<uint32_t>(sharedQueueFamilies.size());
@@ -289,7 +289,7 @@ static inline void CreateImage(const ImageCreateInfo &createImageInfo, VkImage &
     imageInfo.usage = createImageInfo.usage;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsFamily.value(), indices.transferFamily.value()};
+    std::vector<uint32_t> sharedQueueFamilies = {indices.graphicsAndComputeFamily.value(), indices.transferFamily.value()};
     imageInfo.queueFamilyIndexCount = static_cast<uint32_t>(sharedQueueFamilies.size());
     imageInfo.pQueueFamilyIndices = sharedQueueFamilies.data();
 
