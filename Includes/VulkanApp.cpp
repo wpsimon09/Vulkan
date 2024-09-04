@@ -490,14 +490,6 @@ void VulkanApp::CreateDescriptorSetLayout() {
 
     auto bindings = m_material->GetLayoutBindings(1);
     bindings.emplace_back(uboLayoutBinding);
-    /*
-    VkDescriptorSetLayoutBinding imageSamplerLayoutBinding{};
-    imageSamplerLayoutBinding.binding = 1;
-    imageSamplerLayoutBinding.descriptorCount = 1;
-    imageSamplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    imageSamplerLayoutBinding.pImmutableSamplers = nullptr;
-    imageSamplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    */
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -601,10 +593,12 @@ void VulkanApp::CreateGraphicsPipeline() {
     //----------------
     auto vertShaderCode = readFile("Shaders/Compiled/TriangleVertex.spv");
     auto fragmentShaderCode = readFile("Shaders/Compiled/TriangleFragment.spv");
+    auto computeShaderCode = readFile("Shaders/Compiled/ParticlesCompute.spv");
     std::cout << "Shader read sucessfuly\n";
 
     VkShaderModule vertexShaderModule = createShaderModuel(m_device, vertShaderCode);
     VkShaderModule fragmentShaderModule = createShaderModuel(m_device, fragmentShaderCode);
+    VkShaderModule computeShaderModule = createShaderModuel(m_device, computeShaderCode);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -624,6 +618,14 @@ void VulkanApp::CreateGraphicsPipeline() {
     fragmentShaderStageInfo.pNext = nullptr;
     //allows to fill in constant variables in shaders using memory offset
     fragmentShaderStageInfo.pSpecializationInfo = nullptr;
+
+    VkPipelineShaderStageCreateInfo computeShaderStageInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
+    computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+    computeShaderStageInfo.module = computeShaderModule;
+    computeShaderStageInfo.pName = "main";
+    computeShaderStageInfo.pName = nullptr;
+
+    //todo: later add compute shader here!!
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragmentShaderStageInfo};
 
     //----------------
