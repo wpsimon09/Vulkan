@@ -1155,10 +1155,23 @@ void VulkanApp::CreateShaderStorageBuffer() {
     m_shaderStorageBuffer.resize(MAX_FRAMES_IN_FLIGHT);
     m_shaderStorageBufferMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
-    // Init particles
+    // Cretes random values between 0 and 1 with time as a seed
     std::default_random_engine rndEngine((unsigned) time(nullptr));
     std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
 
+    std::vector<Particle> particles(PARTICLE_COUNT);
+    for(auto& particle: particles) {
+        float radius  = 0.25f*sqrt(rndDist(rndEngine));
+        //scatter around entire circle
+        float theta = rndDist(rndEngine)* 2 * 3.14159265358979323846;
+        //from angle and radius to x and y
+        float x = radius * cos(theta) * HEIGHT / WIDTH;
+        float y = radius * sin (theta);
+
+        particle.position = glm::vec2(x,y);
+        particle.velocity = glm::normalize(glm::vec2(x,y))*0.00025f;
+        particle.color = glm::vec4(rndDist(rndEngine),rndDist(rndEngine),rndDist(rndEngine),1.0f);
+    }
 }
 
 void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
