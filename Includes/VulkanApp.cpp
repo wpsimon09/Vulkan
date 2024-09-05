@@ -490,27 +490,34 @@ void VulkanApp::CreateDescriptorSetLayout() {
     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     uboLayoutBinding.pImmutableSamplers = nullptr;
 
-    auto bindings = m_material->GetLayoutBindings(1);
+    VkDescriptorSetLayoutBinding deltaTimeUboBinding{};
+    deltaTimeUboBinding.binding = 1;
+    deltaTimeUboBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    deltaTimeUboBinding.descriptorCount = 1;
+    deltaTimeUboBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+    deltaTimeUboBinding.pImmutableSamplers = nullptr;
+
+    auto bindings = m_material->GetLayoutBindings(2);
     bindings.emplace_back(uboLayoutBinding);
 
 
     // UBO for delat time, SSBO for reads and SSBO for writes (3 bindings in total)
     std::vector<VkDescriptorSetLayoutBinding> particleDescriptorLayoutBindings(3);
-    particleDescriptorLayoutBindings[0].binding = bindings.size()+1;
+    particleDescriptorLayoutBindings[0].binding = bindings.size()+2;
     particleDescriptorLayoutBindings[0].descriptorCount = 1;
     particleDescriptorLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     particleDescriptorLayoutBindings[0].pImmutableSamplers = nullptr;
     particleDescriptorLayoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
     //Read SSBO
-    particleDescriptorLayoutBindings[1].binding = bindings.size()+2;
+    particleDescriptorLayoutBindings[1].binding = bindings.size()+3;
     particleDescriptorLayoutBindings[1].descriptorCount = 1;
     particleDescriptorLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
     particleDescriptorLayoutBindings[1].pImmutableSamplers = nullptr;
     particleDescriptorLayoutBindings[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
     //Write SSBO
-    particleDescriptorLayoutBindings[2].binding = bindings.size()+3;
+    particleDescriptorLayoutBindings[2].binding = bindings.size()+4;
     particleDescriptorLayoutBindings[2].descriptorCount = 1;
     particleDescriptorLayoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
     particleDescriptorLayoutBindings[2].pImmutableSamplers = nullptr;
@@ -1083,6 +1090,7 @@ void VulkanApp::CreateUniformBuffers() {
         vkMapMemory(m_device, m_uniformBuffersMemory[i], 0, bufferInfo.size, 0, &m_uniformBuffersMapped[i]);
     }
 
+    bufferInfo.size = sizeof(UBODeltaTime);
     //for delta time UBO
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         CreateBuffer(bufferInfo, m_deltaTimeUBOBuffer[i], m_deltaTimeUBOMemory[i]);
