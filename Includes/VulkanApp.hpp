@@ -225,6 +225,12 @@ private:
     std::vector<VkDeviceMemory> m_uniformBuffersMemory;
     std::vector<void*> m_uniformBuffersMapped;
 
+    std::vector<VkBuffer> m_deltaTimeUBOBuffer;
+    std::vector<VkDeviceMemory> m_deltaTimeUBOMemory;
+    std::vector<void*> m_deltaTimeBufferMapped;
+
+
+
     VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
 

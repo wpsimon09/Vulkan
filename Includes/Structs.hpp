@@ -138,6 +138,10 @@ struct UniformBufferObject {
     alignas(16)glm::mat4 normal;
 };
 
+struct UBODeltaTime {
+    float deltaTime = 1.0f;
+};
+
 struct ImageCreateInfo {
     VkPhysicalDevice physicalDevice;
     VkSurfaceKHR surface;

@@ -1072,11 +1072,23 @@ void VulkanApp::CreateUniformBuffers() {
     m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
     m_uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
+    m_deltaTimeUBOBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+    m_deltaTimeUBOMemory.resize(MAX_FRAMES_IN_FLIGHT);
+    m_deltaTimeUBOBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+
+
+    // for MVP UBO
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         CreateBuffer(bufferInfo, m_uniformBuffers[i], m_uniformBuffersMemory[i]);
-
         vkMapMemory(m_device, m_uniformBuffersMemory[i], 0, bufferInfo.size, 0, &m_uniformBuffersMapped[i]);
     }
+
+    //for delta time UBO
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        CreateBuffer(bufferInfo, m_deltaTimeUBOBuffer[i], m_deltaTimeUBOMemory[i]);
+        vkMapMemory(m_device, m_deltaTimeUBOMemory[i], 0, bufferInfo.size, 0, &m_deltaTimeBufferMapped[i]);
+    }
+
 }
 
 void VulkanApp::CreateTextureImageView() {
@@ -1517,6 +1529,9 @@ void VulkanApp::CleanUp() {
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
         vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
+
+        vkDestroyBuffer(m_device, m_deltaTimeUBOBuffer[i], nullptr);
+        vkFreeMemory(m_device, m_deltaTimeUBOMemory[i], nullptr);
     }
 
     vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
