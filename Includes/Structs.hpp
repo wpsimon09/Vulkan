@@ -171,6 +171,36 @@ struct Particle {
     glm::vec2 position;
     glm::vec2 velocity;
     glm::vec4 color;
+
+    static VkVertexInputBindingDescription getBindingDescription() {
+        VkVertexInputBindingDescription bindingDescription{};
+        bindingDescription.binding = 0;
+        bindingDescription.stride = sizeof(Particle);
+        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        return bindingDescription;
+    }
+
+    static std::array<VkVertexInputAttributeDescription,2> getAttributeDescription() {
+        std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+        //which vertex array binding to use
+        attributeDescriptions[0].binding = 0;
+        //location in shader
+        attributeDescriptions[0].location = 0;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[0].offset = offsetof(Particle, position);
+
+        //which vertex array binding to use
+        attributeDescriptions[1].binding = 0;
+        //location in shader
+        attributeDescriptions[1].location = 1;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[1].offset = offsetof(Particle, color);
+    }
 };
 
 namespace std {

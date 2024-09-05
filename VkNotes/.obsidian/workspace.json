@@ -13,26 +13,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "6. Buffers/6.8 Descriptor and pool set.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "086723affffea5a5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
                 "file": "12. Compute shaders/12.4 Descriptors.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -159,9 +146,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "086723affffea5a5",
+  "active": "0789eb27c09bd426",
   "lastOpenFiles": [
     "6. Buffers/6.8 Descriptor and pool set.md",
+    "images/Reson-for-2-ssbos.png",
     "12. Compute shaders/12.4 Descriptors.md",
     "12. Compute shaders/12.3 Shader storage buffers.md",
     "12. Compute shaders/12.2 Compute queue families.md",
@@ -195,7 +183,6 @@
     "Appendix A - PBR Sphere.md",
     "6. Buffers/6.6 Index buffer.md",
     "3. Pipeline/3.4 Render pass.md",
-    "3. Pipeline/3.3 Fixed function pipeline.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",
