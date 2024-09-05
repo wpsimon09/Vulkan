@@ -499,6 +499,7 @@ void VulkanApp::CreateDescriptorSetLayout() {
 
     auto bindings = m_material->GetLayoutBindings(2);
     bindings.emplace_back(uboLayoutBinding);
+    bindings.emplace_back(deltaTimeUboBinding);
 
 
     // UBO for delat time, SSBO for reads and SSBO for writes (3 bindings in total)
@@ -536,19 +537,22 @@ void VulkanApp::CreateDescriptorSetLayout() {
 }
 
 void VulkanApp::CreateDescriptorPool() {
-    std::array<VkDescriptorPoolSize, 3> poolSizes{};
+    std::array<VkDescriptorPoolSize, 4> poolSizes{};
 
-    // for UBO
+    // for UBO MVP
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-    // for Sampler
-    poolSizes[1] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
+    //for delta time UBO
+    poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSizes[1] = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-    poolSizes[2].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    // for Sampler
+    poolSizes[2] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
+    poolSizes[3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 
     //for each frame in flight both read and write SSBO will be used, thus * 2
-    poolSizes[2].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) *2;
+    poolSizes[3].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) *2;
 
     VkDescriptorPoolCreateInfo poolInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
     poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
