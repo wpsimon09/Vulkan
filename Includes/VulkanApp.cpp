@@ -677,8 +677,8 @@ void VulkanApp::CreateGraphicsPipeline() {
     //------------------
     // VERTEX ATTRIBUTES
     //------------------
-    auto bindingDescription = Vertex::getBindingDescription();
-    auto attributeDescriptions = Vertex::getAttributeDescriptions();
+    auto bindingDescription = Particle::getBindingDescription();
+    auto attributeDescriptions = Particle::getAttributeDescription();
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -989,46 +989,6 @@ void VulkanApp::CreateVertexBuffers() {
     // BUFFER INFO
     //-------------
     BufferCreateInfo bufferInfo{};
-    bufferInfo.size = sizeof(vertices[0]) * vertices.size();
-    bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-    bufferInfo.surface = m_sruface;
-    bufferInfo.logicalDevice = m_device;
-    bufferInfo.physicalDevice = m_physicalDevice;
-
-    //----------------
-    // STAGING BUFFER
-    //----------------
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-    CreateBuffer(bufferInfo, stagingBuffer, stagingBufferMemory);
-
-    void *data;
-    vkMapMemory(m_device, stagingBufferMemory, 0, bufferInfo.size, 0, &data);
-    memcpy(data, vertices.data(), (size_t) bufferInfo.size);
-    vkUnmapMemory(m_device, stagingBufferMemory);
-
-    //----------------
-    // VERTEX BUFFER
-    //----------------
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-    bufferInfo.properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-    CreateBuffer(bufferInfo, m_vertexBuffer, m_vertexBufferMemory);
-
-    //-----------------------------------
-    // MOVE THE MEMORY FROM STAGING
-    // BUFFER TO ACCTUAL VERTEX BUFFER
-    //----------------------------------
-    CopyBuffer(m_device, m_transferQueue, m_transferCommandPool, stagingBuffer, m_vertexBuffer, bufferInfo.size);
-
-    ///---------------------------------------------------------------------------------
-    /// FOR PARTICLES
-    ///--------------------------------------------------------------------------------
-
-    //-------------
-    // BUFFER INFO
-    //-------------
     bufferInfo.size = sizeof(vertices[0]) * vertices.size();
     bufferInfo.properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                             VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
