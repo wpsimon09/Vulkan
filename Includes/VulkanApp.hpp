@@ -85,8 +85,10 @@ private:
     //-----------------------------
     void CreateImageViews();
     void CreateRenderPass();
+    std::vector<VkDescriptorSetLayout> CreateComputeDescriptorSetLayout(int stratsFrom = 0);
     void CreateDescriptorSetLayout();
     void CreateGraphicsPipeline();
+    void CreateComputePipeline();
     //------------------------------
 
     //-----------------------------------------------
@@ -184,6 +186,7 @@ private:
 
     VkRenderPass m_renderPass;
     VkDescriptorSetLayout m_descriptorSetLayout;
+    VkDescriptorSetLayout m_computeDescryptorSetLayout;
     VkPipelineLayout m_pipelineLayout;
     VkPipeline m_graphicsPipeline;
 

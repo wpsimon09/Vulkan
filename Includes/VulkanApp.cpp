@@ -68,6 +68,7 @@ void VulkanApp::InitVulkan() {
     GenerateGeometryVertices(MODEL);
     CreateDescriptorSetLayout();
     CreateGraphicsPipeline();
+    CreateComputePipeline();
     CreateFrameBuffers();
     CreateCommandPool();
 
@@ -482,7 +483,35 @@ void VulkanApp::CreateRenderPass() {
     }
 }
 
+std::vector<VkDescriptorSetLayout> VulkanApp::CreateComputeDescriptorSetLayout(int stratsFrom) {
+
+    // UBO for delat time, SSBO for reads and SSBO for writes (3 bindings in total)
+    std::vector<VkDescriptorSetLayoutBinding> particleDescriptorLayoutBindings(3);
+    particleDescriptorLayoutBindings[0].binding = stratsFrom;
+    particleDescriptorLayoutBindings[0].descriptorCount = 1;
+    particleDescriptorLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    particleDescriptorLayoutBindings[0].pImmutableSamplers = nullptr;
+    particleDescriptorLayoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+    //Read SSBO
+    particleDescriptorLayoutBindings[1].binding = stratsFrom+1;
+    particleDescriptorLayoutBindings[1].descriptorCount = 1;
+    particleDescriptorLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    particleDescriptorLayoutBindings[1].pImmutableSamplers = nullptr;
+    particleDescriptorLayoutBindings[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+    //Write SSBO
+    particleDescriptorLayoutBindings[2].binding = stratsFrom +2;
+    particleDescriptorLayoutBindings[2].descriptorCount = 1;
+    particleDescriptorLayoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    particleDescriptorLayoutBindings[2].pImmutableSamplers = nullptr;
+    particleDescriptorLayoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+
+}
+
 void VulkanApp::CreateDescriptorSetLayout() {
+    //FOR MVP
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -490,41 +519,8 @@ void VulkanApp::CreateDescriptorSetLayout() {
     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     uboLayoutBinding.pImmutableSamplers = nullptr;
 
-    VkDescriptorSetLayoutBinding deltaTimeUboBinding{};
-    deltaTimeUboBinding.binding = 1;
-    deltaTimeUboBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    deltaTimeUboBinding.descriptorCount = 1;
-    deltaTimeUboBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-    deltaTimeUboBinding.pImmutableSamplers = nullptr;
-
-    auto bindings = m_material->GetLayoutBindings(2);
+    auto bindings = m_material->GetLayoutBindings(1);
     bindings.emplace_back(uboLayoutBinding);
-    bindings.emplace_back(deltaTimeUboBinding);
-
-
-    // UBO for delat time, SSBO for reads and SSBO for writes (3 bindings in total)
-    std::vector<VkDescriptorSetLayoutBinding> particleDescriptorLayoutBindings(3);
-    particleDescriptorLayoutBindings[0].binding = bindings.size()+2;
-    particleDescriptorLayoutBindings[0].descriptorCount = 1;
-    particleDescriptorLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    particleDescriptorLayoutBindings[0].pImmutableSamplers = nullptr;
-    particleDescriptorLayoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-
-    //Read SSBO
-    particleDescriptorLayoutBindings[1].binding = bindings.size()+3;
-    particleDescriptorLayoutBindings[1].descriptorCount = 1;
-    particleDescriptorLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    particleDescriptorLayoutBindings[1].pImmutableSamplers = nullptr;
-    particleDescriptorLayoutBindings[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-
-    //Write SSBO
-    particleDescriptorLayoutBindings[2].binding = bindings.size()+4;
-    particleDescriptorLayoutBindings[2].descriptorCount = 1;
-    particleDescriptorLayoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    particleDescriptorLayoutBindings[2].pImmutableSamplers = nullptr;
-    particleDescriptorLayoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-
-    bindings.insert(bindings.end(), particleDescriptorLayoutBindings.begin(), particleDescriptorLayoutBindings.end());
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -534,6 +530,9 @@ void VulkanApp::CreateDescriptorSetLayout() {
     if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create descriptor set layout");
     };
+
+
+    auto computeBindings = CreateComputeDescriptorSetLayout(0);
 }
 
 void VulkanApp::CreateDescriptorPool() {
@@ -545,13 +544,13 @@ void VulkanApp::CreateDescriptorPool() {
 
     //for delta time UBO
     poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    poolSizes[1] = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     // for Sampler
     poolSizes[2] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
-    poolSizes[3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 
     //for each frame in flight both read and write SSBO will be used, thus * 2
+    poolSizes[3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
     poolSizes[3].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) *2;
 
     VkDescriptorPoolCreateInfo poolInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
@@ -869,6 +868,17 @@ void VulkanApp::CreateGraphicsPipeline() {
 
     vkDestroyShaderModule(m_device, vertexShaderModule, nullptr);
     vkDestroyShaderModule(m_device, fragmentShaderModule, nullptr);
+}
+
+void VulkanApp::CreateComputePipeline() {
+    VkPipelineLayoutCreateInfo computePipelineLayout{.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
+    computePipelineLayout.setLayoutCount = 1;
+    computePipelineLayout.pSetLayouts = &m_descriptorSetLayout;
+
+
+    VkComputePipelineCreateInfo pipelineInfo{.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
+    pipelineInfo.layout = m_descriptorSetLayout;
+
 }
 
 void VulkanApp::CreateFrameBuffers() {
