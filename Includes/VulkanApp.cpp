@@ -483,7 +483,7 @@ void VulkanApp::CreateRenderPass() {
     }
 }
 
-std::vector<VkDescriptorSetLayout> VulkanApp::CreateComputeDescriptorSetLayout(int stratsFrom) {
+std::vector<VkDescriptorSetLayoutBinding> VulkanApp::CreateComputeDescriptorSetLayout(int stratsFrom) {
 
     // UBO for delat time, SSBO for reads and SSBO for writes (3 bindings in total)
     std::vector<VkDescriptorSetLayoutBinding> particleDescriptorLayoutBindings(3);
@@ -533,6 +533,13 @@ void VulkanApp::CreateDescriptorSetLayout() {
 
 
     auto computeBindings = CreateComputeDescriptorSetLayout(0);
+    layoutInfo.bindingCount = static_cast<uint32_t>(computeBindings.size());
+    layoutInfo.pBindings = computeBindings.data();
+    layoutInfo.pNext = nullptr;
+
+    if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_computeDescryptorSetLayout) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create compute descriptor set layout");
+    };
 }
 
 void VulkanApp::CreateDescriptorPool() {
