@@ -642,12 +642,10 @@ void VulkanApp::CreateGraphicsPipeline() {
     //----------------
     auto vertShaderCode = readFile("Shaders/Compiled/TriangleVertex.spv");
     auto fragmentShaderCode = readFile("Shaders/Compiled/TriangleFragment.spv");
-    auto computeShaderCode = readFile("Shaders/Compiled/ParticlesCompute.spv");
     std::cout << "Shader read sucessfuly\n";
 
     VkShaderModule vertexShaderModule = createShaderModuel(m_device, vertShaderCode);
     VkShaderModule fragmentShaderModule = createShaderModuel(m_device, fragmentShaderCode);
-    VkShaderModule computeShaderModule = createShaderModuel(m_device, computeShaderCode);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -667,13 +665,6 @@ void VulkanApp::CreateGraphicsPipeline() {
     fragmentShaderStageInfo.pNext = nullptr;
     //allows to fill in constant variables in shaders using memory offset
     fragmentShaderStageInfo.pSpecializationInfo = nullptr;
-
-    VkPipelineShaderStageCreateInfo computeShaderStageInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
-    computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-    computeShaderStageInfo.module = computeShaderModule;
-    computeShaderStageInfo.pName = "main";
-    computeShaderStageInfo.pName = nullptr;
-    computeShaderStageInfo.pSpecializationInfo = nullptr;
 
     //todo: later add compute shader here!!
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragmentShaderStageInfo};
@@ -878,6 +869,16 @@ void VulkanApp::CreateGraphicsPipeline() {
 }
 
 void VulkanApp::CreateComputePipeline() {
+    auto computeShaderCode = readFile("Shaders/Compiled/ParticlesCompute.spv");
+    VkShaderModule computeShaderModule = createShaderModuel(m_device, computeShaderCode);
+
+    VkPipelineShaderStageCreateInfo computeShaderStageInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
+    computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+    computeShaderStageInfo.module = computeShaderModule;
+    computeShaderStageInfo.pName = "main";
+    computeShaderStageInfo.pName = nullptr;
+    computeShaderStageInfo.pSpecializationInfo = nullptr;
+
     VkPipelineLayoutCreateInfo computePipelineLayout{.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
     computePipelineLayout.pSetLayouts = &m_computeDescryptorSetLayout;
     computePipelineLayout.setLayoutCount  =1 ;
@@ -888,6 +889,7 @@ void VulkanApp::CreateComputePipeline() {
 
     VkComputePipelineCreateInfo computePipelineInfo{.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
     computePipelineInfo.layout = m_computePipelineLayout;
+    computePipelineInfo.stage =
 
 }
 
