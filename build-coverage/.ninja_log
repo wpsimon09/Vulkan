@@ -1,0 +1,8 @@
+# ninja log v6
+1	4	1724839541875213957	clean	6223d248072fd5dd
+5551	5653	1725625972200878201	LearnVulkan	f92ec37268909c1d
+2	5551	1725625966651934230	CMakeFiles/LearnVulkan.dir/Includes/VulkanApp.cpp.o	c7858a7546744d84
+2	4071	1725625966651934230	CMakeFiles/LearnVulkan.dir/src/main.cpp.o	6fc09b8bc04be525
+5	1204	1724839547694161368	CMakeFiles/LearnVulkan.dir/Includes/stb/stb_image.cpp.o	879f2859c4ca9cce
+2	1149	1725625401124644549	CMakeFiles/LearnVulkan.dir/Includes/Camera/Camera.cpp.o	b7d503de2b58fd5b
+2	764	1725625625987374037	CMakeFiles/LearnVulkan.dir/Includes/Material/Material.cpp.o	697aa0f6c1306362
