@@ -188,6 +188,7 @@ private:
     VkDescriptorSetLayout m_descriptorSetLayout;
     VkDescriptorSetLayout m_computeDescryptorSetLayout;
     VkPipelineLayout m_pipelineLayout;
+    VkPipelineLayout m_computePipelineLayout;
     VkPipeline m_graphicsPipeline;
 
     VkCommandPool m_comandPool;

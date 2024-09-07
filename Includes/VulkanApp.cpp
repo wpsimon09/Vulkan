@@ -881,10 +881,14 @@ void VulkanApp::CreateComputePipeline() {
     VkPipelineLayoutCreateInfo computePipelineLayout{.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
     computePipelineLayout.pSetLayouts = &m_computeDescryptorSetLayout;
     computePipelineLayout.setLayoutCount  =1 ;
-    if(vkCreatePipelineLayout(m_device, &computePipelineLayout, nullptr, &m_pipelineLayout) != VK_SUCCESS)
+    if(vkCreatePipelineLayout(m_device, &computePipelineLayout, nullptr, &m_computePipelineLayout) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create pipeline layout !");
     }
+
+    VkComputePipelineCreateInfo computePipelineInfo{.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
+    computePipelineInfo.layout = m_computePipelineLayout;
+
 }
 
 void VulkanApp::CreateFrameBuffers() {
