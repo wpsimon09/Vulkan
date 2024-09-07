@@ -879,12 +879,8 @@ void VulkanApp::CreateGraphicsPipeline() {
 
 void VulkanApp::CreateComputePipeline() {
     VkPipelineLayoutCreateInfo computePipelineLayout{.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
-    computePipelineLayout.setLayoutCount = 1;
-    computePipelineLayout.pSetLayouts = &m_descriptorSetLayout;
+    computePipelineLayout.pSetLayouts = &m_computeDescryptorSetLayout;
 
-
-    VkComputePipelineCreateInfo pipelineInfo{.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
-    pipelineInfo.layout = m_descriptorSetLayout;
 
 }
 
