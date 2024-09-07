@@ -25,6 +25,7 @@ set(CFLAGS_DEBUG "-g")
 
 # Find Vulkan, GLFW, and GLM
 find_package(Vulkan REQUIRED)
+find_package(assimp REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 find_package(glm REQUIRED)
 
@@ -48,7 +49,7 @@ endif()
 
 
 # Link libraries
-target_link_libraries(${TARGET} PRIVATE glfw Vulkan::Vulkan)
+target_link_libraries(${TARGET} PRIVATE glfw Vulkan::Vulkan assimp)
 
 # Custom target for running the executable
 add_custom_target(run
