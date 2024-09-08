@@ -190,6 +190,7 @@ private:
     VkPipelineLayout m_pipelineLayout;
     VkPipelineLayout m_computePipelineLayout;
     VkPipeline m_graphicsPipeline;
+    VkPipeline m_computePipeline;
 
     VkCommandPool m_comandPool;
     VkCommandPool m_transferCommandPool;

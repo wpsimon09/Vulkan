@@ -507,7 +507,7 @@ std::vector<VkDescriptorSetLayoutBinding> VulkanApp::CreateComputeDescriptorSetL
     particleDescriptorLayoutBindings[2].pImmutableSamplers = nullptr;
     particleDescriptorLayoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
-
+    return particleDescriptorLayoutBindings;
 }
 
 void VulkanApp::CreateDescriptorSetLayout() {
@@ -881,7 +881,7 @@ void VulkanApp::CreateComputePipeline() {
 
     VkPipelineLayoutCreateInfo computePipelineLayout{.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
     computePipelineLayout.pSetLayouts = &m_computeDescryptorSetLayout;
-    computePipelineLayout.setLayoutCount  =1 ;
+    computePipelineLayout.setLayoutCount  = 1 ;
     if(vkCreatePipelineLayout(m_device, &computePipelineLayout, nullptr, &m_computePipelineLayout) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create pipeline layout !");
@@ -889,7 +889,11 @@ void VulkanApp::CreateComputePipeline() {
 
     VkComputePipelineCreateInfo computePipelineInfo{.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
     computePipelineInfo.layout = m_computePipelineLayout;
-    computePipelineInfo.stage =
+    computePipelineInfo.stage = computeShaderStageInfo;
+    if(vkCreateComputePipelines(m_device, VK_NULL_HANDLE, 1, &computePipelineInfo, nullptr, &m_computePipeline) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create compute pipeline !");
+    }
 
 }
 
@@ -900,7 +904,6 @@ void VulkanApp::CreateFrameBuffers() {
         std::array<VkImageView, 3> attachments = {
             m_colorImageView,
             m_depthImageView,
-
             m_swapChainImageViews[i]
         };
         VkFramebufferCreateInfo frameBufferInfo{};

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "1. Introduction/1.2 What it takes to render triangle.md",
+                "file": "12. Compute shaders/12.6 Compute shader code.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "1. Introduction/1.2 What it takes to render triangle.md",
+                "file": "12. Compute shaders/12.6 Compute shader code.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "1. Introduction/1.2 What it takes to render triangle.md",
+                "file": "12. Compute shaders/12.6 Compute shader code.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "1. Introduction/1.2 What it takes to render triangle.md"
+                "file": "12. Compute shaders/12.6 Compute shader code.md"
               }
             }
           }
@@ -148,8 +148,11 @@
   },
   "active": "0789eb27c09bd426",
   "lastOpenFiles": [
-    "1. Introduction/1.1 General overview.md",
     "12. Compute shaders/12.5 Compute pipeline.md",
+    "12. Compute shaders/12.6 Compute shader code.md",
+    "images/Compute shader overview.png",
+    "1. Introduction/1.2 What it takes to render triangle.md",
+    "1. Introduction/1.1 General overview.md",
     "12. Compute shaders/12.4 Descriptors.md",
     "6. Buffers/6.8 Descriptor and pool set.md",
     "images/Reson-for-2-ssbos.png",
@@ -182,8 +185,6 @@
     "7. Texturing/7.1 Images.md",
     "images/vkCmdPipelineBarier.png",
     "7. Texturing",
-    "Appendix A - PBR Sphere.md",
-    "6. Buffers/6.6 Index buffer.md",
     "images/Alighemnt.png",
     "images/Index vs vertex buffer.png",
     "6. Buffers",
