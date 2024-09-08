@@ -560,8 +560,8 @@ void VulkanApp::CreateDescriptorPool() {
         throw std::runtime_error("Failed to create descriptor pool");
     }
 
-    std::array<VkDescriptorPoolSize, 2> computePoolSizes{};
 
+    std::array<VkDescriptorPoolSize, 2> computePoolSizes{};
     //for delta time UBO
     graphicsPoolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     graphicsPoolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -615,15 +615,6 @@ void VulkanApp::CreateDescriptorSet() {
         bufferInfo.offset = 0;
         bufferInfo.range = VK_WHOLE_SIZE;
 
-        //----------
-        // TEXTURE
-        //----------
-        /*VkDescriptorImageInfo imageInfo{};
-        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageInfo.imageView = m_textureImageView;
-        imageInfo.sampler = m_textureSampler;*/
-
-
         //--------
         // UBO
         //--------
@@ -639,24 +630,36 @@ void VulkanApp::CreateDescriptorSet() {
         bufferDescriptorWrite.pTexelBufferView = nullptr;
         bufferDescriptorWrite.pNext = nullptr;
 
-        //----------
-        // TEXTURE
-        //----------
-        /*descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[1].dstSet = m_descriptorSets[i];
-        descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrites[1].dstBinding = 1;
-        descriptorWrites[1].dstArrayElement = 0;
-        descriptorWrites[1].descriptorCount = 1;
-        descriptorWrites[1].pImageInfo = &imageInfo;
-        descriptorWrites[1].pBufferInfo = nullptr;
-        descriptorWrites[1].pTexelBufferView = nullptr;*/
-
         auto descriptorWrites = m_material->GetDescriptorWrites(m_descriptorSets[i]);
         descriptorWrites.insert(descriptorWrites.begin(), bufferDescriptorWrite);
 
         vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
                                nullptr);
+    }
+
+    for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+        VkDescriptorBufferInfo uboInfo{};
+        uboInfo.buffer = m_deltaTimeUBOBuffer[i];
+        uboInfo.offset = 0;
+        uboInfo.range = VK_WHOLE_SIZE;
+
+        std::array<VkWriteDescriptorSet, 3 > computeDescriptorWrites{};
+
+        VkWriteDescriptorSet deltaTimeUboWrite{.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
+        deltaTimeUboWrite.dstSet = m_computeDescriptorSets[i];
+        deltaTimeUboWrite.dstBinding = 0;
+        deltaTimeUboWrite.dstArrayElement = 0;
+        deltaTimeUboWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        deltaTimeUboWrite.descriptorCount = 1;
+        deltaTimeUboWrite.pBufferInfo = &uboInfo;
+        deltaTimeUboWrite.pImageInfo = nullptr;
+        deltaTimeUboWrite.pTexelBufferView = nullptr;
+        deltaTimeUboWrite.pNext = nullptr;
+
+        //TODO: do the same for the shader storage buffers, describe it using VkDescriptorBuffer info and store it
+
+
     }
 }
 
@@ -1378,7 +1381,7 @@ void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32
     }
 
     vkCmdBindPipeline(commandBuffer,VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipeline);
-//    vkCmdBindDescriptorSets(, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,)
+     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,)
 }
 
 VkCommandBuffer VulkanApp::StartRecordingCommandBuffer() {
