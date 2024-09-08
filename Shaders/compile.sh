@@ -39,3 +39,18 @@ for frag_shader in Fragment/*.frag; do
         echo "No fragment shaders found in Fragment directory"
     fi
 done
+
+for comp_shader in Compute/*.comp; do
+    if [[ -f "$comp_shader" ]]; then
+        shader_name=$(basename "$comp_shader")
+        echo "Compiling compute shader: $shader_name"
+        $VULKAN_SDK_PATH "$comp_shader" -o "Compiled/${shader_name%.comp}.spv"
+        if [[ $? -eq 0 ]]; then
+            echo "Compiled $comp_shader to Compiled/${shader_name%.comp}.spv"
+        else
+            echo "Failed to compile $comp_shader"
+        fi
+    else
+        echo "No fragment shaders found in Fragment directory"
+    fi
+done

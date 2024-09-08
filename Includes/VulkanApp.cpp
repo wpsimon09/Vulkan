@@ -531,7 +531,6 @@ void VulkanApp::CreateDescriptorSetLayout() {
         throw std::runtime_error("Failed to create descriptor set layout");
     };
 
-
     auto computeBindings = CreateComputeDescriptorSetLayout(0);
     layoutInfo.bindingCount = static_cast<uint32_t>(computeBindings.size());
     layoutInfo.pBindings = computeBindings.data();
