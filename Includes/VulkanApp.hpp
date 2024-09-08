@@ -103,6 +103,7 @@ private:
     void CreateDepthResources();
     void CreateShaderStorageBuffer();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imgeIndex);
     VkCommandBuffer StartRecordingCommandBuffer();
     void FlushCommandBuffer(VkCommandBuffer commandBuffer);
     void CreateDescriptorPool();
@@ -193,9 +194,10 @@ private:
     VkPipeline m_computePipeline;
 
     VkCommandPool m_comandPool;
-    VkCommandPool m_transferCommandPool;
     VkCommandBuffer m_transferCommandBuffer;
     std::vector<VkCommandBuffer> m_commandBuffers;
+
+    VkCommandPool m_computeCommandPool;
 
     std::vector<VkSemaphore> m_imageAvailableSemaphores;
     std::vector<VkSemaphore> m_renderFinishedSemaphores;
@@ -224,7 +226,9 @@ private:
     VkImageView m_depthImageView;
 
     VkDescriptorPool m_descriptorPool;
+    VkDescriptorPool m_computeDescriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
+    std::vector<VkDescriptorSet> m_computeDescriptorSets;
 
     std::vector<VkBuffer> m_uniformBuffers;
     std::vector<VkDeviceMemory> m_uniformBuffersMemory;

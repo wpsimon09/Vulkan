@@ -542,43 +542,68 @@ void VulkanApp::CreateDescriptorSetLayout() {
 }
 
 void VulkanApp::CreateDescriptorPool() {
-    std::array<VkDescriptorPoolSize, 4> poolSizes{};
+    std::array<VkDescriptorPoolSize, 2> graphicsPoolSizes{};
 
     // for UBO MVP
-    poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-
-    //for delta time UBO
-    poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    graphicsPoolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    graphicsPoolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     // for Sampler
-    poolSizes[2] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
+    graphicsPoolSizes[1] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
 
-    //for each frame in flight both read and write SSBO will be used, thus * 2
-    poolSizes[3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    poolSizes[3].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) *2;
-
-    VkDescriptorPoolCreateInfo poolInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
-    poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-    poolInfo.pPoolSizes = poolSizes.data();
+    VkDescriptorPoolCreateInfo poolInfo {.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
+    poolInfo.poolSizeCount = static_cast<uint32_t>(graphicsPoolSizes.size());
+    poolInfo.pPoolSizes = graphicsPoolSizes.data();
     poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create descriptor pool");
     }
+
+    std::array<VkDescriptorPoolSize, 2> computePoolSizes{};
+
+    //for delta time UBO
+    graphicsPoolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    graphicsPoolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+    //for each frame in flight both read and write SSBO will be used, thus * 2
+    graphicsPoolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    graphicsPoolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) *2;
+
+    VkDescriptorPoolCreateInfo computePoolInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
+    computePoolInfo.poolSizeCount = static_cast<uint32_t>(graphicsPoolSizes.size());
+    computePoolInfo.pPoolSizes = graphicsPoolSizes.data();
+    computePoolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+    if(vkCreateDescriptorPool(m_device, &computePoolInfo, nullptr, &m_computeDescriptorPool) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create compute descriptor pool");
+    }
+
 }
 
 void VulkanApp::CreateDescriptorSet() {
-    std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
-    VkDescriptorSetAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
-    allocInfo.descriptorPool = m_descriptorPool;
-    allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-    allocInfo.pSetLayouts = layouts.data();
+    std::vector<VkDescriptorSetLayout> graphicsDsLayout(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
+    VkDescriptorSetAllocateInfo graphicsAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
+    graphicsAllocInfo.descriptorPool = m_descriptorPool;
+    graphicsAllocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    graphicsAllocInfo.pSetLayouts = graphicsDsLayout.data();
     m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
 
-    if (vkAllocateDescriptorSets(m_device, &allocInfo, m_descriptorSets.data()) != VK_SUCCESS) {
+    if (vkAllocateDescriptorSets(m_device, &graphicsAllocInfo, m_descriptorSets.data()) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate descriptors sets");
+    }
+
+    std::vector<VkDescriptorSetLayout> computeDsLayout(MAX_FRAMES_IN_FLIGHT, m_computeDescryptorSetLayout);
+    VkDescriptorSetAllocateInfo computeAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
+    computeAllocInfo.descriptorPool = m_computeDescriptorPool;
+    computeAllocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    graphicsAllocInfo.pSetLayouts = computeDsLayout.data();
+    m_computeDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+
+    if(vkAllocateDescriptorSets(m_device, &computeAllocInfo, m_computeDescriptorSets.data()) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to allocate compute descriptor sets");
     }
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -1345,6 +1370,17 @@ void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
     }
 }
 
+void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imgeIndex){
+    VkCommandBufferBeginInfo beginInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+    if(vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to begin recording command buffer!");
+    }
+
+    vkCmdBindPipeline(commandBuffer,VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipeline);
+//    vkCmdBindDescriptorSets(, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,)
+}
+
 VkCommandBuffer VulkanApp::StartRecordingCommandBuffer() {
     VkCommandBufferAllocateInfo allocInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
     allocInfo.commandPool = m_transferCommandPool;
@@ -1556,7 +1592,7 @@ void VulkanApp::CleanUp() {
         vkDestroyFence(m_device, m_inFlightFences[i], nullptr);
     }
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
-    vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
+    vkDestroyCommandPool(m_device, m_computeCommandPool, nullptr);
 
     CleanupSwapChain();
 
