@@ -194,6 +194,7 @@ private:
     VkPipeline m_computePipeline;
 
     VkCommandPool m_comandPool;
+    VkCommandPool m_transferCommandPool;
     VkCommandBuffer m_transferCommandBuffer;
     std::vector<VkCommandBuffer> m_commandBuffers;
 
