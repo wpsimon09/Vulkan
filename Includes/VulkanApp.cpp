@@ -658,8 +658,6 @@ void VulkanApp::CreateDescriptorSet() {
         computeDescriptorWrites[0].pTexelBufferView = nullptr;
         computeDescriptorWrites[0].pNext = nullptr;
 
-        //TODO: do the same for the shader storage buffers, describe it using VkDescriptorBuffer info and store it
-
         VkDescriptorBufferInfo ssboInBufferInfo{};
         ssboInBufferInfo.buffer = m_shaderStorageBuffer[i-1 % MAX_FRAMES_IN_FLIGHT];
         uboInfo.offset = 0;
@@ -1407,14 +1405,23 @@ void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
 }
 
 void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imgeIndex){
+
+    //start recording command buffer
     VkCommandBufferBeginInfo beginInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     if(vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to begin recording command buffer!");
     }
 
+    //bind the pipeline
     vkCmdBindPipeline(commandBuffer,VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipeline);
-     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,)
+    //bind the descriptor sets
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,&m_computeDescriptorSets[currentFrame],0,0);
+
+    //dispatch the draw call
+    // PARTICLE_COUNT/256 is for the amount of local invocations of the compute shader in x axis
+    // last two parameters are for compute groups on y and z axis
+    vkCmdDispatch(commandBuffer, PARTICLE_COUNT/256, 1, 1);
 }
 
 VkCommandBuffer VulkanApp::StartRecordingCommandBuffer() {
