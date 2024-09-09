@@ -639,27 +639,60 @@ void VulkanApp::CreateDescriptorSet() {
 
     for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
+        std::array<VkWriteDescriptorSet, 3 > computeDescriptorWrites{};
+
+        //for the time delta uniform buffer
         VkDescriptorBufferInfo uboInfo{};
         uboInfo.buffer = m_deltaTimeUBOBuffer[i];
         uboInfo.offset = 0;
         uboInfo.range = VK_WHOLE_SIZE;
 
-        std::array<VkWriteDescriptorSet, 3 > computeDescriptorWrites{};
-
-        VkWriteDescriptorSet deltaTimeUboWrite{.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-        deltaTimeUboWrite.dstSet = m_computeDescriptorSets[i];
-        deltaTimeUboWrite.dstBinding = 0;
-        deltaTimeUboWrite.dstArrayElement = 0;
-        deltaTimeUboWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        deltaTimeUboWrite.descriptorCount = 1;
-        deltaTimeUboWrite.pBufferInfo = &uboInfo;
-        deltaTimeUboWrite.pImageInfo = nullptr;
-        deltaTimeUboWrite.pTexelBufferView = nullptr;
-        deltaTimeUboWrite.pNext = nullptr;
+        computeDescriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        computeDescriptorWrites[0].dstSet = m_computeDescriptorSets[i];
+        computeDescriptorWrites[0].dstBinding = 0;
+        computeDescriptorWrites[0].dstArrayElement = 0;
+        computeDescriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        computeDescriptorWrites[0].descriptorCount = 1;
+        computeDescriptorWrites[0].pBufferInfo = &uboInfo;
+        computeDescriptorWrites[0].pImageInfo = nullptr;
+        computeDescriptorWrites[0].pTexelBufferView = nullptr;
+        computeDescriptorWrites[0].pNext = nullptr;
 
         //TODO: do the same for the shader storage buffers, describe it using VkDescriptorBuffer info and store it
 
+        VkDescriptorBufferInfo ssboInBufferInfo{};
+        ssboInBufferInfo.buffer = m_shaderStorageBuffer[i-1 % MAX_FRAMES_IN_FLIGHT];
+        uboInfo.offset = 0;
+        uboInfo.range = VK_WHOLE_SIZE;
 
+        computeDescriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        computeDescriptorWrites[1].dstSet = m_computeDescriptorSets[i];
+        computeDescriptorWrites[1].dstBinding = 1;
+        computeDescriptorWrites[1].dstArrayElement = 0;
+        computeDescriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        computeDescriptorWrites[1].descriptorCount = 1;
+        computeDescriptorWrites[1].pBufferInfo = &ssboInBufferInfo;
+        computeDescriptorWrites[1].pImageInfo = nullptr;
+        computeDescriptorWrites[1].pTexelBufferView = nullptr;
+        computeDescriptorWrites[1].pNext = nullptr;
+
+        VkDescriptorBufferInfo ssboOutBufferInfo{};
+        ssboInBufferInfo.buffer = m_shaderStorageBuffer[i];
+        uboInfo.offset = 0;
+        uboInfo.range = VK_WHOLE_SIZE;
+
+        computeDescriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        computeDescriptorWrites[1].dstSet = m_computeDescriptorSets[i];
+        computeDescriptorWrites[1].dstBinding = 2;
+        computeDescriptorWrites[1].dstArrayElement = 0;
+        computeDescriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        computeDescriptorWrites[1].descriptorCount = 1;
+        computeDescriptorWrites[1].pBufferInfo = &ssboOutBufferInfo;
+        computeDescriptorWrites[1].pImageInfo = nullptr;
+        computeDescriptorWrites[1].pTexelBufferView = nullptr;
+        computeDescriptorWrites[1].pNext = nullptr;
+
+        vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(computeDescriptorWrites.size()), computeDescriptorWrites.data(), 0, nullptr);
     }
 }
 
