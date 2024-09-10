@@ -213,6 +213,8 @@ struct Particle {
         attributeDescriptions[2].format = VK_FORMAT_R32G32B32A32_SFLOAT;
         //offset to the position
         attributeDescriptions[2].offset = offsetof(Particle, color);
+
+        return attributeDescriptions;
     }
 };
 

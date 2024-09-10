@@ -1466,6 +1466,9 @@ void VulkanApp::CreateSyncObjects() {
     m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     m_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
 
+    m_computeFences.resize(MAX_FRAMES_IN_FLIGHT);
+    m_computeSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -1477,6 +1480,12 @@ void VulkanApp::CreateSyncObjects() {
         if (vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]) != VK_SUCCESS ||
             vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]) != VK_SUCCESS ||
             vkCreateFence(m_device, &fenceInfo, nullptr, &m_inFlightFences[i]) != VK_SUCCESS
+        ) {
+            throw std::runtime_error("Failed to create synchronization objects");
+        }
+
+        if (vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_computeSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(m_device, &fenceInfo, nullptr, &m_computeFences[i]) != VK_SUCCESS
         ) {
             throw std::runtime_error("Failed to create synchronization objects");
         }
@@ -1646,6 +1655,9 @@ void VulkanApp::CleanUp() {
         vkDestroySemaphore(m_device, m_imageAvailableSemaphores[i], nullptr);
         vkDestroySemaphore(m_device, m_renderFinishedSemaphores[i], nullptr);
         vkDestroyFence(m_device, m_inFlightFences[i], nullptr);
+
+        vkDestroyFence(m_device, m_computeFences[i], nullptr);
+        vkDestroySemaphore(m_device,m_computeSemaphores[i], nullptr);
     }
     vkDestroyCommandPool(m_device, m_comandPool, nullptr);
     vkDestroyCommandPool(m_device, m_computeCommandPool, nullptr);

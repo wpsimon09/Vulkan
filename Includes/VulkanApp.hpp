@@ -204,6 +204,9 @@ private:
     std::vector<VkSemaphore> m_renderFinishedSemaphores;
     std::vector<VkFence> m_inFlightFences;
 
+    std::vector<VkFence> m_computeFences;
+    std::vector<VkSemaphore> m_computeSemaphores;
+
     std::vector<VkBuffer> m_shaderStorageBuffer;
     std::vector<VkDeviceMemory> m_shaderStorageBufferMemory;
 
