@@ -188,6 +188,21 @@ void VulkanApp::MainLoop() {
 }
 
 void VulkanApp::DrawFrame() {
+    //-------------------
+    // COMPUTE SUBMISSION
+    //-------------------
+    vkWaitForFences(m_device, 1, &m_computeFences[currentFrame], VK_TRUE, UINT64_MAX);
+    UpdateUniformBuffer(currentFrame);
+    vkResetFences(m_device, 1, &m_computeFences[currentFrame]);
+    vkResetCommandBuffer(m_computeCommandBuffers[currentFrame], 0);
+
+    //TODO: finish recording command buffer here !!!
+
+    ////-------------------
+    // COMPUTE SUBMISSION
+    //-------------------
+
+
     // wait for previous frame to finish drawind
     vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -1268,6 +1283,15 @@ void VulkanApp::CreateCommandBuffers() {
     allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
 
     if (vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate command buffer");
+    }
+
+    m_computeCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    allocInfo.commandPool = m_computeCommandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = static_cast<uint32_t>(m_computeCommandBuffers.size());
+
+    if (vkAllocateCommandBuffers(m_device, &allocInfo, m_computeCommandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate command buffer");
     }
 }

@@ -197,6 +197,8 @@ private:
     VkCommandPool m_transferCommandPool;
     VkCommandBuffer m_transferCommandBuffer;
     std::vector<VkCommandBuffer> m_commandBuffers;
+    std::vector<VkCommandBuffer> m_computeCommandBuffers;
+
 
     VkCommandPool m_computeCommandPool;
 
