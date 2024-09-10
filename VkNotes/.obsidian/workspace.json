@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "12. Compute shaders/12.6 Compute shader code.md",
+                "file": "12. Compute shaders/12.7 Submitting work.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "12. Compute shaders/12.6 Compute shader code.md",
+                "file": "12. Compute shaders/12.7 Submitting work.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "12. Compute shaders/12.6 Compute shader code.md",
+                "file": "12. Compute shaders/12.7 Submitting work.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "12. Compute shaders/12.6 Compute shader code.md"
+                "file": "12. Compute shaders/12.7 Submitting work.md"
               }
             }
           }
@@ -148,8 +148,9 @@
   },
   "active": "0789eb27c09bd426",
   "lastOpenFiles": [
-    "12. Compute shaders/12.5 Compute pipeline.md",
     "12. Compute shaders/12.6 Compute shader code.md",
+    "12. Compute shaders/12.7 Submitting work.md",
+    "12. Compute shaders/12.5 Compute pipeline.md",
     "images/Compute shader overview.png",
     "1. Introduction/1.2 What it takes to render triangle.md",
     "1. Introduction/1.1 General overview.md",
@@ -182,7 +183,6 @@
     "7. Texturing/7.4 Combined image sampler.md",
     "7. Texturing/7.2 Layout transition.md",
     "7. Texturing/7.1 Images.md~",
-    "7. Texturing/7.1 Images.md",
     "images/vkCmdPipelineBarier.png",
     "7. Texturing",
     "images/Alighemnt.png",

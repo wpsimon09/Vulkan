@@ -1423,10 +1423,13 @@ void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32
     //bind the descriptor sets
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,&m_computeDescriptorSets[currentFrame],0,0);
 
-    //dispatch the draw call
-    // PARTICLE_COUNT/256 is for the amount of local invocations of the compute shader in x axis
+        // PARTICLE_COUNT/256 is for the amount of local invocations of the compute shader in x axis
     // last two parameters are for compute groups on y and z axis
     vkCmdDispatch(commandBuffer, PARTICLE_COUNT/256, 1, 1);
+
+    if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to end recording compute command buffer!");
+    }
 }
 
 VkCommandBuffer VulkanApp::StartRecordingCommandBuffer() {
