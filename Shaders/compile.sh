@@ -23,7 +23,7 @@ for vert_shader in Vertex/*.vert; do
     else
         echo "No vertex shaders found in Vertex directory"
     fi
-donew
+done
 
 for frag_shader in Fragment/*.frag; do
     if [[ -f "$frag_shader" ]]; then
