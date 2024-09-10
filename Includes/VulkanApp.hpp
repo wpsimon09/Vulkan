@@ -256,6 +256,8 @@ private:
     double m_lastY;
     bool m_isMousePressed = false;
     bool m_isFirstMouse = true;
+    float m_lastTimeFrame = 0.0f;
+    double m_lastTime = 0.0;
     GEOMETRY_TYPE m_geometryType;
 
     glm::vec3 m_lightPos = glm::vec3(0.0f);

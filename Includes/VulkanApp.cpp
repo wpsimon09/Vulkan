@@ -52,6 +52,8 @@ void VulkanApp::InitWindow() {
     glfwSetCursorPosCallback(m_window, MousePositionCallback);
     glfwSetMouseButtonCallback(m_window, MouseClickCallback);
     glfwSetScrollCallback(m_window, MouseScrollCallback);
+
+    m_lastTime = glfwGetTime();
 }
 
 void VulkanApp::InitVulkan() {
@@ -176,6 +178,9 @@ void VulkanApp::MainLoop() {
     while (!glfwWindowShouldClose(m_window)) {
         ProcessKeyboardInput();
         DrawFrame();
+        double currentTime = glfwGetTime();
+        m_lastTimeFrame = (currentTime - m_lastTime)* 1000;
+        m_lastTime = currentTime;
         m_appNotifier.NotifyChange();
         glfwPollEvents();
     }
@@ -1488,6 +1493,11 @@ void VulkanApp::UpdateUniformBuffer(uint32_t currentImage) {
     ubo.lightPos = m_lightPos;
 
     memcpy(m_uniformBuffersMapped[currentFrame], &ubo, sizeof(ubo));
+
+
+    UBODeltaTime uboTime{};
+    uboTime.deltaTime = m_lastTimeFrame * 2.0f;
+    memcpy(m_uniformBuffersMapped[currentFrame], &uboTime, sizeof(uboTime));
 }
 
 void VulkanApp::CleanupSwapChain() {
