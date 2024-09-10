@@ -185,8 +185,8 @@ struct Particle {
         return bindingDescription;
     }
 
-    static std::array<VkVertexInputAttributeDescription,2> getAttributeDescription() {
-        std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+    static std::array<VkVertexInputAttributeDescription,3> getAttributeDescription() {
+        std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
         //which vertex array binding to use
         attributeDescriptions[0].binding = 0;
         //location in shader
@@ -201,9 +201,18 @@ struct Particle {
         //location in shader
         attributeDescriptions[1].location = 1;
         //vec2 has 2 32-bit float components
-        attributeDescriptions[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
         //offset to the position
-        attributeDescriptions[1].offset = offsetof(Particle, color);
+        attributeDescriptions[1].offset = offsetof(Particle, velocity);
+
+        //which vertex array binding to use
+        attributeDescriptions[2].binding = 0;
+        //location in shader
+        attributeDescriptions[2].location = 2;
+        //vec2 has 2 32-bit float components
+        attributeDescriptions[2].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        //offset to the position
+        attributeDescriptions[2].offset = offsetof(Particle, color);
     }
 };
 
