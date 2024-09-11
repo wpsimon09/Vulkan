@@ -237,7 +237,7 @@ void VulkanApp::DrawFrame() {
     //clear the command buffer so that it can record new information
     //here is acctual draw command and pipeline binding, scissors and viewport configuratio
     vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
-    RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, currentFrame);
+    RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
     VkSemaphore syncSemaphors[] = {m_computeSemaphores[currentFrame],m_imageAvailableSemaphores[currentFrame]};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
@@ -1341,8 +1341,9 @@ void VulkanApp::CreateShaderStorageBuffer() {
         //from angle and radius to x and y
         float x = radius * cos(theta) * HEIGHT / WIDTH;
         float y = radius * sin (theta);
+        float z = rndDist(rndEngine);
 
-        particle.position = glm::vec2(x,y);
+        particle.position = glm::vec3(x,y,z);
         particle.velocity = glm::normalize(glm::vec2(x,y))*0.00025f;
         particle.color = glm::vec4(rndDist(rndEngine),rndDist(rndEngine),rndDist(rndEngine),1.0f);
     }
