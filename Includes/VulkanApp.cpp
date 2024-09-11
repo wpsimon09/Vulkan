@@ -237,18 +237,15 @@ void VulkanApp::DrawFrame() {
     //clear the command buffer so that it can record new information
     //here is acctual draw command and pipeline binding, scissors and viewport configuratio
     vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
-    RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
+    RecordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, currentFrame);
+    VkSemaphore syncSemaphors[] = {m_computeSemaphores[currentFrame],m_imageAvailableSemaphores[currentFrame]};
+    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    VkSemaphore syncSemaphors[] = {m_imageAvailableSemaphores[currentFrame]};
-    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-
-
-    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.waitSemaphoreCount = 2;
     submitInfo.pWaitSemaphores = syncSemaphors;
     submitInfo.pWaitDstStageMask = waitStages;
-
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &m_commandBuffers[currentFrame];
 
@@ -1425,7 +1422,7 @@ void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
     scissors.extent = m_swapChainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissors);
 
-    VkBuffer vertexBuffers[] = {m_vertexBuffer};
+    VkBuffer vertexBuffers[] = {m_shaderStorageBuffer[currentFrame]};
     VkDeviceSize offsets[] = {0};
 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
