@@ -195,14 +195,25 @@ void VulkanApp::DrawFrame() {
     UpdateUniformBuffer(currentFrame);
     vkResetFences(m_device, 1, &m_computeFences[currentFrame]);
     vkResetCommandBuffer(m_computeCommandBuffers[currentFrame], 0);
-
     //TODO: finish recording command buffer here !!!
+    RecordComputeCommandBuffer(m_computeCommandBuffers[currentFrame]);
 
-    ////-------------------
-    // COMPUTE SUBMISSION
+    VkSubmitInfo computeSubmitInfo{.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    computeSubmitInfo.commandBufferCount = 1;
+    computeSubmitInfo.pCommandBuffers = &m_computeCommandBuffers[currentFrame];
+    computeSubmitInfo.signalSemaphoreCount = 1;
+    //signalize the semaphore that compute operation is completed
+    computeSubmitInfo.pSignalSemaphores = &m_computeSemaphores[currentFrame];
+
+    //on submti signalize the fence that compute has been executed and next one is free to start
+    if(vkQueueSubmit(m_computeQueue, 1, &computeSubmitInfo, m_computeFences[currentFrame]) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to submit compute command buffer \n");
+    }
+
+    ///-------------------
+    // GRAPHICS SUBMISSION
     //-------------------
-
-
     // wait for previous frame to finish drawind
     vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -1433,8 +1444,7 @@ void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
     }
 }
 
-void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imgeIndex){
-
+void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer){
     //start recording command buffer
     VkCommandBufferBeginInfo beginInfo{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     if(vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)

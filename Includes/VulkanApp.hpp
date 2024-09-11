@@ -103,7 +103,7 @@ private:
     void CreateDepthResources();
     void CreateShaderStorageBuffer();
     void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-    void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imgeIndex);
+    void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer);
     VkCommandBuffer StartRecordingCommandBuffer();
     void FlushCommandBuffer(VkCommandBuffer commandBuffer);
     void CreateDescriptorPool();
