@@ -570,7 +570,7 @@ void VulkanApp::CreateDescriptorSetLayout() {
 }
 
 void VulkanApp::CreateDescriptorPool() {
-    std::array<VkDescriptorPoolSize, 2> graphicsPoolSizes{};
+    std::array<VkDescriptorPoolSize, 1> graphicsPoolSizes{};
 
     // for UBO MVP
     graphicsPoolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -634,7 +634,7 @@ void VulkanApp::CreateDescriptorSet() {
     VkDescriptorSetAllocateInfo computeAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
     computeAllocInfo.descriptorPool = m_computeDescriptorPool;
     computeAllocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-    graphicsAllocInfo.pSetLayouts = computeDsLayout.data();
+    computeAllocInfo.pSetLayouts = computeDsLayout.data();
     m_computeDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
 
     if(vkAllocateDescriptorSets(m_device, &computeAllocInfo, m_computeDescriptorSets.data()) != VK_SUCCESS)
@@ -721,16 +721,16 @@ void VulkanApp::CreateDescriptorSet() {
         uboInfo.offset = 0;
         uboInfo.range = VK_WHOLE_SIZE;
 
-        computeDescriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        computeDescriptorWrites[1].dstSet = m_computeDescriptorSets[i];
-        computeDescriptorWrites[1].dstBinding = 2;
-        computeDescriptorWrites[1].dstArrayElement = 0;
-        computeDescriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-        computeDescriptorWrites[1].descriptorCount = 1;
-        computeDescriptorWrites[1].pBufferInfo = &ssboOutBufferInfo;
-        computeDescriptorWrites[1].pImageInfo = nullptr;
-        computeDescriptorWrites[1].pTexelBufferView = nullptr;
-        computeDescriptorWrites[1].pNext = nullptr;
+        computeDescriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        computeDescriptorWrites[2].dstSet = m_computeDescriptorSets[i];
+        computeDescriptorWrites[2].dstBinding = 2;
+        computeDescriptorWrites[2].dstArrayElement = 0;
+        computeDescriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        computeDescriptorWrites[2].descriptorCount = 1;
+        computeDescriptorWrites[2].pBufferInfo = &ssboOutBufferInfo;
+        computeDescriptorWrites[2].pImageInfo = nullptr;
+        computeDescriptorWrites[2].pTexelBufferView = nullptr;
+        computeDescriptorWrites[2].pNext = nullptr;
 
         vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(computeDescriptorWrites.size()), computeDescriptorWrites.data(), 0, nullptr);
     }
@@ -973,14 +973,13 @@ void VulkanApp::CreateGraphicsPipeline() {
 }
 
 void VulkanApp::CreateComputePipeline() {
-    auto computeShaderCode = readFile("Shaders/Compiled/ParticlesCompute.spv");
+    auto computeShaderCode = readFile("Shaders/Compiled/Particles.spv");
     VkShaderModule computeShaderModule = createShaderModuel(m_device, computeShaderCode);
 
     VkPipelineShaderStageCreateInfo computeShaderStageInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
     computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
     computeShaderStageInfo.module = computeShaderModule;
     computeShaderStageInfo.pName = "main";
-    computeShaderStageInfo.pName = nullptr;
     computeShaderStageInfo.pSpecializationInfo = nullptr;
 
     VkPipelineLayoutCreateInfo computePipelineLayout{.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
@@ -1214,7 +1213,7 @@ void VulkanApp::CreateUniformBuffers() {
 
     m_deltaTimeUBOBuffer.resize(MAX_FRAMES_IN_FLIGHT);
     m_deltaTimeUBOMemory.resize(MAX_FRAMES_IN_FLIGHT);
-    m_deltaTimeUBOBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+    m_deltaTimeBufferMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
 
     // for MVP UBO

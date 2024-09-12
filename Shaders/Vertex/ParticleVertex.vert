@@ -1,9 +1,8 @@
 #version 460
 
 
-
 layout(location = 0) in vec3 inParticlePosition;
-layout(location = 1) in vec4 inParticleColour;
+layout(location = 2) in vec4 inParticleColour;
 
 layout (binding = 0) uniform UnifromBufferObject {
     vec3 camPos;

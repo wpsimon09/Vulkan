@@ -265,7 +265,9 @@ static inline void CreateBuffer(const BufferCreateInfo &bufferCreateInfo, VkBuff
         throw std::runtime_error("Failed to allocate memory");
     }
 
-    vkBindBufferMemory(bufferCreateInfo.logicalDevice, buffer,bufferMemory, 0);
+    if(vkBindBufferMemory(bufferCreateInfo.logicalDevice, buffer,bufferMemory, 0) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to bind buffer memory");
+    }
 }
 
 static inline void CreateImage(const ImageCreateInfo &createImageInfo, VkImage &image, VkDeviceMemory &textureMemory) {
