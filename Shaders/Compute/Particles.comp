@@ -18,7 +18,7 @@ layout(std140, binding = 1) readonly buffer ParticleSSBOIn{
 };
 
 // SSBO out (here we will wrtie)
-layout(std140, binding = 2) readonly buffer ParticleSSBOOut{
+layout(std140, binding = 2) buffer ParticleSSBOOut{
     Particle particlesOut[];
 };
 
