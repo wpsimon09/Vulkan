@@ -577,7 +577,7 @@ void VulkanApp::CreateDescriptorPool() {
     graphicsPoolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     // for Sampler
-    graphicsPoolSizes[1] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
+    // graphicsPoolSizes[1] = m_material->GetDescriptorPoolSize(static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT));
 
     VkDescriptorPoolCreateInfo poolInfo {.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
     poolInfo.poolSizeCount = static_cast<uint32_t>(graphicsPoolSizes.size());
@@ -611,6 +611,10 @@ void VulkanApp::CreateDescriptorPool() {
 }
 
 void VulkanApp::CreateDescriptorSet() {
+
+    //--------------------------------------------
+    // DESCRIPTOR SET LAYOUT FOR GRAPHICS PIPELINE
+    //--------------------------------------------
     std::vector<VkDescriptorSetLayout> graphicsDsLayout(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
     VkDescriptorSetAllocateInfo graphicsAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
     graphicsAllocInfo.descriptorPool = m_descriptorPool;
@@ -622,6 +626,10 @@ void VulkanApp::CreateDescriptorSet() {
         throw std::runtime_error("Failed to allocate descriptors sets");
     }
 
+
+    //-----------------------------------------------
+    // DESCRIPTOR SET FOR LAYOUT FOR COMPUTE PIPELINE
+    //-----------------------------------------------
     std::vector<VkDescriptorSetLayout> computeDsLayout(MAX_FRAMES_IN_FLIGHT, m_computeDescryptorSetLayout);
     VkDescriptorSetAllocateInfo computeAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
     computeAllocInfo.descriptorPool = m_computeDescriptorPool;
@@ -634,6 +642,9 @@ void VulkanApp::CreateDescriptorSet() {
         throw std::runtime_error("Failed to allocate compute descriptor sets");
     }
 
+    //----------------------------------------
+    // DESCRIPTOR WRITES FOR GRAPHICS PIPELINE
+    //----------------------------------------
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         //--------
         // UBO
@@ -665,6 +676,9 @@ void VulkanApp::CreateDescriptorSet() {
                                nullptr);
     }
 
+    //---------------------------------------
+    // DESCRIPTOR WRITES FOR COMPUTE PIPELINE
+    //---------------------------------------
     for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
         std::array<VkWriteDescriptorSet, 3 > computeDescriptorWrites{};
@@ -726,8 +740,8 @@ void VulkanApp::CreateGraphicsPipeline() {
     //----------------
     // SHADER CREATION
     //----------------
-    auto vertShaderCode = readFile("Shaders/Compiled/TriangleVertex.spv");
-    auto fragmentShaderCode = readFile("Shaders/Compiled/TriangleFragment.spv");
+    auto vertShaderCode = readFile("Shaders/Compiled/ParticleVertex.spv");
+    auto fragmentShaderCode = readFile("Shaders/Compiled/ParticleFragment.spv");
     std::cout << "Shader read sucessfuly\n";
 
     VkShaderModule vertexShaderModule = createShaderModuel(m_device, vertShaderCode);
@@ -786,9 +800,13 @@ void VulkanApp::CreateGraphicsPipeline() {
     //-------------------
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
     inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssemblyCreateInfo.topology = m_geometryType == SPHERE
+    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+
+        /*m_geometryType == SPHERE
                                            ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP
                                            : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+                                           */
+
     inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
     //----------
