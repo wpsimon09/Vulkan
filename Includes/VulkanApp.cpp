@@ -626,22 +626,6 @@ void VulkanApp::CreateDescriptorSet() {
         throw std::runtime_error("Failed to allocate descriptors sets");
     }
 
-
-    //-----------------------------------------------
-    // DESCRIPTOR SET FOR LAYOUT FOR COMPUTE PIPELINE
-    //-----------------------------------------------
-    std::vector<VkDescriptorSetLayout> computeDsLayout(MAX_FRAMES_IN_FLIGHT, m_computeDescryptorSetLayout);
-    VkDescriptorSetAllocateInfo computeAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
-    computeAllocInfo.descriptorPool = m_computeDescriptorPool;
-    computeAllocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-    computeAllocInfo.pSetLayouts = computeDsLayout.data();
-    m_computeDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-
-    if(vkAllocateDescriptorSets(m_device, &computeAllocInfo, m_computeDescriptorSets.data()) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to allocate compute descriptor sets");
-    }
-
     //----------------------------------------
     // DESCRIPTOR WRITES FOR GRAPHICS PIPELINE
     //----------------------------------------
@@ -674,6 +658,22 @@ void VulkanApp::CreateDescriptorSet() {
 
         vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
                                nullptr);
+    }
+
+
+
+    //-----------------------------------------------
+    // DESCRIPTOR SET FOR LAYOUT FOR COMPUTE PIPELINE
+    //-----------------------------------------------
+    std::vector<VkDescriptorSetLayout> computeDsLayout(MAX_FRAMES_IN_FLIGHT, m_computeDescryptorSetLayout);
+    VkDescriptorSetAllocateInfo computeAllocInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
+    computeAllocInfo.descriptorPool = m_computeDescriptorPool;
+    computeAllocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+    computeAllocInfo.pSetLayouts = computeDsLayout.data();
+    m_computeDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+
+    if(vkAllocateDescriptorSets(m_device, &computeAllocInfo, m_computeDescriptorSets.data()) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate compute descriptor sets");
     }
 
     //---------------------------------------
@@ -716,6 +716,8 @@ void VulkanApp::CreateDescriptorSet() {
         computeDescriptorWrites[1].pTexelBufferView = nullptr;
         computeDescriptorWrites[1].pNext = nullptr;
 
+        //during the second itteration the bufferin the computeDescriptorWrites becomes some random ass address
+        //without any meaning, this should be realted ot the array creation and resizing it but i am not sure
         VkDescriptorBufferInfo ssboOutBufferInfo{};
         ssboInBufferInfo.buffer = m_shaderStorageBuffer[i];
         uboInfo.offset = 0;
@@ -732,6 +734,8 @@ void VulkanApp::CreateDescriptorSet() {
         computeDescriptorWrites[2].pTexelBufferView = nullptr;
         computeDescriptorWrites[2].pNext = nullptr;
 
+
+        //this is causing the crash during the second iterationy
         vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(computeDescriptorWrites.size()), computeDescriptorWrites.data(), 0, nullptr);
     }
 }
