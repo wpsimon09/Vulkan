@@ -20,6 +20,6 @@ void main() {
     gl_PointSize = 14.0;
 
     //ubo.proj * ubo.view * ubo.model *
-    gl_Position =  vec4(inParticlePosition.xy, 1.0,1.0);
+    gl_Position =  vec4(inParticlePosition.xy,1.0,1.0);
     outFragColor = inParticleColour;
 }

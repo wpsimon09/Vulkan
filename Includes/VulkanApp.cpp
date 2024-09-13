@@ -1120,11 +1120,16 @@ void VulkanApp::CreateCommandPool() {
         throw std::runtime_error("Failed to create command pool !");
     }
 
+    if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_computeCommandPool) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create compute command pool !");
+    }
+
     poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
     poolInfo.queueFamilyIndex = queueFamilyIndices.transferFamily.value();
     if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_transferCommandPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create transfer command pool");
     }
+
 }
 
 void VulkanApp::CreateVertexBuffers() {
