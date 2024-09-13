@@ -701,9 +701,9 @@ void VulkanApp::CreateDescriptorSet() {
         computeDescriptorWrites[0].pNext = nullptr;
 
         VkDescriptorBufferInfo ssboInBufferInfo{};
-        ssboInBufferInfo.buffer = m_shaderStorageBuffer[i-1 % MAX_FRAMES_IN_FLIGHT];
-        uboInfo.offset = 0;
-        uboInfo.range = VK_WHOLE_SIZE;
+        ssboInBufferInfo.buffer = m_shaderStorageBuffer[(i + MAX_FRAMES_IN_FLIGHT - 1) % MAX_FRAMES_IN_FLIGHT];
+        ssboInBufferInfo.offset = 0;
+        ssboInBufferInfo.range = VK_WHOLE_SIZE;
 
         computeDescriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         computeDescriptorWrites[1].dstSet = m_computeDescriptorSets[i];
@@ -719,9 +719,9 @@ void VulkanApp::CreateDescriptorSet() {
         //during the second itteration the bufferin the computeDescriptorWrites becomes some random ass address
         //without any meaning, this should be realted ot the array creation and resizing it but i am not sure
         VkDescriptorBufferInfo ssboOutBufferInfo{};
-        ssboInBufferInfo.buffer = m_shaderStorageBuffer[i];
-        uboInfo.offset = 0;
-        uboInfo.range = VK_WHOLE_SIZE;
+        ssboOutBufferInfo.buffer = m_shaderStorageBuffer[i];
+        ssboOutBufferInfo.offset = 0;
+        ssboOutBufferInfo.range = VK_WHOLE_SIZE;
 
         computeDescriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         computeDescriptorWrites[2].dstSet = m_computeDescriptorSets[i];
@@ -1347,6 +1347,7 @@ void VulkanApp::CreateDepthResources() {
 }
 
 void VulkanApp::CreateShaderStorageBuffer() {
+
     m_shaderStorageBuffer.resize(MAX_FRAMES_IN_FLIGHT);
     m_shaderStorageBufferMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -1385,6 +1386,7 @@ void VulkanApp::CreateShaderStorageBuffer() {
     void* data;
     vkMapMemory(m_device, stagingBufferMemory, 0, stagingBufferSize, 0, &data);
     memcpy(data, particles.data(),(size_t)stagingBufferSize);
+    vkUnmapMemory(m_device, stagingBufferMemory);
 
     for(size_t i=0; i<MAX_FRAMES_IN_FLIGHT; i++) {
         //note the last bit flag, it is converting the buffer to be SSBO
@@ -1394,6 +1396,9 @@ void VulkanApp::CreateShaderStorageBuffer() {
         // copy from staging buffer to the acctual buffer on the GPU that acts like and SSBO
         CopyBuffer(m_device,m_transferQueue, m_transferCommandPool, stagingBuffer, m_shaderStorageBuffer[i], stagingBufferSize);
     }
+
+    vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+    vkFreeMemory(m_device, stagingBufferMemory, nullptr);
 }
 
 void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
