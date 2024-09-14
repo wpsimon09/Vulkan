@@ -172,7 +172,7 @@ enum GEOMETRY_TYPE {
 };
 
 struct Particle {
-    glm::vec3 position;
+    glm::vec2 position;
     glm::vec2 velocity;
     glm::vec4 color;
 
@@ -192,7 +192,7 @@ struct Particle {
         //location in shader
         attributeDescriptions[0].location = 0;
         //vec2 has 2 32-bit float components
-        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
         //offset to the position
         attributeDescriptions[0].offset = offsetof(Particle, position);
 
