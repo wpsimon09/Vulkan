@@ -546,12 +546,12 @@ void VulkanApp::CreateDescriptorSetLayout() {
     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     uboLayoutBinding.pImmutableSamplers = nullptr;
 
-    auto bindings = m_material->GetLayoutBindings(1);
-    bindings.emplace_back(uboLayoutBinding);
+    //auto bindings = m_material->GetLayoutBindings(1);
+    //bindings.emplace_back(uboLayoutBinding);
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
-    layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-    layoutInfo.pBindings = bindings.data();
+    layoutInfo.bindingCount = 1; //static_cast<uint32_t>(bindings.size());
+    layoutInfo.pBindings = &uboLayoutBinding;
     layoutInfo.pNext = nullptr;
 
     if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
@@ -652,10 +652,10 @@ void VulkanApp::CreateDescriptorSet() {
         bufferDescriptorWrite.pTexelBufferView = nullptr;
         bufferDescriptorWrite.pNext = nullptr;
 
-        auto descriptorWrites = m_material->GetDescriptorWrites(m_descriptorSets[i]);
-        descriptorWrites.insert(descriptorWrites.begin(), bufferDescriptorWrite);
+        //auto descriptorWrites = m_material->GetDescriptorWrites(m_descriptorSets[i]);
+        //descriptorWrites.insert(descriptorWrites.begin(), bufferDescriptorWrite);
 
-        vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
+        vkUpdateDescriptorSets(m_device, 1, &bufferDescriptorWrite, 0,
                                nullptr);
     }
 
@@ -1485,7 +1485,8 @@ void VulkanApp::RecordComputeCommandBuffer(VkCommandBuffer commandBuffer){
     //bind the pipeline
     vkCmdBindPipeline(commandBuffer,VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipeline);
     //bind the descriptor sets
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,&m_computeDescriptorSets[currentFrame],0,0);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_computePipelineLayout, 0,1,&m_computeDescriptorSets[currentFrame],0,nullptr
+        );
 
         // PARTICLE_COUNT/256 is for the amount of local invocations of the compute shader in x axis
     // last two parameters are for compute groups on y and z axis
@@ -1573,7 +1574,7 @@ void VulkanApp::UpdateUniformBuffer(uint32_t currentImage) {
 
     UBODeltaTime uboTime{};
     uboTime.deltaTime = m_lastTimeFrame * 2.0f;
-    memcpy(m_uniformBuffersMapped[currentFrame], &uboTime, sizeof(uboTime));
+    memcpy(m_deltaTimeBufferMapped[currentFrame], &uboTime, sizeof(uboTime));
 }
 
 void VulkanApp::CleanupSwapChain() {
