@@ -16,9 +16,8 @@ layout (binding = 0) uniform UnifromBufferObject {
 layout(location = 0) out vec3 outFragColor;
 
 void main() {
-    gl_PointSize = 14.0;
+    gl_PointSize = 2.0;
 
-    //ubo.proj * ubo.view * ubo.model *
-    gl_Position =  vec4(inParticlePosition.xy,1.0,1.0);
+    gl_Position =  ubo.proj * ubo.view * ubo.model * vec4(inParticlePosition.xyz,1.0);
     outFragColor = inParticleColour.rgb;
 }

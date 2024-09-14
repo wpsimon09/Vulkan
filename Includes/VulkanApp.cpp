@@ -1363,7 +1363,7 @@ void VulkanApp::CreateShaderStorageBuffer() {
         float y = radius * sin (theta);
         float z = rndDist(rndEngine);
 
-        particle.position = glm::vec2(x,y);
+        particle.position = glm::vec3(x,y, z);
         particle.velocity = glm::normalize(glm::vec2(x,y))*0.00025f;
         particle.color = glm::vec4(rndDist(rndEngine),rndDist(rndEngine),rndDist(rndEngine),1.0f);
     }
@@ -1554,7 +1554,7 @@ void VulkanApp::CreateSyncObjects() {
 void VulkanApp::UpdateUniformBuffer(uint32_t currentImage) {
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
-    ubo.model = glm::translate(ubo.model, glm::vec3(0.0, -3.0f, 0.0f));
+    ubo.model = glm::translate(ubo.model, glm::vec3(0.0, 0.0f, 0.0f));
     ubo.model = glm::scale(ubo.model, glm::vec3(1.7f));
     ubo.projection = m_camera->getPojectionMatix();
     ubo.projection[1][1] *= -1;
