@@ -15,7 +15,6 @@ layout (binding = 0) uniform UnifromBufferObject {
 
 layout(location = 0) out vec3 outFragColor;
 
-
 void main() {
     gl_PointSize = 14.0;
 

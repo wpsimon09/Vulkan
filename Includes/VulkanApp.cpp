@@ -700,7 +700,7 @@ void VulkanApp::CreateDescriptorSet() {
         computeDescriptorWrites[0].pNext = nullptr;
 
         VkDescriptorBufferInfo ssboInBufferInfo{};
-        ssboInBufferInfo.buffer = m_shaderStorageBuffer[(i + MAX_FRAMES_IN_FLIGHT - 1) % MAX_FRAMES_IN_FLIGHT];
+        ssboInBufferInfo.buffer = m_shaderStorageBuffer[(i - 1) % MAX_FRAMES_IN_FLIGHT];
         ssboInBufferInfo.offset = 0;
         ssboInBufferInfo.range = VK_WHOLE_SIZE;
 
@@ -1369,7 +1369,7 @@ void VulkanApp::CreateShaderStorageBuffer() {
         float y = radius * sin (theta);
         float z = rndDist(rndEngine);
 
-        particle.position = glm::vec3(x,y,z);
+        particle.position = glm::vec2(x,y);
         particle.velocity = glm::normalize(glm::vec2(x,y))*0.00025f;
         particle.color = glm::vec4(rndDist(rndEngine),rndDist(rndEngine),rndDist(rndEngine),1.0f);
     }
