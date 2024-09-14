@@ -1,7 +1,7 @@
 #version 460
 
 // unifrom buffer objrect at binding 0
-layout(binding = 0) uniform ParameterUBOb{
+layout(binding = 0) uniform ParameterUBO{
     float deltaTime;
 }ubo;
 

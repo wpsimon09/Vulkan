@@ -67,26 +67,20 @@ void VulkanApp::InitVulkan() {
     CreateColorResources();
     CreateDepthResources();
     CreateRenderPass();
-    GenerateGeometryVertices(MODEL);
+    //GenerateGeometryVertices(MODEL);
     CreateDescriptorSetLayout();
     CreateGraphicsPipeline();
     CreateComputePipeline();
     CreateFrameBuffers();
     CreateCommandPool();
 
-    auto start = std::chrono::high_resolution_clock::now();
+    //CreateTextureImage();
 
-    CreateTextureImage();
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Time taken while generating material resources: " << duration.count() << " ms" << std::endl;
-
-    CreateTextureImageView();
-    CreateTextureSampler();
-    CreateVertexBuffers();
+    //CreateTextureImageView();
+    //CreateTextureSampler();
+    //CreateVertexBuffers();
     CreateShaderStorageBuffer();
-    CreateIndexBuffers();
+    //CreateIndexBuffers();
     CreateUniformBuffers();
     CreateDescriptorPool();
     CreateDescriptorSet();
@@ -686,7 +680,7 @@ void VulkanApp::CreateDescriptorSet() {
         VkDescriptorBufferInfo uboInfo{};
         uboInfo.buffer = m_deltaTimeUBOBuffer[i];
         uboInfo.offset = 0;
-        uboInfo.range = VK_WHOLE_SIZE;
+        uboInfo.range = sizeof(UBODeltaTime);
 
         computeDescriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         computeDescriptorWrites[0].dstSet = m_computeDescriptorSets[i];
@@ -702,7 +696,7 @@ void VulkanApp::CreateDescriptorSet() {
         VkDescriptorBufferInfo ssboInBufferInfo{};
         ssboInBufferInfo.buffer = m_shaderStorageBuffer[(i - 1) % MAX_FRAMES_IN_FLIGHT];
         ssboInBufferInfo.offset = 0;
-        ssboInBufferInfo.range = VK_WHOLE_SIZE;
+        ssboInBufferInfo.range = sizeof(Particle) * PARTICLE_COUNT;
 
         computeDescriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         computeDescriptorWrites[1].dstSet = m_computeDescriptorSets[i];
@@ -720,7 +714,7 @@ void VulkanApp::CreateDescriptorSet() {
         VkDescriptorBufferInfo ssboOutBufferInfo{};
         ssboOutBufferInfo.buffer = m_shaderStorageBuffer[i];
         ssboOutBufferInfo.offset = 0;
-        ssboOutBufferInfo.range = VK_WHOLE_SIZE;
+        ssboOutBufferInfo.range = sizeof(Particle) * PARTICLE_COUNT;
 
         computeDescriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         computeDescriptorWrites[2].dstSet = m_computeDescriptorSets[i];
@@ -886,7 +880,7 @@ void VulkanApp::CreateGraphicsPipeline() {
     //should fragments that pass the depht test be written to the frame buffer ?
     depthStencil.depthWriteEnable = VK_TRUE;
     //fragemnts pass the depht test if their value is smaller than value allredy written in depth buffer
-    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_ALWAYS;
     //allows us to keep only fragments that fall within specific range
     depthStencil.depthBoundsTestEnable = VK_FALSE;
     depthStencil.minDepthBounds = 0.0f;
@@ -1465,7 +1459,7 @@ void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
 
     //vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
-    vkCmdDraw(commandBuffer, static_cast<uint32_t>( particles.size()), 1, 0, 0);
+    vkCmdDraw(commandBuffer, PARTICLE_COUNT, 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 
@@ -1656,11 +1650,10 @@ void VulkanApp::CreateLogicalDevice() {
     if (vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create logical device !");
     }
-
     vkGetDeviceQueue(m_device, indices.graphicsAndComputeFamily.value(), 0, &m_graphicsQueue);
-    vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentationQueue);
     vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_transferQueue);
     vkGetDeviceQueue(m_device, indices.graphicsAndComputeFamily.value(), 0, &m_computeQueue);
+    vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentationQueue);
 
     this->m_material = std::make_unique<Material>(m_device);
 }

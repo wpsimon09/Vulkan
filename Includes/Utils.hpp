@@ -51,20 +51,23 @@ inline QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilyProperties.data());
 
     int i = 0;
+    std::cout<<"Finding queue families...\n";
     for (auto &queueFamily: queueFamilyProperties) {
         if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)&& (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)) {
             indices.graphicsAndComputeFamily = i;
+            std::cout<<"Found graphics and compute family with index:\t" <<i <<"\n";
         }
         if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT) {
             indices.transferFamily = i;
+            std::cout<<"Found transfer family with index:\t" <<i <<"\n";
         }
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
         if (presentSupport) {
             indices.presentFamily = i;
+            std::cout<<"Found present family with index:\t" <<i <<"\n";
         }
         if (indices.isComplete()) break;
-
         i++;
     }
 
