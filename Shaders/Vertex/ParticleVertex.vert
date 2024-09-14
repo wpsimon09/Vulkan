@@ -13,7 +13,7 @@ layout (binding = 0) uniform UnifromBufferObject {
     mat4 normalMatix;
 }ubo;
 
-layout(location = 0) out vec4 outFragColor;
+layout(location = 0) out vec3 outFragColor;
 
 
 void main() {
@@ -21,5 +21,5 @@ void main() {
 
     //ubo.proj * ubo.view * ubo.model *
     gl_Position =  vec4(inParticlePosition.xy,1.0,1.0);
-    outFragColor = inParticleColour;
+    outFragColor = inParticleColour.rgb;
 }

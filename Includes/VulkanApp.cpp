@@ -195,7 +195,6 @@ void VulkanApp::DrawFrame() {
     UpdateUniformBuffer(currentFrame);
     vkResetFences(m_device, 1, &m_computeFences[currentFrame]);
     vkResetCommandBuffer(m_computeCommandBuffers[currentFrame], 0);
-    //TODO: finish recording command buffer here !!!
     RecordComputeCommandBuffer(m_computeCommandBuffers[currentFrame]);
 
     VkSubmitInfo computeSubmitInfo{.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO};
@@ -1459,12 +1458,14 @@ void VulkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imag
 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+//    vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1,
                             &m_descriptorSets[currentFrame], 0, nullptr);
 
-    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+    //vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+
+    vkCmdDraw(commandBuffer, static_cast<uint32_t>( particles.size()), 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 
