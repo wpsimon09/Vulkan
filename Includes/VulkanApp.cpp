@@ -797,7 +797,7 @@ void VulkanApp::CreateGraphicsPipeline() {
     //-------------------
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
     inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
 
         /*m_geometryType == SPHERE
                                            ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP

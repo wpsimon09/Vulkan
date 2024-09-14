@@ -89,7 +89,6 @@ inline bool CheckDeviceExtentionSupport(VkPhysicalDevice device) {
     return requiredExtensions.empty();
 }
 
-
 inline SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
     SwapChainSupportDetails details;
 
