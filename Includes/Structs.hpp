@@ -171,7 +171,7 @@ enum GEOMETRY_TYPE {
     MODEL = 3,
 };
 
-struct Particle {
+struct alignas(16) Particle {
     glm::vec3 position;
     glm::vec3 velocity;
     glm::vec4 color;

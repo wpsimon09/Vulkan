@@ -3,6 +3,7 @@
 // unifrom buffer objrect at binding 0
 layout(binding = 0) uniform ParameterUBO{
     float deltaTime;
+    vec3 MouseWorldPosition;
 }ubo;
 
 //same as in c++ side
@@ -31,9 +32,9 @@ void main() {
     uint index = gl_GlobalInvocationID.x;
     Particle particleIn = particlesIn[index];
 
-    float trahsHold = 3.0f;
+    float trahsHold = 1.0f;
 
-    particlesOut[index].position = particleIn.position + particleIn.velocity * ubo.deltaTime;
+    particlesOut[index].position.xy = particleIn.position.xy + particleIn.velocity.xy * ubo.deltaTime;
 
     if((particlesOut[index].position.x <= -trahsHold) || (particlesOut[index].position.x >= trahsHold)){
         particlesOut[index].velocity.x *= -1;
@@ -41,9 +42,4 @@ void main() {
     if((particlesOut[index].position.y <= -trahsHold) || (particlesOut[index].position.y >= trahsHold)){
         particlesOut[index].velocity.y *= -1;
     }
-    if((particlesOut[index].position.z <= -trahsHold) || (particlesOut[index].position.z >= trahsHold)){
-        particlesOut[index].velocity.z *= -1;
-    }
-
-
 }

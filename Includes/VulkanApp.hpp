@@ -158,6 +158,7 @@ private:
     void GenerateGeometryVertices(GEOMETRY_TYPE geometryType);
     void LoadModel();
     VkFormat FindDepthFormat();
+    glm::vec3 GetMousePositionInWolrdSpace();
     //-----------------
 
 
@@ -244,8 +245,6 @@ private:
     std::vector<VkDeviceMemory> m_deltaTimeUBOMemory;
     std::vector<void*> m_deltaTimeBufferMapped;
 
-
-
     VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
 
@@ -259,6 +258,8 @@ private:
     std::unique_ptr<Material> m_material;
     double m_lastX;
     double m_lastY;
+    glm::vec2 m_mousePos;
+
     bool m_isMousePressed = false;
     bool m_isFirstMouse = true;
     float m_lastTimeFrame = 0.0f;

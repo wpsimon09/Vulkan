@@ -14,6 +14,7 @@
 #include <glm/glm.hpp>
 
 #include "Structs.hpp"
+#include "VulkanApp.hpp"
 
 
 const std::vector<const char *> deviceExtentions = {
@@ -641,5 +642,6 @@ inline static void GenerateMipMaps(VkPhysicalDevice physicalDevice, ImageLayoutD
         1, &barrier);
 
 }
+
 
 #endif //UTILS_HPP
