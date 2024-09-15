@@ -797,7 +797,7 @@ void VulkanApp::CreateGraphicsPipeline() {
     //-------------------
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
     inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+    inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 
         /*m_geometryType == SPHERE
                                            ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP
@@ -1361,10 +1361,10 @@ void VulkanApp::CreateShaderStorageBuffer() {
         //from angle and radius to x and y
         float x = radius * cos(theta) * HEIGHT / WIDTH;
         float y = radius * sin (theta);
-        float z = rndDist(rndEngine);
+        float z = radius * rndDist(rndEngine);
 
         particle.position = glm::vec3(x,y, z);
-        particle.velocity = glm::normalize(glm::vec2(x,y))*0.00025f;
+        particle.velocity = glm::normalize(glm::vec3(x,y,z))*0.00025f;
         particle.color = glm::vec4(rndDist(rndEngine),rndDist(rndEngine),rndDist(rndEngine),1.0f);
     }
 

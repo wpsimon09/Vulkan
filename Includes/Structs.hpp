@@ -172,8 +172,8 @@ enum GEOMETRY_TYPE {
 };
 
 struct Particle {
-    glm::vec2 position;
-    glm::vec2 velocity;
+    glm::vec3 position;
+    glm::vec3 velocity;
     glm::vec4 color;
 
     static VkVertexInputBindingDescription getBindingDescription() {
