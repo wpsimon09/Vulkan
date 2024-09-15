@@ -138,9 +138,13 @@ struct UniformBufferObject {
     alignas(16)glm::mat4 normal;
 };
 
-struct UBODeltaTime {
-    float deltaTime = 1.0f;
-};
+    struct alignas(16) UBOComputeShader {
+        float deltaTime = 1.0f;
+        float padding = 0.0f;
+        glm::vec3 MouseWorldSpace = glm::vec3(0.0f);
+        float padding2 = 0.0f;
+        glm::vec3 CameraPositionWolrd = glm::vec3(0.0f);
+    };
 
 struct ImageCreateInfo {
     VkPhysicalDevice physicalDevice;

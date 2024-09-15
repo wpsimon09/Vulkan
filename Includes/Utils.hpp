@@ -640,7 +640,6 @@ inline static void GenerateMipMaps(VkPhysicalDevice physicalDevice, ImageLayoutD
         0, nullptr,
         0, nullptr,
         1, &barrier);
-
 }
 
 

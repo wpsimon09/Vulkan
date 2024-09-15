@@ -158,7 +158,7 @@ private:
     void GenerateGeometryVertices(GEOMETRY_TYPE geometryType);
     void LoadModel();
     VkFormat FindDepthFormat();
-    glm::vec3 GetMousePositionInWolrdSpace();
+    glm::vec3 GetMouseDirection();
     //-----------------
 
 

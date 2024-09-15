@@ -1,9 +1,12 @@
 #version 460
 
 // unifrom buffer objrect at binding 0
-layout(binding = 0) uniform ParameterUBO{
+layout(std140, binding = 0) uniform ParameterUBO{
     float deltaTime;
-    vec3 MouseWorldPosition;
+    float offset;
+    vec3 RayDirection;
+    float offset2;
+    vec3 CameraPos;
 }ubo;
 
 //same as in c++ side
@@ -42,4 +45,7 @@ void main() {
     if((particlesOut[index].position.y <= -trahsHold) || (particlesOut[index].position.y >= trahsHold)){
         particlesOut[index].velocity.y *= -1;
     }
+    float depth = 25.0f;
+
+    particlesOut[index].position =  ubo.RayDirection + ubo.CameraPos;
 }

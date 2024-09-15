@@ -734,7 +734,7 @@ void VulkanApp::CreateDescriptorSet()
         VkDescriptorBufferInfo uboInfo{};
         uboInfo.buffer = m_deltaTimeUBOBuffer[i];
         uboInfo.offset = 0;
-        uboInfo.range = sizeof(UBODeltaTime);
+        uboInfo.range = sizeof(UBOComputeShader);
 
         computeDescriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         computeDescriptorWrites[0].dstSet = m_computeDescriptorSets[i];
@@ -1305,7 +1305,7 @@ void VulkanApp::CreateUniformBuffers()
         vkMapMemory(m_device, m_uniformBuffersMemory[i], 0, bufferInfo.size, 0, &m_uniformBuffersMapped[i]);
     }
 
-    bufferInfo.size = sizeof(UBODeltaTime);
+    bufferInfo.size = sizeof(UBOComputeShader);
     //for delta time UBO
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
@@ -1458,8 +1458,9 @@ void VulkanApp::CreateShaderStorageBuffer()
         float y = radius * sin(theta) * sin(phi);
         float z = radius * cos(theta);
 
+
         particle.position = glm::vec3(x, y, z);
-        particle.velocity = glm::normalize(glm::vec3(x, y, z)) * particleSpeed;
+        particle.velocity = glm::vec3(particleSpeed);
         particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine), rndDist(rndEngine), 1.0f);
     }
 
@@ -1677,10 +1678,12 @@ void VulkanApp::UpdateUniformBuffer(uint32_t currentImage)
     memcpy(m_uniformBuffersMapped[currentFrame], &ubo, sizeof(ubo));
 
 
-    UBODeltaTime uboTime{};
-    uboTime.deltaTime = m_lastTimeFrame * 2.0f;
+    UBOComputeShader uboCompute{};
+    uboCompute.deltaTime = m_lastTimeFrame * 2.0f;
+    uboCompute.MouseWorldSpace = GetMouseDirection();
+    uboCompute.CameraPositionWolrd = m_camera->getPosition();
 
-    memcpy(m_deltaTimeBufferMapped[currentFrame], &uboTime, sizeof(uboTime));
+    memcpy(m_deltaTimeBufferMapped[currentFrame], &uboCompute, sizeof(uboCompute));
 }
 
 void VulkanApp::CleanupSwapChain()
@@ -2067,21 +2070,32 @@ void VulkanApp::LoadModel()
     }
 }
 
-glm::vec3 VulkanApp::GetMousePositionInWolrdSpace()
+glm::vec3 VulkanApp::GetMouseDirection()
 {
 
-    glm::vec4 RayEndNDC(
-        ((m_mousePos.x / WIDTH - 0.5f) * 2.0f),
-        ((m_mousePos.y / HEIGHT - 0.5f) * 2.0f),
-        1.0f,
-        1.0f
-    );
+    float x = (2.0f * m_mousePos.x) / WIDTH - 1.0f;
+    float y = (1.0f - (2.0f * m_mousePos.y) / HEIGHT);
+    float z = 1.0f;
 
-    glm::mat4 M = glm::inverse(m_camera->getPojectionMatix() * m_camera->getViewMatrix());
+    // from 0:widht, 0:height to -1 and 1
+    glm::vec3 rayNDS = glm::vec3(x, y, z);
 
-    glm::vec4 RayEndWorld = M * RayEndNDC;
-    RayEndWorld /= RayEndWorld.w;
-    return {RayEndWorld.x, RayEndWorld.y, RayEndWorld.z};
+    // clip space of the view frustrum
+    glm::vec4 rayClipSpace = glm::vec4(rayNDS.x, rayNDS.y, 1.0f,1.0f);
+
+    // to the camera spce
+    glm::vec4 rayCameraSpace = glm::inverse(m_camera->getPojectionMatix())* rayClipSpace;
+    rayCameraSpace = glm::vec4(rayCameraSpace.x, rayCameraSpace.y, 1.0f,0.0f);
+
+    // to the world space
+    glm::vec3 rayWorldSpce =  glm::normalize(glm::vec3(glm::inverse(m_camera->getViewMatrix()) * rayCameraSpace));
+
+
+    glm::vec3 CameraPosition = m_camera->getPosition();
+
+    glm::vec3 RayDirection = glm::normalize(rayWorldSpce - CameraPosition);
+
+    return {RayDirection.x, RayDirection.y, RayDirection.z};
 }
 
 
