@@ -142,8 +142,6 @@ struct UniformBufferObject {
         float deltaTime = 1.0f;
         float padding = 0.0f;
         glm::vec3 MouseWorldSpace = glm::vec3(0.0f);
-        float padding2 = 0.0f;
-        glm::vec3 CameraPositionWolrd = glm::vec3(0.0f);
     };
 
 struct ImageCreateInfo {

@@ -1681,7 +1681,6 @@ void VulkanApp::UpdateUniformBuffer(uint32_t currentImage)
     UBOComputeShader uboCompute{};
     uboCompute.deltaTime = m_lastTimeFrame * 2.0f;
     uboCompute.MouseWorldSpace = GetMouseDirection();
-    uboCompute.CameraPositionWolrd = m_camera->getPosition();
 
     memcpy(m_deltaTimeBufferMapped[currentFrame], &uboCompute, sizeof(uboCompute));
 }
@@ -2074,7 +2073,7 @@ glm::vec3 VulkanApp::GetMouseDirection()
 {
 
     float x = (2.0f * m_mousePos.x) / WIDTH - 1.0f;
-    float y = (1.0f - (2.0f * m_mousePos.y) / HEIGHT);
+    float y = 1.0f-(1.0f - (2.0f * m_mousePos.y) / HEIGHT);
     float z = 1.0f;
 
     // from 0:widht, 0:height to -1 and 1
@@ -2085,19 +2084,16 @@ glm::vec3 VulkanApp::GetMouseDirection()
 
     // to the camera spce
     glm::vec4 rayCameraSpace = glm::inverse(m_camera->getPojectionMatix())* rayClipSpace;
-    rayCameraSpace = glm::vec4(rayCameraSpace.x, rayCameraSpace.y, 1.0f,0.0f);
+    rayCameraSpace = glm::vec4(rayCameraSpace.x, rayCameraSpace.y,- 1.0f,0.0f);
 
     // to the world space
     glm::vec3 rayWorldSpce =  glm::normalize(glm::vec3(glm::inverse(m_camera->getViewMatrix()) * rayCameraSpace));
 
-
     glm::vec3 CameraPosition = m_camera->getPosition();
-
-    glm::vec3 RayDirection = glm::normalize(rayWorldSpce - CameraPosition);
+    glm::vec3 RayDirection = glm::normalize(rayWorldSpce);
 
     return {RayDirection.x, RayDirection.y, RayDirection.z};
 }
-
 
 VkFormat VulkanApp::FindDepthFormat()
 {
