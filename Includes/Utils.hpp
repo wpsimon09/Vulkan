@@ -12,7 +12,6 @@
 #include <fstream>
 #include <vector>
 #include <glm/glm.hpp>
-
 #include "Structs.hpp"
 #include "VulkanApp.hpp"
 
@@ -23,7 +22,7 @@ const std::vector<const char *> deviceExtentions = {
 
 
 inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
-                                             const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfor,
+                                              const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfor,
                                              const VkAllocationCallbacks *pAllocator,
                                              VkDebugUtilsMessengerEXT *pDebugMessenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");

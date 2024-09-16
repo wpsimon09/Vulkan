@@ -49,7 +49,7 @@ void VulkanApp::InitWindow()
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE,GLFW_TRUE);
     m_window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-    CreateCamera();
+      CreateCamera();
 
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, FrameBufferResizeCallback);
@@ -62,35 +62,34 @@ void VulkanApp::InitWindow()
 
 void VulkanApp::InitVulkan()
 {
-    CreateInstance();
-    SetUpDebugMessenger();
-    CreateSurface();
-    PickPhysicalDevice();
-    CreateLogicalDevice();
-    CreateSwapChain();
-    CreateImageViews();
-    CreateColorResources();
-    CreateDepthResources();
-    CreateRenderPass();
-    //GenerateGeometryVertices(MODEL);
-    CreateDescriptorSetLayout();
-    CreateGraphicsPipeline();
-    CreateComputePipeline();
-    CreateFrameBuffers();
-    CreateCommandPool();
+        CreateInstance();
+        SetUpDebugMessenger();
+        CreateSurface();
+        PickPhysicalDevice();
+        CreateLogicalDevice();
+        CreateSwapChain();
+        CreateImageViews();
+        CreateColorResources();
+        CreateDepthResources();
+        CreateRenderPass();
+        //GenerateGeometryVertices(MODEL);
+        CreateDescriptorSetLayout();
+        CreateGraphicsPipeline();
+        CreateComputePipeline();
+        CreateFrameBuffers();
+        CreateCommandPool();
+        //CreateTextureImage();
 
-    //CreateTextureImage();
-
-    //CreateTextureImageView();
-    //CreateTextureSampler();
-    //CreateVertexBuffers();
-    CreateShaderStorageBuffer();
-    //CreateIndexBuffers();
-    CreateUniformBuffers();
-    CreateDescriptorPool();
-    CreateDescriptorSet();
-    CreateCommandBuffers();
-    CreateSyncObjects();
+        //CreateTextureImageView();
+        //CreateTextureSampler();
+        //CreateVertexBuffers();
+        CreateShaderStorageBuffer();
+        //CreateIndexBuffers();
+        CreateUniformBuffers();
+        CreateDescriptorPool();
+        CreateDescriptorSet();
+        CreateCommandBuffers();
+        CreateSyncObjects();
 }
 
 void VulkanApp::CreateCamera()

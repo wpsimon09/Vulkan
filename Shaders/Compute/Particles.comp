@@ -39,7 +39,6 @@ void main() {
 
 
 /**
-
     if((particlesOut[index].position.x <= -trahsHold) || (particlesOut[index].position.x >= trahsHold)){
         particlesOut[index].velocity.x *= -1;
     }
