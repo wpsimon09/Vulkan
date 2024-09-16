@@ -1679,7 +1679,7 @@ void VulkanApp::UpdateUniformBuffer(uint32_t currentImage)
 
 
     UBOComputeShader uboCompute{};
-    uboCompute.deltaTime = m_lastTimeFrame * 2.0f;
+    uboCompute.deltaTime = glm::sin(m_lastTimeFrame);
     uboCompute.MouseWorldSpace = GetMouseDirection();
 
     memcpy(m_deltaTimeBufferMapped[currentFrame], &uboCompute, sizeof(uboCompute));

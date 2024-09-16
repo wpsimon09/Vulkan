@@ -35,8 +35,9 @@ void main() {
 
     float trahsHold = 1.0f;
 
-    particlesOut[index].position.xy = ubo.RayDirection.xy;
-//    particlesOut[index].position.xy = particleIn.position.xy + particleIn.velocity.xy * ubo.deltaTime;
+    particlesOut[index].position.xy = particleIn.position.xy + particleIn.velocity.xy * ubo.deltaTime;
+
+
 /**
 
     if((particlesOut[index].position.x <= -trahsHold) || (particlesOut[index].position.x >= trahsHold)){
